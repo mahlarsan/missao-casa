@@ -532,7 +532,7 @@ function renderPais(){
 
     <div class="bloco"><b>⭐ Missões</b>
       ${dados.tarefas.map(t => `<div class="item">${esc(t.icone)} ${esc(t.nome)}
-          <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">tirar</button></span>
+          <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">excluir</button></span>
           <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.icone || "").join(" ")} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
       <div class="${tEd ? "editando" : ""}" id="formTarefa">
         ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
@@ -553,7 +553,7 @@ function renderPais(){
 
     <div class="bloco"><b>📅 Agenda (escola, aulas, atividades)</b>
       ${dados.atividades.map(a => `<div class="item">${esc(a.icone)} ${esc(a.nome)}
-          <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">tirar</button></span>
+          <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">excluir</button></span>
           <small>${resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
       <div class="${aEd ? "editando" : ""}" id="formAtv">
         ${aEd ? `<b>✏️ Editando: ${esc(aEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova atividade</b>`}
@@ -568,7 +568,7 @@ function renderPais(){
 
     <div class="bloco"><b>🧒 Crianças</b>
       ${dados.criancas.map(c => `<div class="item">${esc(c.avatar)} ${esc(c.nome)}
-          <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">tirar</button></span></div>`).join("")}
+          <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">excluir</button></span></div>`).join("")}
       <div class="${cEd ? "editando" : ""}">
         ${cEd ? `<b>✏️ Editando: ${esc(cEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova criança</b>`}
         <div class="row"><input id="cAv" placeholder="Emoji" style="max-width:80px" value="${esc(cEd?.avatar || "🐼")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}"></div>
@@ -585,7 +585,7 @@ function renderPais(){
       <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar prêmio</button></div>
       <small style="color:var(--suave);font-weight:800;display:block;margin-top:10px">Incluir nova recompensa</small>
       <div class="row"><input id="prNova" placeholder="Ex.: Ir ao cinema 🎬"><button class="btn sec" id="prAdd" style="max-width:110px;margin-top:4px">Incluir</button></div>
-      <button class="x" id="prDel" style="margin-top:8px">tirar a recompensa selecionada da lista</button></div>
+      <button class="x" id="prDel" style="margin-top:8px">excluir a recompensa selecionada</button></div>
 
     ${NUVEM.ativo ? `
     <div class="bloco"><b>👨‍👩‍👧 Nossa família</b>
