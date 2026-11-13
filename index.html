@@ -60,6 +60,8 @@
   .atv:last-child{border:0}
   .atv .hora{background:#F1EEFF;color:var(--roxo);border-radius:10px;padding:3px 8px;font-size:13px;min-width:54px;text-align:center}
   .atv .ic{font-size:22px}
+  .periodo{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:15px;margin:16px 4px 8px;color:var(--roxo)}
+  .periodo span{background:#F1EEFF;border-radius:10px;padding:2px 8px;font-size:12px}
   .vazio{text-align:center;color:var(--suave);padding:24px;font-weight:700}
   .vez{background:var(--card);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
   .vez .t{font-weight:800;color:var(--suave);font-size:14px}
@@ -156,6 +158,12 @@ const UTEIS = [1,2,3,4,5];
 const FDS = [0,6];
 const ORDEM_UI = [1,2,3,4,5,6,0];       // na tela a semana começa na segunda
 const NOME_DIA = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const PERIODOS = [
+  { id: "manha", nome: "Manhã", icone: "🌅" },
+  { id: "tarde", nome: "Tarde", icone: "☀️" },
+  { id: "noite", nome: "Noite", icone: "🌙" },
+  { id: "livre", nome: "Qualquer hora", icone: "⏰" }
+];
 const NOME_DIA_LONGO = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
 
 const PADRAO = {
@@ -165,11 +173,11 @@ const PADRAO = {
     { id: "leon", nome: "Leon", avatar: "🦁" }
   ],
   tarefas: [
-    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", dias: TODOS, cor: "#3BA7FF" },
-    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", dias: UTEIS, cor: "#FF5FA2" },
-    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", revezar: true, offset: 1, dias: [1,3,5], cor: "#2BC48A" },
-    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", revezar: true, offset: 0, dias: TODOS, cor: "#FF8A3D" },
-    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", revezar: true, offset: 1, dias: TODOS, cor: "#3BA7FF" },
+    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", periodos: ["manha"], dias: TODOS, cor: "#3BA7FF" },
+    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", periodos: ["noite"], dias: UTEIS, cor: "#FF5FA2" },
+    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: [1,3,5], cor: "#2BC48A" },
+    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 0, dias: TODOS, cor: "#FF8A3D" },
+    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: TODOS, cor: "#3BA7FF" },
     { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#7C5CFF" }
   ],
   atividades: [
@@ -185,6 +193,7 @@ let diaSel = new Date();          // dia que a criança está olhando
 let paisLiberado = false;
 let editando = null;              // { tipo: "c" | "t", id }
 let diasForm = [];           // dias marcados no formulário de missão
+let periodosForm = [];    // períodos marcados no formulário de missão
 let diasAtv = [];           // dias marcados no formulário de agenda
 
 function carregar(){
@@ -203,6 +212,7 @@ function carregar(){
   }
   // versões antigas não tinham "dias" nas missões: vale todo dia
   d.tarefas.forEach(t => { if (!Array.isArray(t.dias)) t.dias = [...TODOS]; });
+  d.tarefas.forEach(t => { if (!Array.isArray(t.periodos) || !t.periodos.length) t.periodos = ["livre"]; });
   return d;
 }
 function salvar(){ try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch(e){} }
@@ -245,22 +255,25 @@ function vezDe(t, d = new Date()){
   const vez = semana * t.dias.length + naSemana + (t.offset || 0);
   return dados.criancas[((vez % n) + n) % n].id;
 }
+const chaveDe = (t, p) => p === "livre" ? t.id : t.id + "@" + p;
+const tarefaDaChave = k => dados.tarefas.find(t => t.id === String(k).split("@")[0]);
 function tarefasDe(idCrianca, d = new Date()){
+  const ordemP = PERIODOS.map(p => p.id);
   return dados.tarefas.filter(t => {
     if (!t.dias.includes(d.getDay())) return false;
-    if (t.para === "todos") return true;
-    if (t.revezar && t.para === "todos" && dados.criancas.length > 1) return vezDe(t, d) === idCrianca;
+    if (t.para === "todos") return t.revezar && dados.criancas.length > 1 ? vezDe(t, d) === idCrianca : true;
     return t.para === idCrianca;
-  });
+  }).flatMap(t => t.periodos.map(p => ({ ...t, periodo: p, key: chaveDe(t, p) })))
+    .sort((a, b) => ordemP.indexOf(a.periodo) - ordemP.indexOf(b.periodo));
 }
 function atividadesDe(idCrianca, d = new Date()){
   return dados.atividades.filter(a => a.dias.includes(d.getDay()) && (a.para === "todos" || a.para === idCrianca))
     .sort((a, b) => (a.hora || "99").localeCompare(b.hora || "99"));
 }
 const feitosEm = (dia, id) => (dados.feitos[dia] && dados.feitos[dia][id]) || [];
-function pontosDoDia(dia, id){ return feitosEm(dia, id).reduce((s, tid) => s + (dados.tarefas.find(t => t.id === tid)?.pontos || 0), 0); }
+function pontosDoDia(dia, id){ return feitosEm(dia, id).reduce((s, k) => s + (tarefaDaChave(k)?.pontos || 0), 0); }
 function pontosSemana(id){ return diasDaSemana().reduce((s, d) => s + pontosDoDia(isoDia(d), id), 0); }
-function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.id)); }
+function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.key)); }
 // Sequência de dias completos. Dias sem missão (folga) não contam e não quebram.
 function sequencia(id){
   let n = 0; const d = new Date();
@@ -330,27 +343,31 @@ function renderMissoes(){
   const futuro = ehFuturo(diaSel), passado = !futuro && !ehHoje(diaSel);
   const aviso = futuro ? `<div class="aviso">🗓️ Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
               : passado ? `<div class="aviso">⏪ Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
-  $("#listaMissoes").innerHTML = aviso + (ts.length ? ts.map(t => `
-    <div class="missao ${feitas.includes(t.id)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${t.id}">
+  const card = t => `
+    <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
       <div class="ic">${esc(t.icone)}</div>
       <div class="tx">${esc(t.nome)}<small>+${t.pontos} pontos${t.revezar && dados.criancas.length > 1 ? " · 🔄 sua vez!" : ""}</small></div>
-      <div class="ok">${feitas.includes(t.id)?"✓":""}</div>
-    </div>`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
+      <div class="ok">${feitas.includes(t.key)?"✓":""}</div>
+    </div>`;
+  const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
+  $("#listaMissoes").innerHTML = aviso + (ts.length ? grupos.map(g => `
+    <div class="periodo">${g.p.icone} ${g.p.nome}<span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
+    ${g.itens.map(card).join("")}`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
     if (!ehHoje(diaSel)) return toast(futuro ? "Esse dia ainda não chegou 😉" : "Só dá pra marcar as de hoje");
     alternar(el.dataset.id);
   });
 }
 
-function alternar(tid){
+function alternar(key){
   const dia = hojeStr();
   dados.feitos[dia] = dados.feitos[dia] || {};
   const lista = dados.feitos[dia][criancaAtiva] = dados.feitos[dia][criancaAtiva] || [];
-  const i = lista.indexOf(tid);
+  const i = lista.indexOf(key);
   if (i >= 0) { lista.splice(i, 1); }
   else {
-    lista.push(tid);
-    const t = dados.tarefas.find(t => t.id === tid);
+    lista.push(key);
+    const t = tarefaDaChave(key);
     if (diaCompleto(dia, criancaAtiva, new Date())) { toast("🏅 Todas as missões feitas! Sequência: " + sequencia(criancaAtiva) + " 🔥"); confete(40); }
     else { toast(`+${t.pontos} pontos! ⭐`); confete(12); }
   }
@@ -402,12 +419,14 @@ function renderPais(){
     <div class="bloco"><b>⭐ Missões</b>
       ${dados.tarefas.map(t => `<div class="item">${esc(t.icone)} ${esc(t.nome)}
           <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">tirar</button></span>
-          <small>${resumoDias(t.dias)} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
+          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.icone || "").join(" ")} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
       <div class="${tEd ? "editando" : ""}" id="formTarefa">
         ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
         <div class="row"><input id="tIc" placeholder="Emoji" style="max-width:80px" value="${esc(tEd?.icone || "⭐")}"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
         <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
         ${chipsDias("t", diasForm)}
+        <small style="color:var(--suave);font-weight:800">Em que hora do dia? <span style="font-weight:700">(dá pra marcar mais de uma, tipo remédio de manhã e à noite)</span></small>
+        <div class="chips">${PERIODOS.map(p => `<button class="chip ${periodosForm.includes(p.id)?"on":""}" data-per="${p.id}">${p.icone} ${p.nome}</button>`).join("")}</div>
         <div class="row"><input id="tPts" type="number" min="0" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opQuem(tEd?.para || "todos")}</select></div>
         <div class="chips" id="revezBox" style="${(tEd?.para || "todos") === "todos" ? "" : "display:none"}">
           <button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">🔄 Revezar entre as crianças</button>
@@ -483,6 +502,14 @@ function renderPais(){
     dados.atividades = dados.atividades.filter(a => a.id !== b.dataset.delA);
     if (editando?.id === b.dataset.delA) editando = null; salvar(); render(); });
 
+  // períodos
+  el.querySelectorAll("[data-per]").forEach(b => b.onclick = () => {
+    const p = b.dataset.per;
+    if (p === "livre") periodosForm = periodosForm.includes("livre") ? [] : ["livre"];
+    else { periodosForm = periodosForm.filter(x => x !== "livre"); periodosForm = periodosForm.includes(p) ? periodosForm.filter(x => x !== p) : [...periodosForm, p]; }
+    el.querySelectorAll("[data-per]").forEach(x => x.classList.toggle("on", periodosForm.includes(x.dataset.per)));
+  });
+
   // missões
   let revezarForm = !!tEd?.revezar;
   $("#tPara").onchange = () => { $("#revezBox").style.display = $("#tPara").value === "todos" ? "" : "none";
@@ -494,18 +521,19 @@ function renderPais(){
     const n = $("#tNome").value.trim(); if (!n) return toast("Dá um nome pra missão ✍️");
     if (!diasForm.length) return toast("Escolha pelo menos um dia 📅");
     const campos = { nome: n, icone: $("#tIc").value || "⭐", pontos: Math.max(0, parseInt($("#tPts").value, 10) || 0), para: $("#tPara").value, dias: [...diasForm] };
+    campos.periodos = periodosForm.length ? [...periodosForm] : ["livre"];
     campos.revezar = campos.para === "todos" && revezarForm;
     if (campos.revezar && !(tEd?.revezar)) campos.offset = dados.tarefas.filter(t => t.revezar).length;
     if (tEd) Object.assign(tEd, campos);
     else { const cores = ["#3BA7FF","#FF5FA2","#2BC48A","#FF8A3D","#7C5CFF","#FFC93C"];
       dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
     toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
-    editando = null; diasForm = []; salvar(); render();
+    editando = null; diasForm = []; periodosForm = []; salvar(); render();
   };
-  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = []; renderPais(); };
+  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = []; periodosForm = []; renderPais(); };
   el.querySelectorAll("[data-ed-t]").forEach(b => b.onclick = () => {
     const t = dados.tarefas.find(t => t.id === b.dataset.edT);
-    editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; renderPais();
+    editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; periodosForm = t.periodos.includes("livre") ? [] : [...t.periodos]; renderPais();
     $("#formTarefa").scrollIntoView({ behavior: "smooth", block: "center" });
   });
   el.querySelectorAll("[data-del-t]").forEach(b => b.onclick = () => {
