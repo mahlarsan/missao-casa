@@ -185,6 +185,16 @@ const PADRAO = {
     { id: "a2", nome: "Curumim", icone: "🌳", hora: "13:00", para: "todos", dias: UTEIS }
   ],
   premio: { texto: "Escolher o filme de sexta + pipoca 🍿", meta: 150 },
+  recompensas: [
+    "Escolher o filme de sexta + pipoca 🍿",
+    "Sorvete no fim de semana 🍦",
+    "Escolher o jantar de sábado 🍕",
+    "30 minutos a mais de tela 📱",
+    "Dormir mais tarde no sábado 🌙",
+    "Passeio no parque 🌳",
+    "Noite do pijama com uma amiga 🛏️",
+    "Escolher o jogo em família 🎲"
+  ],
   feitos: {} // { "2026-11-13": { "maya": ["t1","t3"] } }
 };
 let dados = carregar();
@@ -201,6 +211,8 @@ function carregar(){
   try { const s = localStorage.getItem(CHAVE); if (s) d = JSON.parse(s); } catch(e){}
   d = d || JSON.parse(JSON.stringify(PADRAO));
   d.atividades = d.atividades || [];
+  if (!Array.isArray(d.recompensas)) d.recompensas = JSON.parse(JSON.stringify(PADRAO.recompensas));
+  if (d.premio?.texto && !d.recompensas.includes(d.premio.texto)) d.recompensas.unshift(d.premio.texto);
   // versão anterior tinha revezamentos separados: viram missões com "revezar"
   if (Array.isArray(d.revezamentos)) {
     d.revezamentos.forEach((r, i) => {
@@ -465,7 +477,13 @@ function renderPais(){
 
 
     <div class="bloco"><b>🎁 Prêmio da semana</b>
-      <input id="prTx" value="${esc(dados.premio.texto)}"><div class="row"><input id="prMeta" type="number" value="${dados.premio.meta}"><button class="btn" id="prSalvar">Salvar</button></div></div>
+      <small style="color:var(--suave);font-weight:800;display:block;margin-top:6px">Escolha a recompensa</small>
+      <select id="prTx">${dados.recompensas.map(r => `<option ${r === dados.premio.texto ? "selected" : ""}>${esc(r)}</option>`).join("")}</select>
+      <small style="color:var(--suave);font-weight:800">Pontos pra ganhar</small>
+      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar prêmio</button></div>
+      <small style="color:var(--suave);font-weight:800;display:block;margin-top:10px">Incluir nova recompensa</small>
+      <div class="row"><input id="prNova" placeholder="Ex.: Ir ao cinema 🎬"><button class="btn sec" id="prAdd" style="max-width:110px;margin-top:4px">Incluir</button></div>
+      <button class="x" id="prDel" style="margin-top:8px">tirar a recompensa selecionada da lista</button></div>
 
     <div class="bloco"><b>🔑 Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
     <button class="btn sec" id="sair">Sair do painel</button>`;
@@ -559,6 +577,18 @@ function renderPais(){
 
   // prêmio, senha, sair
   $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
+  $("#prAdd").onclick = () => {
+    const n = $("#prNova").value.trim(); if (!n) return toast("Escreve a recompensa ✍️");
+    if (!dados.recompensas.includes(n)) dados.recompensas.push(n);
+    dados.premio = { texto: n, meta: Number($("#prMeta").value) || dados.premio.meta || 100 };
+    salvar(); toast("Recompensa incluída e escolhida 🎁"); render();
+  };
+  $("#prDel").onclick = () => {
+    const sel = $("#prTx").value; if (dados.recompensas.length <= 1) return toast("Deixe pelo menos uma recompensa");
+    dados.recompensas = dados.recompensas.filter(r => r !== sel);
+    if (dados.premio.texto === sel) dados.premio.texto = dados.recompensas[0];
+    salvar(); toast("Tirada da lista"); render();
+  };
   $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
   $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
 }
