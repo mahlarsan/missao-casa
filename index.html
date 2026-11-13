@@ -3,115 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#7C5CFF">
+<meta name="theme-color" content="#CE82FF">
 <title>Missão Casa</title>
 <link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  /* Paleta inspirada em apps infantis consagrados (Duolingo, Khan Academy Kids):
+     cores vivas e chapadas, contraste alto, cantos bem redondos e botões com "relevo". */
   :root{
-    --roxo:#7C5CFF; --rosa:#FF5FA2; --amarelo:#FFC93C; --verde:#2BC48A; --azul:#3BA7FF; --laranja:#FF8A3D;
-    --fundo:#FFF8EE; --card:#FFFFFF; --texto:#2B2547; --suave:#8A84A3;
+    --verde:#58CC02; --verde-esc:#58A700;
+    --azul:#1CB0F6;  --azul-esc:#1899D6;
+    --amarelo:#FFC800; --amarelo-esc:#E5A800;
+    --laranja:#FF9600; --vermelho:#FF4B4B; --roxo:#CE82FF; --roxo-esc:#A560E8; --rosa:#FF86D0;
+    --fundo:#F4FAFF; --card:#FFFFFF; --borda:#E5E5E5; --borda-esc:#CECECE;
+    --texto:#3C3C3C; --suave:#777777;
+    --titulo:"Fredoka","Nunito",system-ui,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;background:var(--fundo);color:var(--texto);
-       padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  header{background:linear-gradient(135deg,var(--roxo),var(--rosa));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 18px 26px;
-         border-radius:0 0 28px 28px;box-shadow:0 6px 18px rgba(124,92,255,.25)}
-  header h1{margin:0;font-size:24px;letter-spacing:.3px}
-  header p{margin:4px 0 0;opacity:.9;font-size:14px}
-  main{padding:16px;max-width:560px;margin:0 auto}
-  h2{font-size:19px;margin:18px 4px 10px}
-  .kids{display:flex;gap:10px;margin-top:-34px;overflow-x:auto;padding:4px 2px 8px}
-  .kid{flex:1;min-width:110px;background:var(--card);border:3px solid transparent;border-radius:20px;padding:10px;
-       text-align:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.07);font-weight:800}
-  .kid .av{font-size:30px}
-  .kid.on{border-color:var(--amarelo);transform:translateY(-2px)}
-  .kid small{display:block;color:var(--suave);font-weight:700}
+  html{font-size:18px}
+  body{margin:0;font-family:"Nunito",system-ui,sans-serif;font-weight:700;background:var(--fundo);color:var(--texto);
+       padding-bottom:calc(96px + env(safe-area-inset-bottom));line-height:1.3}
+  button{font-family:inherit}
 
-  /* Semana / navegação de dias */
-  .semana{background:var(--card);border-radius:20px;padding:10px;margin-top:8px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .semana .topo{display:flex;align-items:center;justify-content:space-between;font-weight:900;margin-bottom:8px}
-  .semana .topo button{background:#F1EEFF;color:var(--roxo);border:0;border-radius:12px;width:38px;height:34px;font-size:18px;font-weight:900;cursor:pointer}
-  .semana .topo .hojeBtn{width:auto;padding:0 10px;font-size:13px}
-  .diasNav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-  .diaNav{border-radius:14px;padding:6px 0;text-align:center;cursor:pointer;font-weight:800;border:2px solid transparent}
-  .diaNav .sem{font-size:11px;color:var(--suave);text-transform:uppercase}
-  .diaNav .num{font-size:18px}
-  .diaNav .pt{height:8px;font-size:10px;line-height:8px;color:var(--verde)}
-  .diaNav.hoje{background:#FFF3D1}
-  .diaNav.sel{border-color:var(--roxo);background:#F1EEFF}
-  .diaNav.fds .num{color:var(--rosa)}
-  .aviso{background:#EAF5FF;color:#1F6FB2;border-radius:14px;padding:10px 12px;font-weight:800;font-size:14px;margin-bottom:10px}
+  header{background:var(--azul);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 20px 46px;border-radius:0 0 32px 32px;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;right:-40px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.14)}
+  header h1{margin:0;font-family:var(--titulo);font-weight:700;font-size:1.75rem;letter-spacing:.2px}
+  header p{margin:4px 0 0;font-size:1rem;opacity:.95}
+  main{padding:0 16px;max-width:560px;margin:0 auto}
+  h2{font-family:var(--titulo);font-weight:600;font-size:1.4rem;margin:22px 4px 10px}
 
-  .missao{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:14px;margin-bottom:10px;
-          box-shadow:0 3px 10px rgba(0,0,0,.06);cursor:pointer;border-left:8px solid var(--c,var(--azul));transition:transform .15s}
-  .missao:active{transform:scale(.97)}
-  .missao .ic{font-size:30px}
-  .missao .tx{flex:1;font-weight:800;font-size:16px}
-  .missao .tx small{display:block;color:var(--suave);font-weight:700;font-size:13px}
-  .missao .ok{width:34px;height:34px;border-radius:50%;border:3px solid #E3DFF2;display:grid;place-items:center;font-size:18px}
-  .missao.feita{opacity:.6}
-  .missao.feita .ok{background:var(--verde);border-color:var(--verde);color:#fff}
-  .missao.feita .tx{text-decoration:line-through}
+  /* Crianças */
+  .kids{display:flex;gap:12px;margin-top:-32px;overflow-x:auto;padding:4px 2px 10px;position:relative;z-index:1}
+  .kid{flex:1;min-width:120px;background:var(--card);border:3px solid var(--borda);border-bottom-width:6px;border-radius:24px;padding:10px 8px;
+       text-align:center;cursor:pointer;font-family:var(--titulo);font-weight:600;font-size:1.2rem;transition:transform .1s}
+  .kid:active{transform:translateY(3px);border-bottom-width:3px}
+  .kid .av{font-size:2.6rem;line-height:1.1}
+  .kid.on{border-color:var(--azul);background:#DDF4FF}
+  .kid small{display:block;color:var(--suave);font-family:"Nunito";font-weight:800;font-size:.85rem;margin-top:2px}
+
+  /* Semana */
+  .semana{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:12px;margin-top:10px}
+  .semana .topo{display:flex;align-items:center;justify-content:space-between;font-family:var(--titulo);font-weight:600;font-size:1.15rem;margin-bottom:10px;text-transform:capitalize}
+  .semana .topo button{background:var(--card);color:var(--azul);border:2px solid var(--borda);border-bottom-width:4px;border-radius:14px;
+       min-width:44px;height:44px;font-size:1.3rem;font-weight:900;cursor:pointer}
+  .semana .topo button:active{transform:translateY(2px);border-bottom-width:2px}
+  .semana .topo .hojeBtn{padding:0 12px;font-size:.95rem;color:#fff;background:var(--azul);border-color:var(--azul-esc)}
+  .diasNav{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+  .diaNav{border-radius:16px;padding:8px 0 6px;text-align:center;cursor:pointer;border:2px solid transparent;min-height:72px}
+  .diaNav .sem{font-size:.75rem;color:var(--suave);font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+  .diaNav .num{font-family:var(--titulo);font-weight:600;font-size:1.35rem}
+  .diaNav .pt{height:12px;font-size:.7rem;line-height:12px;color:var(--amarelo-esc);letter-spacing:1px}
+  .diaNav.fds .num{color:var(--roxo-esc)}
+  .diaNav.hoje{background:#FFF4CC}
+  .diaNav.sel{border-color:var(--azul);background:#DDF4FF;border-bottom-width:4px}
+  .diaNav.sel .num{color:var(--azul-esc)}
+
+  /* Progresso do dia */
+  .progresso{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:22px;padding:12px 16px;margin:14px 0 4px}
+  .progresso .estrela{font-size:2rem}
+  .progresso .info{flex:1}
+  .progresso .info b{font-family:var(--titulo);font-weight:600;font-size:1.1rem}
+  .progresso .trilho{height:18px;background:var(--borda);border-radius:12px;margin-top:6px;overflow:hidden}
+  .progresso .trilho i{display:block;height:100%;background:var(--verde);border-radius:12px;transition:width .5s;
+       box-shadow:inset 0 -5px 0 rgba(0,0,0,.08), inset 0 4px 0 rgba(255,255,255,.35)}
+
+  .aviso{background:#DDF4FF;color:var(--azul-esc);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1rem;margin:12px 0 0}
+
+  /* Agenda */
+  .agenda{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:14px 16px;margin:14px 0 0}
+  .agenda b{display:block;margin-bottom:6px;font-family:var(--titulo);font-weight:600;font-size:1.2rem}
+  .atv{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px dashed var(--borda);font-weight:800;font-size:1.1rem}
+  .atv:last-child{border:0}
+  .atv .hora{background:#F3E5FF;color:var(--roxo-esc);border-radius:12px;padding:4px 10px;font-size:.95rem;min-width:66px;text-align:center;font-weight:900}
+  .atv .ic{font-size:1.7rem}
+
+  /* Missões */
+  .periodo{display:flex;justify-content:space-between;align-items:center;font-family:var(--titulo);font-weight:600;font-size:1.25rem;margin:22px 4px 10px}
+  .periodo span{background:var(--card);border:2px solid var(--borda);border-radius:12px;padding:2px 10px;font-family:"Nunito";font-weight:900;font-size:.85rem;color:var(--suave)}
+  .missao{display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--borda);border-bottom-width:6px;border-radius:24px;
+          padding:14px;margin-bottom:12px;cursor:pointer;min-height:84px;transition:transform .1s,background .2s}
+  .missao:active{transform:translateY(3px);border-bottom-width:3px;margin-bottom:15px}
+  .missao .ic{font-size:2.1rem;width:62px;height:62px;flex:none;border-radius:18px;display:grid;place-items:center;
+              background:color-mix(in srgb, var(--c, var(--azul)) 22%, white)}
+  .missao .tx{flex:1;font-weight:900;font-size:1.2rem;line-height:1.2}
+  .missao .tx small{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:.85rem}
+  .pill{background:#FFF4CC;color:#B07A00;border-radius:10px;padding:2px 8px;font-weight:900}
+  .pill.vez{background:#F3E5FF;color:var(--roxo-esc)}
+  .missao .ok{width:48px;height:48px;flex:none;border-radius:50%;border:3px solid var(--borda-esc);display:grid;place-items:center;font-size:1.5rem;color:#fff;font-weight:900}
+  .missao.feita{background:#D7FFB8;border-color:var(--verde)}
+  .missao.feita .ok{background:var(--verde);border-color:var(--verde-esc);animation:pop .35s}
+  .missao.feita .tx{color:var(--verde-esc)}
   .missao.futura{cursor:default}
   .missao.futura .ok{border-style:dashed}
-  .agenda{background:var(--card);border-radius:20px;padding:12px 14px;margin:12px 0 4px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .agenda b{display:block;margin-bottom:6px}
-  .atv{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #EEE;font-weight:800}
-  .atv:last-child{border:0}
-  .atv .hora{background:#F1EEFF;color:var(--roxo);border-radius:10px;padding:3px 8px;font-size:13px;min-width:54px;text-align:center}
-  .atv .ic{font-size:22px}
-  .periodo{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:15px;margin:16px 4px 8px;color:var(--roxo)}
-  .periodo span{background:#F1EEFF;border-radius:10px;padding:2px 8px;font-size:12px}
-  .vazio{text-align:center;color:var(--suave);padding:24px;font-weight:700}
-  .vez{background:var(--card);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .vez .t{font-weight:800;color:var(--suave);font-size:14px}
-  .vez .quem{font-size:26px;font-weight:900;margin:6px 0}
-  .fila{display:flex;gap:6px;flex-wrap:wrap}
-  .fila span{background:#F1EEFF;border-radius:12px;padding:4px 10px;font-weight:800;font-size:13px}
-  .fila span.agora{background:var(--amarelo)}
-  .placar{background:var(--card);border-radius:20px;padding:14px 16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .placar .linha{display:flex;justify-content:space-between;font-weight:900;font-size:17px}
-  .barra{height:16px;background:#EFEAFB;border-radius:10px;margin:10px 0 6px;overflow:hidden}
-  .barra i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--verde),var(--azul));transition:width .5s}
-  .placar small{color:var(--suave);font-weight:700}
-  .premio{background:linear-gradient(135deg,var(--amarelo),var(--laranja));color:#3a2600;border-radius:20px;padding:16px;font-weight:800;margin-bottom:12px}
-  .premio b{font-size:20px;display:block}
-  .dias{display:flex;gap:6px;margin-top:8px}
-  .dias span{flex:1;text-align:center;font-size:12px;font-weight:800;color:var(--suave)}
-  .dias span i{display:block;height:26px;border-radius:8px;background:#EFEAFB;margin-bottom:3px;font-style:normal;line-height:26px;font-size:14px}
+  @keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .vazio{text-align:center;color:var(--suave);padding:28px 16px;font-weight:800;font-size:1.15rem}
+
+  /* Placar */
+  .premio{background:var(--amarelo);color:#5A4300;border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:16px 18px;font-weight:800;margin-bottom:14px;font-size:1rem}
+  .premio b{font-family:var(--titulo);font-weight:600;font-size:1.5rem;display:block;margin:4px 0;color:#3C2E00}
+  .placar{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:14px 16px;margin-bottom:14px}
+  .placar .linha{display:flex;justify-content:space-between;font-family:var(--titulo);font-weight:600;font-size:1.35rem}
+  .barra{height:22px;background:var(--borda);border-radius:14px;margin:10px 0 8px;overflow:hidden}
+  .barra i{display:block;height:100%;border-radius:14px;background:var(--verde);transition:width .5s;
+       box-shadow:inset 0 -6px 0 rgba(0,0,0,.08), inset 0 5px 0 rgba(255,255,255,.35)}
+  .placar small{color:var(--suave);font-weight:800;font-size:.95rem}
+  .dias{display:flex;gap:6px;margin-top:10px}
+  .dias span{flex:1;text-align:center;font-size:.8rem;font-weight:900;color:var(--suave)}
+  .dias span i{display:block;height:32px;border-radius:10px;background:var(--borda);margin-bottom:4px;font-style:normal;line-height:32px;font-size:1rem}
   .dias span i.sim{background:var(--verde);color:#fff}
-  .dias span i.livre{background:transparent;border:2px dashed #E3DFF2}
+  .dias span i.livre{background:transparent;border:2px dashed var(--borda)}
+
+  /* Barra de navegação */
   nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;justify-content:space-around;
-      padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);border-radius:22px 22px 0 0}
-  nav button{background:none;border:0;font:inherit;font-weight:800;font-size:12px;color:var(--suave);display:flex;flex-direction:column;
-             align-items:center;gap:2px;padding:6px 10px;border-radius:14px;cursor:pointer}
-  nav button span{font-size:22px}
-  nav button.on{color:var(--roxo);background:#F1EEFF}
+      padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:2px solid var(--borda);z-index:5}
+  nav button{background:none;border:2px solid transparent;font-weight:900;font-size:.85rem;color:var(--suave);display:flex;flex-direction:column;
+             align-items:center;gap:2px;padding:6px 18px;border-radius:16px;cursor:pointer;min-width:84px}
+  nav button span{font-size:1.8rem;line-height:1}
+  nav button.on{color:var(--azul-esc);background:#DDF4FF;border-color:#84D8FF}
   .tela{display:none}.tela.on{display:block;animation:entra .25s}
   @keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
-  .bloco{background:var(--card);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed #EEE;font-weight:700;flex-wrap:wrap}
+
+  /* Painel dos pais (mais compacto, é para adultos) */
+  #t-pais{font-size:.95rem}
+  .bloco{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:22px;padding:16px;margin-bottom:14px}
+  .bloco > b{font-family:var(--titulo);font-weight:600;font-size:1.15rem}
+  .item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:2px dashed var(--borda);font-weight:800;flex-wrap:wrap}
   .item:last-child{border:0}
   .item .acoes{margin-left:auto;display:flex;gap:6px}
   .item small{color:var(--suave);font-weight:700;width:100%;padding-left:2px}
-  .x,.ed{border:0;border-radius:10px;padding:4px 10px;font-weight:800;cursor:pointer;font:inherit;font-size:13px}
-  .x{background:#FFE8EF;color:#D23A6B}
-  .ed{background:#EAF5FF;color:#1F6FB2}
-  input,select{font:inherit;padding:10px;border-radius:12px;border:2px solid #E6E1F5;width:100%;margin:4px 0;background:#fff}
-  .row{display:flex;gap:8px}.row>*{flex:1}
-  .btn{background:var(--roxo);color:#fff;border:0;border-radius:14px;padding:12px;font:inherit;font-weight:900;width:100%;margin-top:6px;cursor:pointer}
-  .btn.sec{background:#F1EEFF;color:var(--roxo)}
-  .chips{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
-  .chip{border:2px solid #E6E1F5;background:#fff;border-radius:12px;padding:6px 9px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;color:var(--suave)}
-  .chip.on{background:var(--roxo);border-color:var(--roxo);color:#fff}
-  .chip.atalho{border-style:dashed}
-  .editando{outline:3px solid var(--amarelo);border-radius:14px;padding:8px;margin:6px -4px}
-  .toast{position:fixed;left:50%;top:22px;transform:translateX(-50%) scale(.8);background:var(--texto);color:#fff;padding:12px 18px;
-         border-radius:16px;font-weight:900;opacity:0;transition:.25s;z-index:20;pointer-events:none;text-align:center}
+  .x,.ed{border:2px solid;border-bottom-width:4px;border-radius:12px;padding:5px 12px;font-weight:900;cursor:pointer;font-size:.85rem}
+  .x{background:#FFF0F0;color:#EA2B2B;border-color:#FFC1C1}
+  .ed{background:#DDF4FF;color:var(--azul-esc);border-color:#84D8FF}
+  input,select{font:inherit;font-size:1rem;padding:12px;border-radius:14px;border:2px solid var(--borda);width:100%;margin:5px 0;background:#F7F7F7;color:var(--texto)}
+  input:focus,select:focus{outline:none;border-color:var(--azul);background:#fff}
+  .row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+  .btn{background:var(--verde);color:#fff;border:0;border-bottom:5px solid var(--verde-esc);border-radius:16px;padding:13px;font-size:1rem;font-weight:900;
+       width:100%;margin-top:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.6px}
+  .btn:active{transform:translateY(3px);border-bottom-width:2px}
+  .btn.sec{background:#fff;color:var(--azul-esc);border:2px solid var(--borda);border-bottom-width:5px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .chip{border:2px solid var(--borda);border-bottom-width:4px;background:#fff;border-radius:14px;padding:8px 11px;font-weight:900;font-size:.9rem;cursor:pointer;color:var(--suave)}
+  .chip.on{background:#DDF4FF;border-color:var(--azul);color:var(--azul-esc)}
+  .chip.atalho{border-style:dashed;border-bottom-width:2px}
+  .editando{outline:3px solid var(--amarelo);border-radius:16px;padding:10px;margin:8px -4px}
+  .pin{max-width:280px;margin:40px auto;text-align:center}
+  .pin .cadeado{font-size:3.5rem}
+
+  .toast{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top));transform:translateX(-50%) scale(.8);background:var(--texto);color:#fff;padding:14px 20px;
+         border-radius:18px;font-weight:900;font-size:1.05rem;opacity:0;transition:.25s;z-index:20;pointer-events:none;text-align:center;max-width:90vw}
   .toast.on{opacity:1;transform:translateX(-50%) scale(1)}
-  .confete{position:fixed;top:-20px;font-size:22px;z-index:19;pointer-events:none;animation:cai 1.4s ease-in forwards}
+  .confete{position:fixed;top:-30px;font-size:1.8rem;z-index:19;pointer-events:none;animation:cai 1.5s ease-in forwards}
   @keyframes cai{to{transform:translateY(105vh) rotate(540deg);opacity:.7}}
-  .pin{max-width:260px;margin:30px auto;text-align:center}
+  @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 </style>
 </head>
 <body>
@@ -173,12 +218,12 @@ const PADRAO = {
     { id: "leon", nome: "Leon", avatar: "🦁" }
   ],
   tarefas: [
-    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", periodos: ["manha"], dias: TODOS, cor: "#3BA7FF" },
-    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", periodos: ["noite"], dias: UTEIS, cor: "#FF5FA2" },
-    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: [1,3,5], cor: "#2BC48A" },
-    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 0, dias: TODOS, cor: "#FF8A3D" },
-    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: TODOS, cor: "#3BA7FF" },
-    { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#7C5CFF" }
+    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", periodos: ["manha"], dias: TODOS, cor: "#1CB0F6" },
+    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", periodos: ["noite"], dias: UTEIS, cor: "#FF86D0" },
+    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: [1,3,5], cor: "#58CC02" },
+    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 0, dias: TODOS, cor: "#FF9600" },
+    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: TODOS, cor: "#1CB0F6" },
+    { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#CE82FF" }
   ],
   atividades: [
     { id: "a1", nome: "Escola", icone: "🏫", hora: "07:30", para: "todos", dias: UTEIS },
@@ -218,7 +263,7 @@ function carregar(){
     d.revezamentos.forEach((r, i) => {
       const ligadas = d.tarefas.filter(t => t.para === "vez:" + r.id);
       ligadas.forEach(t => { t.para = "todos"; t.revezar = true; t.offset = i; });
-      if (!ligadas.length) d.tarefas.push({ id: "t" + r.id, nome: r.nome, icone: r.icone, pontos: 5, para: "todos", revezar: true, offset: i, dias: [...TODOS], cor: "#3BA7FF" });
+      if (!ligadas.length) d.tarefas.push({ id: "t" + r.id, nome: r.nome, icone: r.icone, pontos: 5, para: "todos", revezar: true, offset: i, dias: [...TODOS], cor: "#1CB0F6" });
     });
     delete d.revezamentos;
   }
@@ -303,7 +348,7 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 function renderCabecalho(){
-  $("#hoje").textContent = new Date().toLocaleDateString("pt-BR", { weekday:"long", day:"numeric", month:"long" });
+  { const h = new Date().toLocaleDateString("pt-BR", { weekday:"long", day:"numeric", month:"long" }); $("#hoje").textContent = h[0].toUpperCase() + h.slice(1); }
   $("#kids").innerHTML = dados.criancas.map(c => `
     <div class="kid ${c.id===criancaAtiva?"on":""}" data-id="${c.id}">
       <div class="av">${esc(c.avatar)}</div>${esc(c.nome)}
@@ -358,11 +403,16 @@ function renderMissoes(){
   const card = t => `
     <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
       <div class="ic">${esc(t.icone)}</div>
-      <div class="tx">${esc(t.nome)}<small>+${t.pontos} pontos${t.revezar && dados.criancas.length > 1 ? " · 🔄 sua vez!" : ""}</small></div>
+      <div class="tx">${esc(t.nome)}<small><span class="pill">⭐ +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">🔄 sua vez!</span>` : ""}</small></div>
       <div class="ok">${feitas.includes(t.key)?"✓":""}</div>
     </div>`;
   const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
-  $("#listaMissoes").innerHTML = aviso + (ts.length ? grupos.map(g => `
+  const nFeitas = ts.filter(t => feitas.includes(t.key)).length, pctDia = ts.length ? Math.round(nFeitas / ts.length * 100) : 0;
+  const frase = !ts.length ? "" : nFeitas === ts.length ? "Arrasou! Tudo feito 🎉" : nFeitas === 0 ? (futuro ? "O que vem por aí" : "Bora começar!") : "Continua assim!";
+  const progresso = ts.length ? `<div class="progresso"><div class="estrela">${nFeitas === ts.length ? "🏆" : "⭐"}</div>
+    <div class="info"><b>${frase}</b> <span style="color:var(--suave)">${nFeitas} de ${ts.length}</span>
+    <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
+  $("#listaMissoes").innerHTML = progresso + aviso + (ts.length ? grupos.map(g => `
     <div class="periodo">${g.p.icone} ${g.p.nome}<span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
     ${g.itens.map(card).join("")}`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
@@ -414,7 +464,7 @@ function chipsDias(grupo, arr){
 function renderPais(){
   const el = $("#paisConteudo");
   if (!paisLiberado) {
-    el.innerHTML = `<div class="pin"><h2>🔒 Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
+    el.innerHTML = `<div class="pin"><div class="cadeado">🔐</div><h2>Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
     $("#pinBtn").onclick = () => { if ($("#pinIn").value === dados.pin) { paisLiberado = true; renderPais(); } else toast("Senha errada 🙈"); };
     return;
   }
@@ -543,7 +593,7 @@ function renderPais(){
     campos.revezar = campos.para === "todos" && revezarForm;
     if (campos.revezar && !(tEd?.revezar)) campos.offset = dados.tarefas.filter(t => t.revezar).length;
     if (tEd) Object.assign(tEd, campos);
-    else { const cores = ["#3BA7FF","#FF5FA2","#2BC48A","#FF8A3D","#7C5CFF","#FFC93C"];
+    else { const cores = ["#1CB0F6","#FF86D0","#58CC02","#FF9600","#CE82FF","#FFC800"];
       dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
     toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
     editando = null; diasForm = []; periodosForm = []; salvar(); render();
