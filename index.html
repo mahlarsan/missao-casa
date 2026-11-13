@@ -128,20 +128,14 @@
     <div id="listaMissoes"></div>
   </section>
 
-  <!-- Tela 2: Revezamento -->
-  <section class="tela" id="t-vez">
-    <h2 id="titVez">🔄 De quem é a vez?</h2>
-    <div id="listaVez"></div>
-  </section>
-
-  <!-- Tela 3: Placar -->
+  <!-- Tela 2: Placar -->
   <section class="tela" id="t-placar">
     <h2>🏆 Placar da semana</h2>
     <div class="premio" id="premio"></div>
     <div id="listaPlacar"></div>
   </section>
 
-  <!-- Tela 4: Pais -->
+  <!-- Tela 3: Pais -->
   <section class="tela" id="t-pais">
     <div id="paisConteudo"></div>
   </section>
@@ -149,7 +143,6 @@
 
 <nav>
   <button class="on" data-t="missoes"><span>⭐</span>Missões</button>
-  <button data-t="vez"><span>🔄</span>Vez</button>
   <button data-t="placar"><span>🏆</span>Placar</button>
   <button data-t="pais"><span>🔒</span>Pais</button>
 </nav>
@@ -174,14 +167,10 @@ const PADRAO = {
   tarefas: [
     { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", dias: TODOS, cor: "#3BA7FF" },
     { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", dias: UTEIS, cor: "#FF5FA2" },
-    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "vez:lixo", dias: [1,3,5], cor: "#2BC48A" },
-    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "vez:mesa", dias: TODOS, cor: "#FF8A3D" },
+    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", revezar: true, offset: 1, dias: [1,3,5], cor: "#2BC48A" },
+    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", revezar: true, offset: 0, dias: TODOS, cor: "#FF8A3D" },
+    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", revezar: true, offset: 1, dias: TODOS, cor: "#3BA7FF" },
     { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#7C5CFF" }
-  ],
-  revezamentos: [
-    { id: "banho", nome: "Quem toma banho primeiro", icone: "🛁", ordem: ["maya", "leon"] },
-    { id: "lixo", nome: "Quem tira o lixo", icone: "🗑️", ordem: ["leon", "maya"] },
-    { id: "mesa", nome: "Quem arruma a mesa", icone: "🍽️", ordem: ["maya", "leon"] }
   ],
   atividades: [
     { id: "a1", nome: "Escola", icone: "🏫", hora: "07:30", para: "todos", dias: UTEIS },
@@ -195,14 +184,23 @@ let criancaAtiva = dados.criancas[0]?.id;
 let diaSel = new Date();          // dia que a criança está olhando
 let paisLiberado = false;
 let editando = null;              // { tipo: "c" | "t", id }
-let diasForm = [...TODOS];        // dias marcados no formulário de missão
-let diasAtv = [...UTEIS];         // dias marcados no formulário de agenda
+let diasForm = [];           // dias marcados no formulário de missão
+let diasAtv = [];           // dias marcados no formulário de agenda
 
 function carregar(){
   let d;
   try { const s = localStorage.getItem(CHAVE); if (s) d = JSON.parse(s); } catch(e){}
   d = d || JSON.parse(JSON.stringify(PADRAO));
   d.atividades = d.atividades || [];
+  // versão anterior tinha revezamentos separados: viram missões com "revezar"
+  if (Array.isArray(d.revezamentos)) {
+    d.revezamentos.forEach((r, i) => {
+      const ligadas = d.tarefas.filter(t => t.para === "vez:" + r.id);
+      ligadas.forEach(t => { t.para = "todos"; t.revezar = true; t.offset = i; });
+      if (!ligadas.length) d.tarefas.push({ id: "t" + r.id, nome: r.nome, icone: r.icone, pontos: 5, para: "todos", revezar: true, offset: i, dias: [...TODOS], cor: "#3BA7FF" });
+    });
+    delete d.revezamentos;
+  }
   // versões antigas não tinham "dias" nas missões: vale todo dia
   d.tarefas.forEach(t => { if (!Array.isArray(t.dias)) t.dias = [...TODOS]; });
   return d;
@@ -237,16 +235,21 @@ function resumoDias(dias){
 
 /* ===== Regras ===== */
 const crianca = id => dados.criancas.find(c => c.id === id);
-function daVez(rev, d = new Date()){
-  const ordem = rev.ordem.filter(id => crianca(id));
-  if (!ordem.length) return null;
-  return ordem[((numeroDoDia(d) % ordem.length) + ordem.length) % ordem.length];
+// Revezamento: alterna a cada vez que a missão acontece (não a cada dia do calendário),
+// assim uma missão de seg/qua/sex também troca certinho.
+function vezDe(t, d = new Date()){
+  const n = dados.criancas.length; if (!n || !t.dias.length) return null;
+  const dn = numeroDoDia(d), seg = dn - ((d.getDay() + 6) % 7);   // número do dia da segunda-feira
+  const semana = Math.floor(seg / 7);
+  const naSemana = ORDEM_UI.slice(0, ORDEM_UI.indexOf(d.getDay())).filter(i => t.dias.includes(i)).length;
+  const vez = semana * t.dias.length + naSemana + (t.offset || 0);
+  return dados.criancas[((vez % n) + n) % n].id;
 }
 function tarefasDe(idCrianca, d = new Date()){
   return dados.tarefas.filter(t => {
     if (!t.dias.includes(d.getDay())) return false;
     if (t.para === "todos") return true;
-    if (t.para.startsWith("vez:")) { const r = dados.revezamentos.find(r => r.id === t.para.slice(4)); return r && daVez(r, d) === idCrianca; }
+    if (t.revezar && t.para === "todos" && dados.criancas.length > 1) return vezDe(t, d) === idCrianca;
     return t.para === idCrianca;
   });
 }
@@ -330,7 +333,7 @@ function renderMissoes(){
   $("#listaMissoes").innerHTML = aviso + (ts.length ? ts.map(t => `
     <div class="missao ${feitas.includes(t.id)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${t.id}">
       <div class="ic">${esc(t.icone)}</div>
-      <div class="tx">${esc(t.nome)}<small>+${t.pontos} pontos</small></div>
+      <div class="tx">${esc(t.nome)}<small>+${t.pontos} pontos${t.revezar && dados.criancas.length > 1 ? " · 🔄 sua vez!" : ""}</small></div>
       <div class="ok">${feitas.includes(t.id)?"✓":""}</div>
     </div>`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
@@ -352,19 +355,6 @@ function alternar(tid){
     else { toast(`+${t.pontos} pontos! ⭐`); confete(12); }
   }
   salvar(); render();
-}
-
-function renderVez(){
-  const d = diaSel, prox = new Date(d); prox.setDate(prox.getDate()+1);
-  $("#titVez").textContent = `🔄 De quem é a vez ${rotuloDia(d) === "hoje" ? "hoje" : rotuloDia(d).startsWith("amanhã") ? "amanhã" : "em " + rotuloDia(d)}?`;
-  $("#listaVez").innerHTML = dados.revezamentos.length ? dados.revezamentos.map(r => {
-    const agora = daVez(r, d), c = crianca(agora), cp = crianca(daVez(r, prox));
-    return `<div class="vez">
-      <div class="t">${esc(r.icone)} ${esc(r.nome)}</div>
-      <div class="quem">${c ? esc(c.avatar)+" "+esc(c.nome) : "—"}</div>
-      <div class="fila">${r.ordem.filter(crianca).map(id => `<span class="${id===agora?"agora":""}">${esc(crianca(id).nome)}</span>`).join("")}</div>
-      ${cp ? `<small style="color:var(--suave);font-weight:700;display:block;margin-top:8px">No dia seguinte: ${esc(cp.nome)}</small>` : ""}
-    </div>`; }).join("") : `<div class="vazio">Nenhum revezamento ainda.</div>`;
 }
 
 function renderPlacar(){
@@ -404,12 +394,7 @@ function renderPais(){
   const aEd = editando?.tipo === "a" ? dados.atividades.find(a => a.id === editando.id) : null;
   const opQuem = sel => [`<option value="todos">Todas as crianças</option>`, ...dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`)]
     .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
-  const opPara = (sel) => [`<option value="todos">Todas as crianças</option>`,
-    ...dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`),
-    ...dados.revezamentos.map(r => `<option value="vez:${r.id}">Revezando: ${esc(r.nome)}</option>`)]
-    .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
-  const paraTxt = t => t.para === "todos" ? "todas as crianças" : t.para.startsWith("vez:")
-    ? "revezando" : "só " + (crianca(t.para)?.nome || "?");
+  const paraTxt = t => t.para === "todos" ? (t.revezar ? "🔄 revezando" : "todas as crianças") : "só " + (crianca(t.para)?.nome || "?");
 
   el.innerHTML = `
     <h2>👨‍👩‍👧‍👦 Painel dos pais</h2>
@@ -423,7 +408,11 @@ function renderPais(){
         <div class="row"><input id="tIc" placeholder="Emoji" style="max-width:80px" value="${esc(tEd?.icone || "⭐")}"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
         <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
         ${chipsDias("t", diasForm)}
-        <div class="row"><input id="tPts" type="number" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opPara(tEd?.para || "todos")}</select></div>
+        <div class="row"><input id="tPts" type="number" min="0" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opQuem(tEd?.para || "todos")}</select></div>
+        <div class="chips" id="revezBox" style="${(tEd?.para || "todos") === "todos" ? "" : "display:none"}">
+          <button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">🔄 Revezar entre as crianças</button>
+        </div>
+        <small id="revezDica" style="color:var(--suave);font-weight:700;display:block">${tEd?.revezar ? "Cada vez que a missão acontecer, ela vai pra uma criança diferente." : "Sem revezar, todas as crianças fazem a missão."}</small>
         <button class="btn" id="tSalvar">${tEd ? "Salvar alterações" : "Adicionar missão"}</button>
         ${tEd ? `<button class="btn sec" id="tCancelar">Cancelar</button>` : ""}
       </div>
@@ -455,10 +444,6 @@ function renderPais(){
       </div>
     </div>
 
-    <div class="bloco"><b>🔄 Revezamentos</b>
-      ${dados.revezamentos.map(r => `<div class="item">${esc(r.icone)} ${esc(r.nome)}<span class="acoes"><button class="x" data-del-r="${r.id}">tirar</button></span></div>`).join("")}
-      <div class="row"><input id="rIc" placeholder="Emoji" style="max-width:80px" value="🔄"><input id="rNome" placeholder="Ex.: quem escolhe o desenho"></div>
-      <button class="btn" id="rAdd">Adicionar revezamento</button></div>
 
     <div class="bloco"><b>🎁 Prêmio da semana</b>
       <input id="prTx" value="${esc(dados.premio.texto)}"><div class="row"><input id="prMeta" type="number" value="${dados.premio.meta}"><button class="btn" id="prSalvar">Salvar</button></div></div>
@@ -486,9 +471,9 @@ function renderPais(){
     const campos = { nome: n, icone: $("#aIc").value || "📌", hora: $("#aHora").value, para: $("#aPara").value, dias: [...diasAtv] };
     if (aEd) Object.assign(aEd, campos); else dados.atividades.push({ id: "a"+Date.now(), ...campos });
     toast(aEd ? "Agenda atualizada ✨" : "Na agenda! 📅");
-    editando = null; diasAtv = [...UTEIS]; salvar(); render();
+    editando = null; diasAtv = []; salvar(); render();
   };
-  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = [...UTEIS]; renderPais(); };
+  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = []; renderPais(); };
   el.querySelectorAll("[data-ed-a]").forEach(b => b.onclick = () => {
     const a = dados.atividades.find(a => a.id === b.dataset.edA);
     editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; renderPais();
@@ -499,17 +484,25 @@ function renderPais(){
     if (editando?.id === b.dataset.delA) editando = null; salvar(); render(); });
 
   // missões
+  let revezarForm = !!tEd?.revezar;
+  $("#tPara").onchange = () => { $("#revezBox").style.display = $("#tPara").value === "todos" ? "" : "none";
+    $("#revezDica").style.display = $("#tPara").value === "todos" ? "block" : "none"; };
+  $("#tPara").onchange();
+  $("#tRevezar").onclick = () => { revezarForm = !revezarForm; $("#tRevezar").classList.toggle("on", revezarForm);
+    $("#revezDica").textContent = revezarForm ? "Cada vez que a missão acontecer, ela vai pra uma criança diferente." : "Sem revezar, todas as crianças fazem a missão."; };
   $("#tSalvar").onclick = () => {
     const n = $("#tNome").value.trim(); if (!n) return toast("Dá um nome pra missão ✍️");
     if (!diasForm.length) return toast("Escolha pelo menos um dia 📅");
-    const campos = { nome: n, icone: $("#tIc").value || "⭐", pontos: Number($("#tPts").value) || 5, para: $("#tPara").value, dias: [...diasForm] };
+    const campos = { nome: n, icone: $("#tIc").value || "⭐", pontos: Math.max(0, parseInt($("#tPts").value, 10) || 0), para: $("#tPara").value, dias: [...diasForm] };
+    campos.revezar = campos.para === "todos" && revezarForm;
+    if (campos.revezar && !(tEd?.revezar)) campos.offset = dados.tarefas.filter(t => t.revezar).length;
     if (tEd) Object.assign(tEd, campos);
     else { const cores = ["#3BA7FF","#FF5FA2","#2BC48A","#FF8A3D","#7C5CFF","#FFC93C"];
       dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
     toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
-    editando = null; diasForm = [...TODOS]; salvar(); render();
+    editando = null; diasForm = []; salvar(); render();
   };
-  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = [...TODOS]; renderPais(); };
+  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = []; renderPais(); };
   el.querySelectorAll("[data-ed-t]").forEach(b => b.onclick = () => {
     const t = dados.tarefas.find(t => t.id === b.dataset.edT);
     editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; renderPais();
@@ -524,29 +517,22 @@ function renderPais(){
     const n = $("#cNome").value.trim(); if (!n) return toast("Escreve o nome 🙂");
     if (cEd) { cEd.nome = n; cEd.avatar = $("#cAv").value || cEd.avatar; toast("Criança atualizada ✨"); }
     else { const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂" });
-      dados.revezamentos.forEach(r => r.ordem.push(id)); if (!criancaAtiva) criancaAtiva = id; toast("Bem-vinda(o)! 🎉"); }
+      if (!criancaAtiva) criancaAtiva = id; toast("Bem-vinda(o)! 🎉"); }
     editando = null; salvar(); render();
   };
   if ($("#cCancelar")) $("#cCancelar").onclick = () => { editando = null; renderPais(); };
   el.querySelectorAll("[data-ed-c]").forEach(b => b.onclick = () => { editando = { tipo: "c", id: b.dataset.edC }; renderPais(); });
   el.querySelectorAll("[data-del-c]").forEach(b => b.onclick = () => { const id = b.dataset.delC;
     dados.criancas = dados.criancas.filter(c => c.id !== id);
-    dados.revezamentos.forEach(r => r.ordem = r.ordem.filter(x => x !== id));
     dados.tarefas.forEach(t => { if (t.para === id) t.para = "todos"; });
     dados.atividades.forEach(a => { if (a.para === id) a.para = "todos"; });
     if (criancaAtiva === id) criancaAtiva = dados.criancas[0]?.id; editando = null; salvar(); render(); });
 
-  // revezamentos
-  $("#rAdd").onclick = () => { const n = $("#rNome").value.trim(); if (!n) return;
-    dados.revezamentos.push({ id: "r"+Date.now(), nome: n, icone: $("#rIc").value || "🔄", ordem: dados.criancas.map(c => c.id) }); salvar(); render(); };
-  el.querySelectorAll("[data-del-r]").forEach(b => b.onclick = () => { const id = b.dataset.delR;
-    dados.revezamentos = dados.revezamentos.filter(r => r.id !== id);
-    dados.tarefas.forEach(t => { if (t.para === "vez:"+id) t.para = "todos"; }); salvar(); render(); });
 
   // prêmio, senha, sair
   $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
   $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
-  $("#sair").onclick = () => { paisLiberado = false; editando = null; renderPais(); };
+  $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
 }
 
 /* ===== Efeitos ===== */
@@ -568,7 +554,7 @@ document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   render();
 });
 
-function render(){ renderCabecalho(); renderMissoes(); renderVez(); renderPlacar(); if ($("#t-pais").classList.contains("on")) renderPais(); }
+function render(){ renderCabecalho(); renderMissoes(); renderPlacar(); if ($("#t-pais").classList.contains("on")) renderPais(); }
 render();
 </script>
 </body>
