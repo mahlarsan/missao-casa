@@ -14,7 +14,7 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:"Nunito","Trebuchet MS",system-ui,sans-serif;background:var(--fundo);color:var(--texto);
        padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  header{background:linear-gradient(135deg,var(--roxo),var(--rosa));color:#fff;padding:20px 18px 26px;
+  header{background:linear-gradient(135deg,var(--roxo),var(--rosa));color:#fff;padding:calc(20px + env(safe-area-inset-top)) 18px 26px;
          border-radius:0 0 28px 28px;box-shadow:0 6px 18px rgba(124,92,255,.25)}
   header h1{margin:0;font-size:24px;letter-spacing:.3px}
   header p{margin:4px 0 0;opacity:.9;font-size:14px}
@@ -26,6 +26,22 @@
   .kid .av{font-size:30px}
   .kid.on{border-color:var(--amarelo);transform:translateY(-2px)}
   .kid small{display:block;color:var(--suave);font-weight:700}
+
+  /* Semana / navegação de dias */
+  .semana{background:var(--card);border-radius:20px;padding:10px;margin-top:8px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .semana .topo{display:flex;align-items:center;justify-content:space-between;font-weight:900;margin-bottom:8px}
+  .semana .topo button{background:#F1EEFF;color:var(--roxo);border:0;border-radius:12px;width:38px;height:34px;font-size:18px;font-weight:900;cursor:pointer}
+  .semana .topo .hojeBtn{width:auto;padding:0 10px;font-size:13px}
+  .diasNav{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  .diaNav{border-radius:14px;padding:6px 0;text-align:center;cursor:pointer;font-weight:800;border:2px solid transparent}
+  .diaNav .sem{font-size:11px;color:var(--suave);text-transform:uppercase}
+  .diaNav .num{font-size:18px}
+  .diaNav .pt{height:8px;font-size:10px;line-height:8px;color:var(--verde)}
+  .diaNav.hoje{background:#FFF3D1}
+  .diaNav.sel{border-color:var(--roxo);background:#F1EEFF}
+  .diaNav.fds .num{color:var(--rosa)}
+  .aviso{background:#EAF5FF;color:#1F6FB2;border-radius:14px;padding:10px 12px;font-weight:800;font-size:14px;margin-bottom:10px}
+
   .missao{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:18px;padding:14px;margin-bottom:10px;
           box-shadow:0 3px 10px rgba(0,0,0,.06);cursor:pointer;border-left:8px solid var(--c,var(--azul));transition:transform .15s}
   .missao:active{transform:scale(.97)}
@@ -36,6 +52,14 @@
   .missao.feita{opacity:.6}
   .missao.feita .ok{background:var(--verde);border-color:var(--verde);color:#fff}
   .missao.feita .tx{text-decoration:line-through}
+  .missao.futura{cursor:default}
+  .missao.futura .ok{border-style:dashed}
+  .agenda{background:var(--card);border-radius:20px;padding:12px 14px;margin:12px 0 4px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+  .agenda b{display:block;margin-bottom:6px}
+  .atv{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed #EEE;font-weight:800}
+  .atv:last-child{border:0}
+  .atv .hora{background:#F1EEFF;color:var(--roxo);border-radius:10px;padding:3px 8px;font-size:13px;min-width:54px;text-align:center}
+  .atv .ic{font-size:22px}
   .vazio{text-align:center;color:var(--suave);padding:24px;font-weight:700}
   .vez{background:var(--card);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
   .vez .t{font-weight:800;color:var(--suave);font-size:14px}
@@ -54,6 +78,7 @@
   .dias span{flex:1;text-align:center;font-size:12px;font-weight:800;color:var(--suave)}
   .dias span i{display:block;height:26px;border-radius:8px;background:#EFEAFB;margin-bottom:3px;font-style:normal;line-height:26px;font-size:14px}
   .dias span i.sim{background:var(--verde);color:#fff}
+  .dias span i.livre{background:transparent;border:2px dashed #E3DFF2}
   nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;justify-content:space-around;
       padding:8px 6px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);border-radius:22px 22px 0 0}
   nav button{background:none;border:0;font:inherit;font-weight:800;font-size:12px;color:var(--suave);display:flex;flex-direction:column;
@@ -63,13 +88,22 @@
   .tela{display:none}.tela.on{display:block;animation:entra .25s}
   @keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
   .bloco{background:var(--card);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-  .item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed #EEE;font-weight:700}
+  .item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed #EEE;font-weight:700;flex-wrap:wrap}
   .item:last-child{border:0}
-  .item .x{margin-left:auto;background:#FFE8EF;color:#D23A6B;border:0;border-radius:10px;padding:4px 10px;font-weight:800;cursor:pointer}
+  .item .acoes{margin-left:auto;display:flex;gap:6px}
+  .item small{color:var(--suave);font-weight:700;width:100%;padding-left:2px}
+  .x,.ed{border:0;border-radius:10px;padding:4px 10px;font-weight:800;cursor:pointer;font:inherit;font-size:13px}
+  .x{background:#FFE8EF;color:#D23A6B}
+  .ed{background:#EAF5FF;color:#1F6FB2}
   input,select{font:inherit;padding:10px;border-radius:12px;border:2px solid #E6E1F5;width:100%;margin:4px 0;background:#fff}
   .row{display:flex;gap:8px}.row>*{flex:1}
   .btn{background:var(--roxo);color:#fff;border:0;border-radius:14px;padding:12px;font:inherit;font-weight:900;width:100%;margin-top:6px;cursor:pointer}
   .btn.sec{background:#F1EEFF;color:var(--roxo)}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}
+  .chip{border:2px solid #E6E1F5;background:#fff;border-radius:12px;padding:6px 9px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;color:var(--suave)}
+  .chip.on{background:var(--roxo);border-color:var(--roxo);color:#fff}
+  .chip.atalho{border-style:dashed}
+  .editando{outline:3px solid var(--amarelo);border-radius:14px;padding:8px;margin:6px -4px}
   .toast{position:fixed;left:50%;top:22px;transform:translateX(-50%) scale(.8);background:var(--texto);color:#fff;padding:12px 18px;
          border-radius:16px;font-weight:900;opacity:0;transition:.25s;z-index:20;pointer-events:none;text-align:center}
   .toast.on{opacity:1;transform:translateX(-50%) scale(1)}
@@ -86,15 +120,17 @@
 <main>
   <div class="kids" id="kids"></div>
 
-  <!-- Tela 1: Missões do dia -->
+  <!-- Tela 1: Missões, com navegação pelos dias -->
   <section class="tela on" id="t-missoes">
-    <h2 id="titMissoes">Missões de hoje</h2>
+    <div class="semana" id="semana"></div>
+    <div id="agendaDia"></div>
+    <h2 id="titMissoes">Missões</h2>
     <div id="listaMissoes"></div>
   </section>
 
   <!-- Tela 2: Revezamento -->
   <section class="tela" id="t-vez">
-    <h2>🔄 De quem é a vez hoje?</h2>
+    <h2 id="titVez">🔄 De quem é a vez?</h2>
     <div id="listaVez"></div>
   </section>
 
@@ -122,6 +158,13 @@
 <script>
 /* ===== Dados (por enquanto ficam salvos neste aparelho) ===== */
 const CHAVE = "missaoCasa.v1";
+const TODOS = [0,1,2,3,4,5,6];          // 0 = domingo ... 6 = sábado (padrão do JavaScript)
+const UTEIS = [1,2,3,4,5];
+const FDS = [0,6];
+const ORDEM_UI = [1,2,3,4,5,6,0];       // na tela a semana começa na segunda
+const NOME_DIA = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
+const NOME_DIA_LONGO = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
+
 const PADRAO = {
   pin: "1234",
   criancas: [
@@ -129,36 +172,68 @@ const PADRAO = {
     { id: "leon", nome: "Leon", avatar: "🦁" }
   ],
   tarefas: [
-    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", cor: "#3BA7FF" },
-    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", cor: "#FF5FA2" },
-    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "vez:lixo", cor: "#2BC48A" },
-    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "vez:mesa", cor: "#FF8A3D" },
-    { id: "t5", nome: "Escovar os dentes à noite", icone: "🪥", pontos: 5, para: "todos", cor: "#7C5CFF" }
+    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", dias: TODOS, cor: "#3BA7FF" },
+    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", dias: UTEIS, cor: "#FF5FA2" },
+    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "vez:lixo", dias: [1,3,5], cor: "#2BC48A" },
+    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "vez:mesa", dias: TODOS, cor: "#FF8A3D" },
+    { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#7C5CFF" }
   ],
   revezamentos: [
     { id: "banho", nome: "Quem toma banho primeiro", icone: "🛁", ordem: ["maya", "leon"] },
     { id: "lixo", nome: "Quem tira o lixo", icone: "🗑️", ordem: ["leon", "maya"] },
     { id: "mesa", nome: "Quem arruma a mesa", icone: "🍽️", ordem: ["maya", "leon"] }
   ],
+  atividades: [
+    { id: "a1", nome: "Escola", icone: "🏫", hora: "07:30", para: "todos", dias: UTEIS },
+    { id: "a2", nome: "Curumim", icone: "🌳", hora: "13:00", para: "todos", dias: UTEIS }
+  ],
   premio: { texto: "Escolher o filme de sexta + pipoca 🍿", meta: 150 },
   feitos: {} // { "2026-11-13": { "maya": ["t1","t3"] } }
 };
 let dados = carregar();
 let criancaAtiva = dados.criancas[0]?.id;
+let diaSel = new Date();          // dia que a criança está olhando
 let paisLiberado = false;
+let editando = null;              // { tipo: "c" | "t", id }
+let diasForm = [...TODOS];        // dias marcados no formulário de missão
+let diasAtv = [...UTEIS];         // dias marcados no formulário de agenda
 
 function carregar(){
-  try { const s = localStorage.getItem(CHAVE); if (s) return JSON.parse(s); } catch(e){}
-  return structuredClone(PADRAO);
+  let d;
+  try { const s = localStorage.getItem(CHAVE); if (s) d = JSON.parse(s); } catch(e){}
+  d = d || JSON.parse(JSON.stringify(PADRAO));
+  d.atividades = d.atividades || [];
+  // versões antigas não tinham "dias" nas missões: vale todo dia
+  d.tarefas.forEach(t => { if (!Array.isArray(t.dias)) t.dias = [...TODOS]; });
+  return d;
 }
 function salvar(){ try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch(e){} }
 
 /* ===== Datas ===== */
-const hojeStr = () => isoDia(new Date());
 function isoDia(d){ const z = new Date(d.getTime() - d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); }
+const hojeStr = () => isoDia(new Date());
 function numeroDoDia(d){ return Math.floor(new Date(isoDia(d)+"T12:00:00").getTime() / 86400000); }
-function inicioSemana(d){ const x = new Date(d); const dow = (x.getDay()+6)%7; x.setDate(x.getDate()-dow); return x; }
-function diasDaSemana(){ const ini = inicioSemana(new Date()); return [...Array(7)].map((_,i)=>{ const x=new Date(ini); x.setDate(ini.getDate()+i); return x; }); }
+function inicioSemana(d){ const x = new Date(d); const dow = (x.getDay()+6)%7; x.setDate(x.getDate()-dow); x.setHours(12,0,0,0); return x; }
+function diasDaSemana(base = new Date()){ const ini = inicioSemana(base); return [...Array(7)].map((_,i)=>{ const x=new Date(ini); x.setDate(ini.getDate()+i); return x; }); }
+const mesmoDia = (a, b) => isoDia(a) === isoDia(b);
+const ehHoje = d => mesmoDia(d, new Date());
+const ehFuturo = d => isoDia(d) > hojeStr();
+function rotuloDia(d){
+  const amanha = new Date(); amanha.setDate(amanha.getDate()+1);
+  const ontem = new Date(); ontem.setDate(ontem.getDate()-1);
+  if (ehHoje(d)) return "hoje";
+  if (mesmoDia(d, amanha)) return "amanhã";
+  if (mesmoDia(d, ontem)) return "ontem";
+  return NOME_DIA_LONGO[d.getDay()] + ", " + d.toLocaleDateString("pt-BR", { day:"numeric", month:"short" });
+}
+function resumoDias(dias){
+  const s = [...dias].sort().join();
+  if (s === TODOS.join()) return "todo dia";
+  if (s === UTEIS.join()) return "dias de semana";
+  if (s === FDS.join()) return "fim de semana";
+  if (!dias.length) return "nenhum dia";
+  return ORDEM_UI.filter(i => dias.includes(i)).map(i => NOME_DIA[i]).join(", ");
+}
 
 /* ===== Regras ===== */
 const crianca = id => dados.criancas.find(c => c.id === id);
@@ -169,21 +244,31 @@ function daVez(rev, d = new Date()){
 }
 function tarefasDe(idCrianca, d = new Date()){
   return dados.tarefas.filter(t => {
+    if (!t.dias.includes(d.getDay())) return false;
     if (t.para === "todos") return true;
     if (t.para.startsWith("vez:")) { const r = dados.revezamentos.find(r => r.id === t.para.slice(4)); return r && daVez(r, d) === idCrianca; }
     return t.para === idCrianca;
   });
 }
+function atividadesDe(idCrianca, d = new Date()){
+  return dados.atividades.filter(a => a.dias.includes(d.getDay()) && (a.para === "todos" || a.para === idCrianca))
+    .sort((a, b) => (a.hora || "99").localeCompare(b.hora || "99"));
+}
 const feitosEm = (dia, id) => (dados.feitos[dia] && dados.feitos[dia][id]) || [];
 function pontosDoDia(dia, id){ return feitosEm(dia, id).reduce((s, tid) => s + (dados.tarefas.find(t => t.id === tid)?.pontos || 0), 0); }
 function pontosSemana(id){ return diasDaSemana().reduce((s, d) => s + pontosDoDia(isoDia(d), id), 0); }
+function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.id)); }
+// Sequência de dias completos. Dias sem missão (folga) não contam e não quebram.
 function sequencia(id){
   let n = 0; const d = new Date();
   if (!diaCompleto(isoDia(d), id, d)) d.setDate(d.getDate()-1);
-  while (n < 365 && diaCompleto(isoDia(d), id, d)) { n++; d.setDate(d.getDate()-1); }
+  for (let i = 0; i < 400; i++) {
+    if (tarefasDe(id, d).length === 0) { d.setDate(d.getDate()-1); continue; }
+    if (!diaCompleto(isoDia(d), id, d)) break;
+    n++; d.setDate(d.getDate()-1);
+  }
   return n;
 }
-function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.id)); }
 
 /* ===== Interface ===== */
 const $ = s => document.querySelector(s);
@@ -199,17 +284,59 @@ function renderCabecalho(){
   document.querySelectorAll(".kid").forEach(el => el.onclick = () => { criancaAtiva = el.dataset.id; render(); });
 }
 
+function renderSemana(){
+  const dias = diasDaSemana(diaSel);
+  const mes = dias[0].toLocaleDateString("pt-BR", { month:"long" });
+  const mes2 = dias[6].toLocaleDateString("pt-BR", { month:"long" });
+  $("#semana").innerHTML = `
+    <div class="topo">
+      <button id="semAnt" aria-label="Semana anterior">‹</button>
+      <span>${mes === mes2 ? mes : mes + " / " + mes2}</span>
+      <span style="display:flex;gap:6px">
+        ${ehHoje(diaSel) ? "" : `<button class="hojeBtn" id="irHoje">Hoje</button>`}
+        <button id="semProx" aria-label="Próxima semana">›</button>
+      </span>
+    </div>
+    <div class="diasNav">${dias.map(d => {
+      const ts = criancaAtiva ? tarefasDe(criancaAtiva, d) : [];
+      const completo = criancaAtiva && diaCompleto(isoDia(d), criancaAtiva, d);
+      return `<div class="diaNav ${ehHoje(d)?"hoje":""} ${mesmoDia(d,diaSel)?"sel":""} ${FDS.includes(d.getDay())?"fds":""}" data-d="${isoDia(d)}">
+        <div class="sem">${NOME_DIA[d.getDay()]}</div>
+        <div class="num">${d.getDate()}</div>
+        <div class="pt">${completo ? "✓" : ts.length ? "•".repeat(Math.min(ts.length,4)) : ""}</div>
+      </div>`; }).join("")}
+    </div>`;
+  const mudaSemana = n => { const x = new Date(diaSel); x.setDate(x.getDate() + 7*n); diaSel = x; render(); };
+  $("#semAnt").onclick = () => mudaSemana(-1);
+  $("#semProx").onclick = () => mudaSemana(1);
+  if ($("#irHoje")) $("#irHoje").onclick = () => { diaSel = new Date(); render(); };
+  document.querySelectorAll(".diaNav").forEach(el => el.onclick = () => { diaSel = new Date(el.dataset.d + "T12:00:00"); render(); });
+}
+
 function renderMissoes(){
-  const c = crianca(criancaAtiva); if (!c) { $("#listaMissoes").innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais 🔒</div>`; return; }
-  $("#titMissoes").textContent = `Missões de hoje, ${c.nome}!`;
-  const ts = tarefasDe(c.id), feitas = feitosEm(hojeStr(), c.id);
-  $("#listaMissoes").innerHTML = ts.length ? ts.map(t => `
-    <div class="missao ${feitas.includes(t.id)?"feita":""}" style="--c:${esc(t.cor)}" data-id="${t.id}">
+  const c = crianca(criancaAtiva);
+  if (!c) { $("#listaMissoes").innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais 🔒</div>`; $("#semana").innerHTML = ""; $("#agendaDia").innerHTML = ""; return; }
+  renderSemana();
+  const r = rotuloDia(diaSel);
+  $("#titMissoes").textContent = `Missões de ${r}, ${c.nome}!`;
+  const atvs = atividadesDe(c.id, diaSel);
+  $("#agendaDia").innerHTML = `<div class="agenda"><b>📅 Agenda de ${r}</b>${atvs.length ? atvs.map(a => `
+    <div class="atv"><span class="hora">${esc(a.hora || "—")}</span><span class="ic">${esc(a.icone)}</span>${esc(a.nome)}</div>`).join("")
+    : `<div style="color:var(--suave);font-weight:700">Nada marcado. Dia livre! 🌈</div>`}</div>`;
+  const ts = tarefasDe(c.id, diaSel), feitas = feitosEm(isoDia(diaSel), c.id);
+  const futuro = ehFuturo(diaSel), passado = !futuro && !ehHoje(diaSel);
+  const aviso = futuro ? `<div class="aviso">🗓️ Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
+              : passado ? `<div class="aviso">⏪ Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
+  $("#listaMissoes").innerHTML = aviso + (ts.length ? ts.map(t => `
+    <div class="missao ${feitas.includes(t.id)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${t.id}">
       <div class="ic">${esc(t.icone)}</div>
       <div class="tx">${esc(t.nome)}<small>+${t.pontos} pontos</small></div>
       <div class="ok">${feitas.includes(t.id)?"✓":""}</div>
-    </div>`).join("") : `<div class="vazio">Nenhuma missão hoje. Dia de folga! 🎉</div>`;
-  document.querySelectorAll(".missao").forEach(el => el.onclick = () => alternar(el.dataset.id));
+    </div>`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
+  document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
+    if (!ehHoje(diaSel)) return toast(futuro ? "Esse dia ainda não chegou 😉" : "Só dá pra marcar as de hoje");
+    alternar(el.dataset.id);
+  });
 }
 
 function alternar(tid){
@@ -228,29 +355,41 @@ function alternar(tid){
 }
 
 function renderVez(){
+  const d = diaSel, prox = new Date(d); prox.setDate(prox.getDate()+1);
+  $("#titVez").textContent = `🔄 De quem é a vez ${rotuloDia(d) === "hoje" ? "hoje" : rotuloDia(d).startsWith("amanhã") ? "amanhã" : "em " + rotuloDia(d)}?`;
   $("#listaVez").innerHTML = dados.revezamentos.length ? dados.revezamentos.map(r => {
-    const agora = daVez(r), amanha = new Date(); amanha.setDate(amanha.getDate()+1);
-    const prox = daVez(r, amanha), c = crianca(agora), cp = crianca(prox);
+    const agora = daVez(r, d), c = crianca(agora), cp = crianca(daVez(r, prox));
     return `<div class="vez">
       <div class="t">${esc(r.icone)} ${esc(r.nome)}</div>
       <div class="quem">${c ? esc(c.avatar)+" "+esc(c.nome) : "—"}</div>
       <div class="fila">${r.ordem.filter(crianca).map(id => `<span class="${id===agora?"agora":""}">${esc(crianca(id).nome)}</span>`).join("")}</div>
-      ${cp ? `<small style="color:var(--suave);font-weight:700;display:block;margin-top:8px">Amanhã: ${esc(cp.nome)}</small>` : ""}
+      ${cp ? `<small style="color:var(--suave);font-weight:700;display:block;margin-top:8px">No dia seguinte: ${esc(cp.nome)}</small>` : ""}
     </div>`; }).join("") : `<div class="vazio">Nenhum revezamento ainda.</div>`;
 }
 
 function renderPlacar(){
   const meta = Number(dados.premio.meta) || 100;
   $("#premio").innerHTML = `🎁 Prêmio da semana<b>${esc(dados.premio.texto)}</b>Quem chegar a ${meta} pontos até domingo ganha!`;
-  const dias = diasDaSemana(), letras = ["S","T","Q","Q","S","S","D"];
+  const dias = diasDaSemana();
   $("#listaPlacar").innerHTML = [...dados.criancas].sort((a,b) => pontosSemana(b.id) - pontosSemana(a.id)).map(c => {
     const p = pontosSemana(c.id), pct = Math.min(100, Math.round(p / meta * 100));
     return `<div class="placar">
       <div class="linha"><span>${esc(c.avatar)} ${esc(c.nome)}</span><span>${p} ⭐</span></div>
       <div class="barra"><i style="width:${pct}%"></i></div>
       <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} pontos`} · 🔥 ${sequencia(c.id)} dia(s) seguidos</small>
-      <div class="dias">${dias.map((d,i) => `<span><i class="${diaCompleto(isoDia(d), c.id, d) ? "sim" : ""}">${diaCompleto(isoDia(d), c.id, d) ? "✓" : ""}</i>${letras[i]}</span>`).join("")}</div>
+      <div class="dias">${dias.map(d => {
+        const livre = tarefasDe(c.id, d).length === 0, ok = diaCompleto(isoDia(d), c.id, d);
+        return `<span><i class="${ok ? "sim" : livre ? "livre" : ""}">${ok ? "✓" : livre ? "–" : ""}</i>${NOME_DIA[d.getDay()][0]}</span>`; }).join("")}</div>
     </div>`; }).join("");
+}
+
+function chipsDias(grupo, arr){
+  return `<div class="chips">${ORDEM_UI.map(i => `<button class="chip ${arr.includes(i)?"on":""}" data-g="${grupo}" data-dia="${i}">${NOME_DIA[i]}</button>`).join("")}</div>
+    <div class="chips">
+      <button class="chip atalho" data-g="${grupo}" data-atalho="todos">Todo dia</button>
+      <button class="chip atalho" data-g="${grupo}" data-atalho="uteis">Seg a sex</button>
+      <button class="chip atalho" data-g="${grupo}" data-atalho="fds">Fim de semana</button>
+    </div>`;
 }
 
 function renderPais(){
@@ -260,49 +399,154 @@ function renderPais(){
     $("#pinBtn").onclick = () => { if ($("#pinIn").value === dados.pin) { paisLiberado = true; renderPais(); } else toast("Senha errada 🙈"); };
     return;
   }
-  const opPara = `<option value="todos">Todas as crianças</option>` +
-    dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`).join("") +
-    dados.revezamentos.map(r => `<option value="vez:${r.id}">Revezando: ${esc(r.nome)}</option>`).join("");
+  const tEd = editando?.tipo === "t" ? dados.tarefas.find(t => t.id === editando.id) : null;
+  const cEd = editando?.tipo === "c" ? crianca(editando.id) : null;
+  const aEd = editando?.tipo === "a" ? dados.atividades.find(a => a.id === editando.id) : null;
+  const opQuem = sel => [`<option value="todos">Todas as crianças</option>`, ...dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`)]
+    .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
+  const opPara = (sel) => [`<option value="todos">Todas as crianças</option>`,
+    ...dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`),
+    ...dados.revezamentos.map(r => `<option value="vez:${r.id}">Revezando: ${esc(r.nome)}</option>`)]
+    .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
+  const paraTxt = t => t.para === "todos" ? "todas as crianças" : t.para.startsWith("vez:")
+    ? "revezando" : "só " + (crianca(t.para)?.nome || "?");
+
   el.innerHTML = `
     <h2>👨‍👩‍👧‍👦 Painel dos pais</h2>
-    <div class="bloco"><b>🎁 Prêmio da semana</b>
-      <input id="prTx" value="${esc(dados.premio.texto)}"><div class="row"><input id="prMeta" type="number" value="${dados.premio.meta}"><button class="btn" id="prSalvar">Salvar</button></div></div>
+
     <div class="bloco"><b>⭐ Missões</b>
-      ${dados.tarefas.map(t => `<div class="item">${esc(t.icone)} ${esc(t.nome)} <small style="color:var(--suave)">(${t.pontos})</small><button class="x" data-del-t="${t.id}">tirar</button></div>`).join("")}
-      <div class="row"><input id="tIc" placeholder="Emoji" style="max-width:80px" value="⭐"><input id="tNome" placeholder="Nova missão"></div>
-      <div class="row"><input id="tPts" type="number" value="5" style="max-width:90px"><select id="tPara">${opPara}</select></div>
-      <button class="btn" id="tAdd">Adicionar missão</button></div>
+      ${dados.tarefas.map(t => `<div class="item">${esc(t.icone)} ${esc(t.nome)}
+          <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">tirar</button></span>
+          <small>${resumoDias(t.dias)} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
+      <div class="${tEd ? "editando" : ""}" id="formTarefa">
+        ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
+        <div class="row"><input id="tIc" placeholder="Emoji" style="max-width:80px" value="${esc(tEd?.icone || "⭐")}"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
+        <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
+        ${chipsDias("t", diasForm)}
+        <div class="row"><input id="tPts" type="number" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opPara(tEd?.para || "todos")}</select></div>
+        <button class="btn" id="tSalvar">${tEd ? "Salvar alterações" : "Adicionar missão"}</button>
+        ${tEd ? `<button class="btn sec" id="tCancelar">Cancelar</button>` : ""}
+      </div>
+    </div>
+
+    <div class="bloco"><b>📅 Agenda (escola, aulas, atividades)</b>
+      ${dados.atividades.map(a => `<div class="item">${esc(a.icone)} ${esc(a.nome)}
+          <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">tirar</button></span>
+          <small>${resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
+      <div class="${aEd ? "editando" : ""}" id="formAtv">
+        ${aEd ? `<b>✏️ Editando: ${esc(aEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova atividade</b>`}
+        <div class="row"><input id="aIc" placeholder="Emoji" style="max-width:80px" value="${esc(aEd?.icone || "🎹")}"><input id="aNome" placeholder="Ex.: Aula de piano, EMIA" value="${esc(aEd?.nome || "")}"></div>
+        <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
+        ${chipsDias("a", diasAtv)}
+        <div class="row"><input id="aHora" type="time" value="${esc(aEd?.hora || "")}" style="max-width:130px"><select id="aPara">${opQuem(aEd?.para || "todos")}</select></div>
+        <button class="btn" id="aSalvar">${aEd ? "Salvar alterações" : "Adicionar na agenda"}</button>
+        ${aEd ? `<button class="btn sec" id="aCancelar">Cancelar</button>` : ""}
+      </div>
+    </div>
+
+    <div class="bloco"><b>🧒 Crianças</b>
+      ${dados.criancas.map(c => `<div class="item">${esc(c.avatar)} ${esc(c.nome)}
+          <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">tirar</button></span></div>`).join("")}
+      <div class="${cEd ? "editando" : ""}">
+        ${cEd ? `<b>✏️ Editando: ${esc(cEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova criança</b>`}
+        <div class="row"><input id="cAv" placeholder="Emoji" style="max-width:80px" value="${esc(cEd?.avatar || "🐼")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}"></div>
+        <button class="btn" id="cSalvar">${cEd ? "Salvar alterações" : "Adicionar criança"}</button>
+        ${cEd ? `<button class="btn sec" id="cCancelar">Cancelar</button>` : ""}
+      </div>
+    </div>
+
     <div class="bloco"><b>🔄 Revezamentos</b>
-      ${dados.revezamentos.map(r => `<div class="item">${esc(r.icone)} ${esc(r.nome)}<button class="x" data-del-r="${r.id}">tirar</button></div>`).join("")}
+      ${dados.revezamentos.map(r => `<div class="item">${esc(r.icone)} ${esc(r.nome)}<span class="acoes"><button class="x" data-del-r="${r.id}">tirar</button></span></div>`).join("")}
       <div class="row"><input id="rIc" placeholder="Emoji" style="max-width:80px" value="🔄"><input id="rNome" placeholder="Ex.: quem escolhe o desenho"></div>
       <button class="btn" id="rAdd">Adicionar revezamento</button></div>
-    <div class="bloco"><b>🧒 Crianças</b>
-      ${dados.criancas.map(c => `<div class="item">${esc(c.avatar)} ${esc(c.nome)}<button class="x" data-del-c="${c.id}">tirar</button></div>`).join("")}
-      <div class="row"><input id="cAv" placeholder="Emoji" style="max-width:80px" value="🐼"><input id="cNome" placeholder="Nome"></div>
-      <button class="btn" id="cAdd">Adicionar criança</button></div>
+
+    <div class="bloco"><b>🎁 Prêmio da semana</b>
+      <input id="prTx" value="${esc(dados.premio.texto)}"><div class="row"><input id="prMeta" type="number" value="${dados.premio.meta}"><button class="btn" id="prSalvar">Salvar</button></div></div>
+
     <div class="bloco"><b>🔑 Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
     <button class="btn sec" id="sair">Sair do painel</button>`;
 
-  $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
-  $("#tAdd").onclick = () => { const n = $("#tNome").value.trim(); if (!n) return;
-    const cores = ["#3BA7FF","#FF5FA2","#2BC48A","#FF8A3D","#7C5CFF","#FFC93C"];
-    dados.tarefas.push({ id: "t"+Date.now(), nome: n, icone: $("#tIc").value || "⭐", pontos: Number($("#tPts").value) || 5, para: $("#tPara").value, cor: cores[dados.tarefas.length % cores.length] });
-    salvar(); render(); };
-  $("#rAdd").onclick = () => { const n = $("#rNome").value.trim(); if (!n) return;
-    dados.revezamentos.push({ id: "r"+Date.now(), nome: n, icone: $("#rIc").value || "🔄", ordem: dados.criancas.map(c => c.id) }); salvar(); render(); };
-  $("#cAdd").onclick = () => { const n = $("#cNome").value.trim(); if (!n) return;
-    const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂" });
-    dados.revezamentos.forEach(r => r.ordem.push(id)); salvar(); render(); };
-  $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
-  $("#sair").onclick = () => { paisLiberado = false; renderPais(); };
-  el.querySelectorAll("[data-del-t]").forEach(b => b.onclick = () => { dados.tarefas = dados.tarefas.filter(t => t.id !== b.dataset.delT); salvar(); render(); });
-  el.querySelectorAll("[data-del-r]").forEach(b => b.onclick = () => { const id = b.dataset.delR;
-    dados.revezamentos = dados.revezamentos.filter(r => r.id !== id);
-    dados.tarefas.forEach(t => { if (t.para === "vez:"+id) t.para = "todos"; }); salvar(); render(); });
+  // dias da missão
+  const getD = g => g === "a" ? diasAtv : diasForm;
+  const setD = (g, v) => { if (g === "a") diasAtv = v; else diasForm = v; };
+  el.querySelectorAll("[data-dia]").forEach(b => b.onclick = () => {
+    const g = b.dataset.g, i = Number(b.dataset.dia), arr = getD(g);
+    setD(g, arr.includes(i) ? arr.filter(x => x !== i) : [...arr, i]);
+    b.classList.toggle("on");
+  });
+  el.querySelectorAll("[data-atalho]").forEach(b => b.onclick = () => {
+    const g = b.dataset.g; setD(g, [...({ todos: TODOS, uteis: UTEIS, fds: FDS }[b.dataset.atalho])]);
+    el.querySelectorAll(`[data-dia][data-g="${g}"]`).forEach(x => x.classList.toggle("on", getD(g).includes(Number(x.dataset.dia))));
+  });
+
+  // agenda
+  $("#aSalvar").onclick = () => {
+    const n = $("#aNome").value.trim(); if (!n) return toast("Dá um nome pra atividade ✍️");
+    if (!diasAtv.length) return toast("Escolha pelo menos um dia 📅");
+    const campos = { nome: n, icone: $("#aIc").value || "📌", hora: $("#aHora").value, para: $("#aPara").value, dias: [...diasAtv] };
+    if (aEd) Object.assign(aEd, campos); else dados.atividades.push({ id: "a"+Date.now(), ...campos });
+    toast(aEd ? "Agenda atualizada ✨" : "Na agenda! 📅");
+    editando = null; diasAtv = [...UTEIS]; salvar(); render();
+  };
+  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = [...UTEIS]; renderPais(); };
+  el.querySelectorAll("[data-ed-a]").forEach(b => b.onclick = () => {
+    const a = dados.atividades.find(a => a.id === b.dataset.edA);
+    editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; renderPais();
+    $("#formAtv").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  el.querySelectorAll("[data-del-a]").forEach(b => b.onclick = () => {
+    dados.atividades = dados.atividades.filter(a => a.id !== b.dataset.delA);
+    if (editando?.id === b.dataset.delA) editando = null; salvar(); render(); });
+
+  // missões
+  $("#tSalvar").onclick = () => {
+    const n = $("#tNome").value.trim(); if (!n) return toast("Dá um nome pra missão ✍️");
+    if (!diasForm.length) return toast("Escolha pelo menos um dia 📅");
+    const campos = { nome: n, icone: $("#tIc").value || "⭐", pontos: Number($("#tPts").value) || 5, para: $("#tPara").value, dias: [...diasForm] };
+    if (tEd) Object.assign(tEd, campos);
+    else { const cores = ["#3BA7FF","#FF5FA2","#2BC48A","#FF8A3D","#7C5CFF","#FFC93C"];
+      dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
+    toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
+    editando = null; diasForm = [...TODOS]; salvar(); render();
+  };
+  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = [...TODOS]; renderPais(); };
+  el.querySelectorAll("[data-ed-t]").forEach(b => b.onclick = () => {
+    const t = dados.tarefas.find(t => t.id === b.dataset.edT);
+    editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; renderPais();
+    $("#formTarefa").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  el.querySelectorAll("[data-del-t]").forEach(b => b.onclick = () => {
+    dados.tarefas = dados.tarefas.filter(t => t.id !== b.dataset.delT);
+    if (editando?.id === b.dataset.delT) editando = null; salvar(); render(); });
+
+  // crianças
+  $("#cSalvar").onclick = () => {
+    const n = $("#cNome").value.trim(); if (!n) return toast("Escreve o nome 🙂");
+    if (cEd) { cEd.nome = n; cEd.avatar = $("#cAv").value || cEd.avatar; toast("Criança atualizada ✨"); }
+    else { const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂" });
+      dados.revezamentos.forEach(r => r.ordem.push(id)); if (!criancaAtiva) criancaAtiva = id; toast("Bem-vinda(o)! 🎉"); }
+    editando = null; salvar(); render();
+  };
+  if ($("#cCancelar")) $("#cCancelar").onclick = () => { editando = null; renderPais(); };
+  el.querySelectorAll("[data-ed-c]").forEach(b => b.onclick = () => { editando = { tipo: "c", id: b.dataset.edC }; renderPais(); });
   el.querySelectorAll("[data-del-c]").forEach(b => b.onclick = () => { const id = b.dataset.delC;
     dados.criancas = dados.criancas.filter(c => c.id !== id);
     dados.revezamentos.forEach(r => r.ordem = r.ordem.filter(x => x !== id));
-    if (criancaAtiva === id) criancaAtiva = dados.criancas[0]?.id; salvar(); render(); });
+    dados.tarefas.forEach(t => { if (t.para === id) t.para = "todos"; });
+    dados.atividades.forEach(a => { if (a.para === id) a.para = "todos"; });
+    if (criancaAtiva === id) criancaAtiva = dados.criancas[0]?.id; editando = null; salvar(); render(); });
+
+  // revezamentos
+  $("#rAdd").onclick = () => { const n = $("#rNome").value.trim(); if (!n) return;
+    dados.revezamentos.push({ id: "r"+Date.now(), nome: n, icone: $("#rIc").value || "🔄", ordem: dados.criancas.map(c => c.id) }); salvar(); render(); };
+  el.querySelectorAll("[data-del-r]").forEach(b => b.onclick = () => { const id = b.dataset.delR;
+    dados.revezamentos = dados.revezamentos.filter(r => r.id !== id);
+    dados.tarefas.forEach(t => { if (t.para === "vez:"+id) t.para = "todos"; }); salvar(); render(); });
+
+  // prêmio, senha, sair
+  $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
+  $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
+  $("#sair").onclick = () => { paisLiberado = false; editando = null; renderPais(); };
 }
 
 /* ===== Efeitos ===== */
@@ -313,7 +557,7 @@ function confete(n){
   for (let i = 0; i < n; i++) { const s = document.createElement("div"); s.className = "confete";
     s.textContent = em[i % em.length]; s.style.left = Math.random()*100 + "vw"; s.style.animationDelay = Math.random()*.4 + "s";
     document.body.appendChild(s); setTimeout(() => s.remove(), 2000); }
-  if (navigator.vibrate) navigator.vibrate(30);
+  try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
 }
 
 /* ===== Navegação ===== */
