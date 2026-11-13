@@ -156,6 +156,40 @@
   .toast.on{opacity:1;transform:translateX(-50%) scale(1)}
   .confete{position:fixed;top:-30px;font-size:1.8rem;z-index:19;pointer-events:none;animation:cai 1.5s ease-in forwards}
   @keyframes cai{to{transform:translateY(105vh) rotate(540deg);opacity:.7}}
+  /* Tela de entrada */
+  .entrada{position:fixed;inset:0;background:var(--fundo);z-index:30;overflow:auto;padding:calc(30px + env(safe-area-inset-top)) 22px 30px}
+  .entrada .caixa{max-width:420px;margin:0 auto;text-align:center}
+  .entrada .logo{font-size:4.2rem;line-height:1}
+  .entrada h1{font-family:var(--titulo);font-weight:700;font-size:2rem;margin:8px 0 4px;color:var(--azul-esc)}
+  .entrada p{color:var(--suave);margin:4px 0 22px}
+  .entrada .grande{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:2px solid var(--borda);border-bottom-width:6px;
+       border-radius:24px;padding:16px;margin-bottom:14px;cursor:pointer;font-family:var(--titulo);font-weight:600;font-size:1.3rem;color:var(--texto)}
+  .entrada .grande:active{transform:translateY(3px);border-bottom-width:3px}
+  .entrada .grande span{font-size:2.4rem}
+  .entrada .grande small{display:block;font-family:"Nunito";font-weight:700;font-size:.85rem;color:var(--suave)}
+  .entrada .link{background:none;border:0;color:var(--azul-esc);font-weight:900;font-size:.95rem;margin-top:12px;cursor:pointer;text-decoration:underline}
+  .entrada input{text-align:left}
+  .entrada .codigo{text-align:center;font-family:var(--titulo);font-size:2rem;letter-spacing:8px;text-transform:uppercase}
+  .erro{color:#EA2B2B;font-weight:800;min-height:1.2em;margin:6px 0}
+  .codigoFam{font-family:var(--titulo);font-weight:700;font-size:2rem;letter-spacing:6px;color:var(--azul-esc);background:#DDF4FF;border-radius:16px;padding:8px;text-align:center;margin:8px 0}
+  .nuvem{font-size:.8rem;font-weight:800;opacity:.9;margin-top:2px}
+
+  /* Resultados */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+  .kpi{background:#F7F7F7;border-radius:16px;padding:10px 6px;text-align:center}
+  .kpi b{display:block;font-family:var(--titulo);font-weight:700;font-size:1.5rem}
+  .kpi small{color:var(--suave);font-weight:800;font-size:.75rem}
+  .colunas{display:flex;align-items:flex-end;gap:10px;height:120px;margin:12px 0 4px;padding:0 4px}
+  .colunas div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-weight:900;font-size:.8rem}
+  .colunas i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:var(--azul);min-height:4px}
+  .colunas div.atual i{background:var(--verde)}
+  .colunas span{color:var(--suave);font-size:.72rem;margin-top:4px}
+  .lista-r{margin:6px 0 0;padding:0;list-style:none}
+  .lista-r li{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:2px dashed var(--borda);font-weight:800}
+  .lista-r li:last-child{border:0}
+  .lista-r li span{color:var(--suave)}
+  .sub{font-family:var(--titulo);font-weight:600;font-size:1.05rem;margin:14px 0 2px;display:block}
+
   @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 </style>
 </head>
@@ -163,6 +197,7 @@
 <header>
   <h1>🏠 Missão Casa</h1>
   <p id="hoje"></p>
+  <div class="nuvem" id="statusNuvem"></div>
 </header>
 <main>
   <div class="kids" id="kids"></div>
@@ -182,18 +217,23 @@
     <div id="listaPlacar"></div>
   </section>
 
-  <!-- Tela 3: Pais -->
+  <!-- Tela 3: Resultados (pais) -->
+  <section class="tela" id="t-resultados">
+    <div id="resultadosConteudo"></div>
+  </section>
+
+  <!-- Tela 4: Pais -->
   <section class="tela" id="t-pais">
     <div id="paisConteudo"></div>
   </section>
 </main>
 
-<nav>
-  <button class="on" data-t="missoes"><span>⭐</span>Missões</button>
-  <button data-t="placar"><span>🏆</span>Placar</button>
-  <button data-t="pais"><span>🔒</span>Pais</button>
-</nav>
+<nav id="nav"></nav>
 <div class="toast" id="toast"></div>
+<div class="entrada" id="entrada" style="display:none"></div>
+
+<!-- Configuração do Firebase (opcional). Sem ela, o app funciona só neste aparelho. -->
+<script src="firebase-config.js"></script>
 
 <script>
 /* ===== Dados (por enquanto ficam salvos neste aparelho) ===== */
@@ -254,7 +294,13 @@ let diasAtv = [];           // dias marcados no formulário de agenda
 function carregar(){
   let d;
   try { const s = localStorage.getItem(CHAVE); if (s) d = JSON.parse(s); } catch(e){}
-  d = d || JSON.parse(JSON.stringify(PADRAO));
+  return normalizar(d || JSON.parse(JSON.stringify(PADRAO)));
+}
+function normalizar(d){
+  d.criancas = d.criancas || []; d.tarefas = d.tarefas || []; d.feitos = d.feitos || {};
+  // dia em que a família começou a usar: os resultados não contam nada antes disso
+  d.inicio = d.inicio || Object.keys(d.feitos).sort()[0] || isoDia(new Date());
+  d.premio = d.premio || { texto: PADRAO.premio.texto, meta: 150 };
   d.atividades = d.atividades || [];
   if (!Array.isArray(d.recompensas)) d.recompensas = JSON.parse(JSON.stringify(PADRAO.recompensas));
   if (d.premio?.texto && !d.recompensas.includes(d.premio.texto)) d.recompensas.unshift(d.premio.texto);
@@ -272,7 +318,10 @@ function carregar(){
   d.tarefas.forEach(t => { if (!Array.isArray(t.periodos) || !t.periodos.length) t.periodos = ["livre"]; });
   return d;
 }
-function salvar(){ try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch(e){} }
+function salvar(){
+  if (NUVEM.ativo) { try { localStorage.setItem(CHAVE + ".fam." + NUVEM.codigo, JSON.stringify(dados)); } catch(e){} agendarSync(); return; }
+  try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch(e){}
+}
 
 /* ===== Datas ===== */
 function isoDia(d){ const z = new Date(d.getTime() - d.getTimezoneOffset()*60000); return z.toISOString().slice(0,10); }
@@ -461,13 +510,16 @@ function chipsDias(grupo, arr){
     </div>`;
 }
 
+function pedirPin(el, depois){
+  if (paisLiberado || NUVEM.papel === "pais") return false;
+  el.innerHTML = `<div class="pin"><div class="cadeado">🔐</div><h2>Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
+  $("#pinBtn").onclick = () => { if ($("#pinIn").value === dados.pin) { paisLiberado = true; depois(); } else toast("Senha errada 🙈"); };
+  return true;
+}
+
 function renderPais(){
   const el = $("#paisConteudo");
-  if (!paisLiberado) {
-    el.innerHTML = `<div class="pin"><div class="cadeado">🔐</div><h2>Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
-    $("#pinBtn").onclick = () => { if ($("#pinIn").value === dados.pin) { paisLiberado = true; renderPais(); } else toast("Senha errada 🙈"); };
-    return;
-  }
+  if (pedirPin(el, renderPais)) return;
   const tEd = editando?.tipo === "t" ? dados.tarefas.find(t => t.id === editando.id) : null;
   const cEd = editando?.tipo === "c" ? crianca(editando.id) : null;
   const aEd = editando?.tipo === "a" ? dados.atividades.find(a => a.id === editando.id) : null;
@@ -535,8 +587,14 @@ function renderPais(){
       <div class="row"><input id="prNova" placeholder="Ex.: Ir ao cinema 🎬"><button class="btn sec" id="prAdd" style="max-width:110px;margin-top:4px">Incluir</button></div>
       <button class="x" id="prDel" style="margin-top:8px">tirar a recompensa selecionada da lista</button></div>
 
+    ${NUVEM.ativo ? `
+    <div class="bloco"><b>👨‍👩‍👧 Nossa família</b>
+      <small style="color:var(--suave);font-weight:800;display:block;margin-top:6px">Código da família: use no celular ou tablet das crianças, em "Sou criança".</small>
+      <div class="codigoFam">${esc(NUVEM.codigo)}</div>
+      <small style="color:var(--suave);font-weight:700;display:block">Conectado como ${esc(NUVEM.email || "responsável")} · ${(NUVEM.aparelhos || 0)} aparelho(s) de criança conectado(s)</small>
+      <button class="btn sec" id="sairConta">Sair da conta</button></div>` : `
     <div class="bloco"><b>🔑 Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
-    <button class="btn sec" id="sair">Sair do painel</button>`;
+    <button class="btn sec" id="sair">Sair do painel</button>`}`;
 
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
@@ -639,8 +697,9 @@ function renderPais(){
     if (dados.premio.texto === sel) dados.premio.texto = dados.recompensas[0];
     salvar(); toast("Tirada da lista"); render();
   };
-  $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
-  $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
+  if ($("#sairConta")) $("#sairConta").onclick = sairDaConta;
+  if ($("#pinSalvar")) $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
+  if ($("#sair")) $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
 }
 
 /* ===== Efeitos ===== */
@@ -654,16 +713,263 @@ function confete(n){
   try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
 }
 
-/* ===== Navegação ===== */
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
-  document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + b.dataset.t));
-  $("#kids").style.display = b.dataset.t === "pais" ? "none" : "flex";
-  render();
-});
+/* ===== Resultados (painel dos pais) ===== */
+function estatisticas(idCrianca, dias){
+  let previstas = 0, feitas = 0; const porTarefa = {}, porDiaSemana = {};
+  dias.forEach(d => {
+    const ts = tarefasDe(idCrianca, d), fe = feitosEm(isoDia(d), idCrianca);
+    ts.forEach(t => {
+      const ok = fe.includes(t.key); previstas++; if (ok) feitas++;
+      const pt = porTarefa[t.id] = porTarefa[t.id] || { t, vezes: 0, esquecidas: 0 }; pt.vezes++; if (!ok) pt.esquecidas++;
+      const pd = porDiaSemana[d.getDay()] = porDiaSemana[d.getDay()] || { prev: 0, feitas: 0 }; pd.prev++; if (ok) pd.feitas++;
+    });
+  });
+  return { previstas, feitas, pct: previstas ? Math.round(feitas / previstas * 100) : null, porTarefa, porDiaSemana };
+}
+function diasEntre(ini, fim){ const out = []; const d = new Date(ini); d.setHours(12,0,0,0); const f = isoDia(fim);
+  const comeco = dados.inicio || "0000"; while (isoDia(d) < comeco && isoDia(d) <= f) d.setDate(d.getDate()+1);
+  while (isoDia(d) <= f) { out.push(new Date(d)); d.setDate(d.getDate()+1); } return out; }
 
-function render(){ renderCabecalho(); renderMissoes(); renderPlacar(); if ($("#t-pais").classList.contains("on")) renderPais(); }
-render();
+function renderResultados(){
+  const el = $("#resultadosConteudo");
+  if (pedirPin(el, renderResultados)) return;
+  const hoje = new Date(), ontem = new Date(); ontem.setDate(ontem.getDate()-1);
+  const ini28 = new Date(); ini28.setDate(ini28.getDate()-28);
+  const meta = Number(dados.premio.meta) || 100;
+  el.innerHTML = `<h2>📊 Resultados</h2>` + (dados.criancas.length ? dados.criancas.map(c => {
+    const semana = estatisticas(c.id, diasEntre(inicioSemana(hoje), hoje));
+    const semanas = [3,2,1,0].map(n => { const ini = inicioSemana(hoje); ini.setDate(ini.getDate() - 7*n);
+      const fim = new Date(ini); fim.setDate(fim.getDate()+6); const ate = n === 0 ? hoje : fim;
+      const st = estatisticas(c.id, diasEntre(ini, ate));
+      const pts = diasEntre(ini, ate).reduce((s, d) => s + pontosDoDia(isoDia(d), c.id), 0);
+      return { rot: n === 0 ? "esta" : ini.toLocaleDateString("pt-BR", { day: "numeric", month: "numeric" }), pct: st.pct, pts, atual: n === 0 }; });
+    const hist = estatisticas(c.id, diasEntre(ini28, ontem));
+    const esquecidas = Object.values(hist.porTarefa).filter(x => x.esquecidas > 0).sort((a,b) => b.esquecidas/b.vezes - a.esquecidas/a.vezes).slice(0,3);
+    const diasDif = Object.entries(hist.porDiaSemana).filter(([,v]) => v.prev > 0).map(([k,v]) => ({ dia: Number(k), pct: Math.round(v.feitas / v.prev * 100) })).sort((a,b) => a.pct - b.pct);
+    const semanasPassadas = [1,2,3,4,5,6,7,8].map(n => { const ini = inicioSemana(hoje); ini.setDate(ini.getDate() - 7*n);
+      const fim = new Date(ini); fim.setDate(fim.getDate()+6); return { ini, fim }; }).filter(w => isoDia(w.fim) >= (dados.inicio || ""));
+    const premios = semanasPassadas.filter(w => diasEntre(w.ini, w.fim).reduce((s, d) => s + pontosDoDia(isoDia(d), c.id), 0) >= meta).length;
+    return `<div class="bloco">
+      <b>${esc(c.avatar)} ${esc(c.nome)}</b>
+      <div class="kpis">
+        <div class="kpi"><b>${semana.pct ?? "–"}${semana.pct === null ? "" : "%"}</b><small>missões feitas na semana</small></div>
+        <div class="kpi"><b>${pontosSemana(c.id)}</b><small>pontos na semana (meta ${meta})</small></div>
+        <div class="kpi"><b>${sequencia(c.id)}🔥</b><small>dias seguidos</small></div>
+      </div>
+      <span class="sub">Últimas 4 semanas</span>
+      <div class="colunas">${semanas.map(w => `<div class="${w.atual ? "atual" : ""}">${w.pct === null ? "–" : w.pct + "%"}<i style="height:${w.pct || 0}%"></i><span>${w.rot}</span></div>`).join("")}</div>
+      <span class="sub">Missões mais esquecidas (últimos 28 dias, sem contar hoje)</span>
+      ${hist.previstas === 0 ? `<div style="color:var(--suave);font-weight:700">Ainda sem dados: aparece depois do primeiro dia de uso.</div>` : esquecidas.length ? `<ul class="lista-r">${esquecidas.map(x => `<li>${esc(x.t.icone)} ${esc(x.t.nome)}<span>${x.esquecidas} de ${x.vezes}</span></li>`).join("")}</ul>` : `<div style="color:var(--suave);font-weight:700">Nenhuma esquecida. 👏</div>`}
+      <span class="sub">Dia mais difícil</span>
+      <div style="font-weight:800">${diasDif.length && diasDif[0].pct < 100 ? `${NOME_DIA_LONGO[diasDif[0].dia]} <span style="color:var(--suave)">(${diasDif[0].pct}% feitas)</span>` : `<span style="color:var(--suave)">Ainda sem dados suficientes</span>`}</div>
+      <span class="sub">Prêmios conquistados</span>
+      <div style="font-weight:800">${semanasPassadas.length ? `${premios} de ${semanasPassadas.length} semana(s) <span style="color:var(--suave)">(meta atual de ${meta} pontos)</span>` : `<span style="color:var(--suave)">A primeira semana ainda está rolando</span>`}</div>
+    </div>`; }).join("") : `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`)
+    + `<small style="color:var(--suave);font-weight:700;display:block;margin:0 4px 10px">Os números usam as missões como estão cadastradas hoje. O dia de hoje entra só na semana atual.</small>`;
+}
+
+/* ===== Navegação ===== */
+const ABAS = {
+  missoes: { icone: "⭐", nome: "Missões" },
+  placar: { icone: "🏆", nome: "Placar" },
+  resultados: { icone: "📊", nome: "Resultados" },
+  pais: { icone: "🔒", nome: "Pais" }
+};
+function montarNav(){
+  const abas = NUVEM.papel === "crianca" ? ["missoes", "placar"] : ["missoes", "placar", "resultados", "pais"];
+  const atual = document.querySelector(".tela.on")?.id.slice(2);
+  $("#nav").innerHTML = abas.map(t => `<button data-t="${t}"><span>${ABAS[t].icone}</span>${ABAS[t].nome}</button>`).join("");
+  document.querySelectorAll("#nav button").forEach(b => b.onclick = () => irPara(b.dataset.t));
+  irPara(abas.includes(atual) ? atual : "missoes");
+}
+function irPara(t){
+  document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x.dataset.t === t));
+  document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + t));
+  $("#kids").style.display = (t === "pais" || t === "resultados") ? "none" : "flex";
+  render();
+}
+
+function render(deFora){
+  if (!crianca(criancaAtiva)) criancaAtiva = dados.criancas[0]?.id;
+  renderCabecalho(); renderMissoes(); renderPlacar();
+  if ($("#t-resultados").classList.contains("on")) renderResultados();
+  // mudança vinda de outro aparelho não apaga o que os pais estão digitando no painel
+  if ($("#t-pais").classList.contains("on") && !deFora) renderPais();
+}
+
+/* ===== Nuvem (Firebase) — só liga se existir firebase-config.js ===== */
+const NUVEM = { ativo: false, papel: "local", codigo: null, ref: null, ultimo: {}, email: null, aparelhos: 0 };
+const CAMPOS_CONFIG = ["criancas", "tarefas", "atividades", "recompensas", "premio", "inicio"];
+const SESSAO = CHAVE + ".sessao";
+const FB_VERSAO = "10.14.1";
+const lerSessao = () => { try { return JSON.parse(localStorage.getItem(SESSAO)); } catch(e) { return null; } };
+const gravarSessao = v => { try { v ? localStorage.setItem(SESSAO, JSON.stringify(v)) : localStorage.removeItem(SESSAO); } catch(e){} };
+
+function carregaScript(src){ return new Promise((ok, falha) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = falha; document.head.appendChild(s); }); }
+async function carregaFirebase(cfg){
+  const base = `https://cdn.jsdelivr.net/npm/firebase@${FB_VERSAO}/`;
+  if (!window.firebase) {
+    await carregaScript(base + "firebase-app-compat.js");
+    await Promise.all([carregaScript(base + "firebase-auth-compat.js"), carregaScript(base + "firebase-firestore-compat.js")]);
+  }
+  if (!firebase.apps.length) firebase.initializeApp(cfg);
+  return firebase;
+}
+const db = () => firebase.firestore();
+function novoCodigo(){ const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c = ""; const r = crypto.getRandomValues(new Uint32Array(6)); r.forEach(n => c += a[n % a.length]); return c; }
+
+function marcarSincronizado(){
+  NUVEM.ultimo = {};
+  CAMPOS_CONFIG.forEach(k => NUVEM.ultimo[k] = JSON.stringify(dados[k]));
+  Object.entries(dados.feitos).forEach(([dia, porKid]) => Object.entries(porKid).forEach(([k, v]) => NUVEM.ultimo["f:" + dia + "|" + k] = JSON.stringify(v)));
+}
+let syncTimer;
+function agendarSync(){ clearTimeout(syncTimer); syncTimer = setTimeout(sincronizar, 350); }
+async function sincronizar(){
+  if (!NUVEM.ativo) return;
+  const args = [], marcar = {};
+  if (NUVEM.papel === "pais") CAMPOS_CONFIG.forEach(k => { const j = JSON.stringify(dados[k]); if (j !== NUVEM.ultimo[k]) { args.push(k, JSON.parse(j)); marcar[k] = j; } });
+  Object.entries(dados.feitos).forEach(([dia, porKid]) => Object.entries(porKid).forEach(([kid, v]) => {
+    const chave = "f:" + dia + "|" + kid, j = JSON.stringify(v);
+    if (j !== NUVEM.ultimo[chave]) { args.push(new firebase.firestore.FieldPath("feitos", dia, kid), JSON.parse(j)); marcar[chave] = j; }
+  }));
+  if (!args.length) return;
+  try { await NUVEM.ref.update(...args); Object.assign(NUVEM.ultimo, marcar); }
+  catch(e) { console.warn(e); toast("Não consegui salvar na nuvem. Tento de novo já já 🔄"); setTimeout(agendarSync, 5000); }
+}
+
+async function conectarFamilia(codigo, papel){
+  NUVEM.codigo = codigo; NUVEM.papel = papel; NUVEM.ref = db().collection("familias").doc(codigo);
+  NUVEM.email = firebase.auth().currentUser?.email || null;
+  try { const c = localStorage.getItem(CHAVE + ".fam." + codigo); if (c) dados = normalizar(JSON.parse(c)); } catch(e){}
+  const snap = await NUVEM.ref.get();
+  aplicarRemoto(snap.data());
+  NUVEM.ativo = true; gravarSessao({ papel, familia: codigo });
+  if (NUVEM.papel === "crianca") paisLiberado = false;
+  $("#entrada").style.display = "none";
+  $("#statusNuvem").textContent = papel === "pais" ? "☁️ Família " + codigo : "☁️ Conectado à família";
+  montarNav();
+  NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
+    e => { console.warn(e); toast("Perdi o acesso a esta família"); });
+}
+function aplicarRemoto(r){
+  if (!r) return;
+  CAMPOS_CONFIG.forEach(k => { if (r[k] !== undefined) dados[k] = r[k]; });
+  dados.feitos = r.feitos || {};
+  NUVEM.aparelhos = (r.aparelhos || []).length;
+  dados = normalizar(dados);
+  marcarSincronizado();
+  try { localStorage.setItem(CHAVE + ".fam." + NUVEM.codigo, JSON.stringify(dados)); } catch(e){}
+}
+
+async function sairDaConta(){
+  gravarSessao(null); NUVEM.ativo = false;
+  try { await firebase.auth().signOut(); } catch(e){}
+  location.reload();
+}
+
+/* ----- Tela de entrada ----- */
+function telaEntrada(qual = "inicio", erro = ""){
+  const el = $("#entrada"); el.style.display = "block";
+  const topo = `<div class="logo">🏠</div><h1>Missão Casa</h1>`;
+  if (qual === "inicio") {
+    el.innerHTML = `<div class="caixa">${topo}<p>As missões da família, do jeito divertido.</p>
+      <button class="grande" id="eResp"><span>🧑‍🍼</span><div>Sou responsável<small>Crio a família, as missões e vejo os resultados</small></div></button>
+      <button class="grande" id="eKid"><span>🧒</span><div>Sou criança<small>Entro com o código da família</small></div></button>
+      <button class="link" id="eLocal">Usar sem conta, só neste aparelho</button></div>`;
+    $("#eResp").onclick = () => telaEntrada("resp");
+    $("#eKid").onclick = () => telaEntrada("kid");
+    $("#eLocal").onclick = () => { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); };
+  }
+  if (qual === "resp") {
+    el.innerHTML = `<div class="caixa">${topo}<p>Entre ou crie sua conta de responsável.</p>
+      <input id="eEmail" type="email" autocomplete="email" placeholder="Seu e-mail">
+      <input id="eSenha" type="password" autocomplete="current-password" placeholder="Senha (mínimo 6 caracteres)">
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <button class="btn" id="eEntrar">Entrar</button>
+      <button class="btn sec" id="eCriar">Criar conta</button>
+      <button class="link" id="eEsqueci">Esqueci a senha</button><br>
+      <button class="link" id="eVoltar">Voltar</button></div>`;
+    const cred = () => [$("#eEmail").value.trim(), $("#eSenha").value];
+    const tratar = e => { const m = { "auth/invalid-credential": "E-mail ou senha incorretos.", "auth/wrong-password": "Senha incorreta.", "auth/user-not-found": "Não achei essa conta. Que tal criar?",
+      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Entrar.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo." };
+      $("#eErro").textContent = m[e.code] || "Não deu certo: " + (e.code || e.message); };
+    $("#eEntrar").onclick = async () => { try { await firebase.auth().signInWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
+    $("#eCriar").onclick = async () => { try { await firebase.auth().createUserWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
+    $("#eEsqueci").onclick = async () => { const [em] = cred(); if (!em) return $("#eErro").textContent = "Escreve seu e-mail primeiro.";
+      try { await firebase.auth().sendPasswordResetEmail(em); $("#eErro").textContent = "Mandei um e-mail pra trocar a senha 📬"; } catch(e) { tratar(e); } };
+    $("#eVoltar").onclick = () => telaEntrada("inicio");
+  }
+  if (qual === "criarFamilia") {
+    const temLocal = !!localStorage.getItem(CHAVE);
+    el.innerHTML = `<div class="caixa">${topo}<p>Agora vamos criar a sua família no Missão Casa.</p>
+      ${temLocal ? `<button class="grande" id="fLocal"><span>📲</span><div>Usar o que já cadastrei aqui<small>Leva crianças, missões, agenda e recompensas deste aparelho</small></div></button>` : ""}
+      <button class="grande" id="fNova"><span>✨</span><div>Começar do zero<small>Com algumas missões de exemplo</small></div></button>
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <button class="link" id="eSair">Sair da conta</button></div>`;
+    if ($("#fLocal")) $("#fLocal").onclick = () => criarFamilia(carregar());
+    $("#fNova").onclick = () => criarFamilia(normalizar(JSON.parse(JSON.stringify(PADRAO))));
+    $("#eSair").onclick = sairDaConta;
+  }
+  if (qual === "kid") {
+    el.innerHTML = `<div class="caixa">${topo}<p>Pede pro seu responsável o código da família 🔑</p>
+      <input id="eCod" class="codigo" maxlength="6" autocomplete="off" autocapitalize="characters" placeholder="ABC123">
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <button class="btn" id="eEntrarKid">Entrar</button>
+      <button class="link" id="eVoltar">Voltar</button></div>`;
+    $("#eEntrarKid").onclick = () => entrarComoCrianca($("#eCod").value.trim().toUpperCase());
+    $("#eVoltar").onclick = () => telaEntrada("inicio");
+  }
+}
+
+async function depoisDoLoginResp(){
+  const uid = firebase.auth().currentUser.uid;
+  const q = await db().collection("familias").where("pais", "array-contains", uid).limit(1).get();
+  if (!q.empty) return conectarFamilia(q.docs[0].id, "pais");
+  telaEntrada("criarFamilia");
+}
+async function criarFamilia(base){
+  const uid = firebase.auth().currentUser.uid;
+  for (let tentativa = 0; tentativa < 5; tentativa++) {
+    const codigo = novoCodigo();
+    const doc = { dono: uid, pais: [uid], aparelhos: [], criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {} };
+    CAMPOS_CONFIG.forEach(k => doc[k] = JSON.parse(JSON.stringify(base[k])));
+    try { await db().collection("familias").doc(codigo).set(doc); dados = base; return conectarFamilia(codigo, "pais"); }
+    catch(e) { console.warn(e); }
+  }
+  telaEntrada("criarFamilia", "Não consegui criar a família. Confere a internet e tenta de novo.");
+}
+async function entrarComoCrianca(codigo){
+  if (codigo.length !== 6) return telaEntrada("kid", "O código tem 6 letras e números.");
+  try {
+    if (!firebase.auth().currentUser) await firebase.auth().signInAnonymously();
+    const uid = firebase.auth().currentUser.uid, ref = db().collection("familias").doc(codigo);
+    try { await ref.get(); } // já faz parte da família?
+    catch(e) { await ref.update({ aparelhos: firebase.firestore.FieldValue.arrayUnion(uid) }); }
+    await conectarFamilia(codigo, "crianca");
+    toast("Bem-vinda(o) à família! 🎉"); confete(30);
+  } catch(e) { console.warn(e); telaEntrada("kid", "Não achei essa família. Confere o código com seu responsável."); }
+}
+
+function modoLocal(){ NUVEM.ativo = false; NUVEM.papel = "local"; $("#statusNuvem").textContent = ""; montarNav(); }
+
+async function iniciar(){
+  const cfg = window.FIREBASE_CONFIG;
+  const sessao = lerSessao();
+  if (!cfg || sessao?.papel === "local") return modoLocal();
+  modoLocal(); // mostra o app enquanto a nuvem carrega
+  try { await carregaFirebase(cfg); }
+  catch(e) { toast("Sem internet: usando os dados deste aparelho"); return; }
+  const parar = firebase.auth().onAuthStateChanged(async user => {
+    parar();
+    try {
+      if (user && sessao?.familia) return await conectarFamilia(sessao.familia, sessao.papel);
+      if (user && !user.isAnonymous) return await depoisDoLoginResp();
+    } catch(e) { console.warn(e); }
+    telaEntrada("inicio");
+  });
+}
+iniciar();
 </script>
 </body>
 </html>
