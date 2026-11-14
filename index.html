@@ -519,6 +519,10 @@
   .heroLinha{margin-top:34px}
   #hero.compacto .heroLinha{margin-top:0}
   .btn{text-transform:none;letter-spacing:0;font-size:1.02rem}
+  .hb.troca{width:auto;display:flex;align-items:center;gap:4px;padding:0 12px 0 6px;font:inherit;font-weight:900;font-size:.9rem;color:var(--tinta);line-height:1}
+  .hb.troca span{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #hero.compacto .heroLinha{padding-right:208px}
+  #hero.compacto .oi{font-size:1.2rem}
 </style>
 </head>
 <body>
@@ -858,9 +862,11 @@ let telaAtual = "missoes", painelAba = "rotina", painelSecao = "";
 function renderCabecalho(){
   const c = crianca(criancaAtiva), hero = $("#hero");
   const podePainel = NUVEM.papel === "local" || NUVEM.papel === "pais";
-  const outros = dados.criancas.filter(x => x.id !== criancaAtiva);
+  // botão de trocar mostra o NOME do próximo irmão (o personagem sozinho podia parecer o da própria criança)
+  const idx = dados.criancas.findIndex(x => x.id === criancaAtiva);
+  const proximo = dados.criancas.length > 1 ? dados.criancas[(idx + 1) % dados.criancas.length] : null;
   const botoes = `<div class="heroBotoes">
-      ${outros.map(o => `<button class="hb" data-troca="${o.id}" aria-label="Trocar para ${esc(o.nome)}">${avatarHTML(o, 38)}</button>`).join("")}
+      ${proximo ? `<button class="hb troca" data-troca="${proximo.id}" aria-label="Trocar para ${esc(proximo.nome)}">${avatarHTML(proximo, 28)}<span>${esc(proximo.nome)}</span></button>` : ""}
       ${podePainel ? `<button class="hb" id="abrirPainel" aria-label="Painel da família">${icone("navegacao_area_dos_pais", 26)}</button>` : ""}
       <button class="hb" id="somBtn" aria-label="Ligar ou desligar o som"></button>
     </div>`;
