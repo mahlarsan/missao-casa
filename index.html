@@ -558,6 +558,10 @@
   #hero.compacto{min-height:78px}
   #hero.compacto .heroLinha{padding:12px 208px 0 2px}
   #hero.compacto .oi{font-size:1.5rem}
+  /* aba Avatar: topo sem faixa nem nome (o palco logo abaixo já é o "cabeçalho") */
+  #hero.compacto.limpo{background:transparent;box-shadow:none;border:0;padding-bottom:0;min-height:0;height:72px}
+  #hero.compacto.limpo::after,#hero.compacto.limpo::before{display:none}
+  #hero.compacto.limpo .heroLinha{min-height:0;padding:0}
 </style>
 </head>
 <body>
@@ -906,18 +910,20 @@ function renderCabecalho(){
       <button class="hb" id="somBtn" aria-label="Ligar ou desligar o som"></button>
     </div>`;
   const compacto = telaAtual !== "missoes";
-  hero.className = compacto ? "compacto" : "";
+  // na aba Avatar o palco já mostra personagem + nome: o topo fica só com os botões, sem faixa nem nome
+  const limpo = telaAtual === "avatar";
+  hero.className = compacto ? "compacto" + (limpo ? " limpo" : "") : "";
   hero.style.setProperty("--topo", c ? corTopo(c) : "#FFD52A");
   if (!c) hero.innerHTML = `${botoes}<div class="heroLinha"><div class="heroTx"><span class="oi">Missão Casa</span><span class="dataH">${esc(dataHoje())}</span></div></div>`;
   else hero.innerHTML = `${botoes}
     <div class="heroLinha">
       ${compacto ? "" : `<button class="heroAv" id="heroAv" aria-label="${NUVEM.papel === "apoio" ? "Personagem de " + esc(c.nome) : "Mudar meu personagem"}">${avatarHTML(c, 136)}
         ${NUVEM.papel !== "apoio" ? `<span class="lapis">${icone("acao_editar_personagem", 22)}</span>` : ""}</button>`}
-      <div class="heroTx">
+      ${limpo ? "" : `<div class="heroTx">
         <span class="oi">${compacto ? esc(c.nome) : "Oi, " + esc(c.nome) + "!"}</span>
         <span class="dataH">${esc(dataHoje())}</span>
         ${compacto ? "" : `<div class="heroChips"><span>${icone("moeda", 20)} ${saldo(c.id)}</span><span>${icone("jogo_sequencia_de_dias", 20)} ${sequencia(c.id)}</span></div>`}
-      </div>
+      </div>`}
     </div>
     ${NUVEM.statusHTML ? `<div class="nuvem">${NUVEM.statusHTML}</div>` : ""}`;
   hero.querySelectorAll("[data-troca]").forEach(b => b.onclick = () => { criancaAtiva = b.dataset.troca; render(); });
