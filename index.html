@@ -43,7 +43,7 @@
   .kid:active{transform:translateY(3px);border-bottom-width:3px}
   .kid .av{font-size:2.6rem;line-height:1.1}
   .kid.on{border-color:var(--pri);background:#EFE6FF}
-  .kid small{display:block;color:var(--suave);font-family:"Nunito";font-weight:800;font-size:.85rem;margin-top:2px}
+  .kid small{display:block;color:var(--suave);font-family:"Nunito",system-ui,sans-serif;font-weight:800;font-size:.85rem;margin-top:2px}
 
   /* Semana */
   .semana{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:12px;margin-top:10px}
@@ -83,7 +83,7 @@
 
   /* Missões */
   .periodo{display:flex;justify-content:space-between;align-items:center;font-family:var(--titulo);font-weight:600;font-size:1.25rem;margin:22px 4px 10px}
-  .periodo span{background:var(--card);border:2px solid var(--borda);border-radius:12px;padding:2px 10px;font-family:"Nunito";font-weight:900;font-size:.85rem;color:var(--suave)}
+  .periodo span{background:var(--card);border:2px solid var(--borda);border-radius:12px;padding:2px 10px;font-family:"Nunito",system-ui,sans-serif;font-weight:900;font-size:.85rem;color:var(--suave)}
   .missao{display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--borda);border-bottom-width:6px;border-radius:24px;
           padding:14px;margin-bottom:12px;cursor:pointer;min-height:84px;transition:transform .1s,background .2s}
   .missao:active{transform:translateY(3px);border-bottom-width:3px;margin-bottom:15px}
@@ -168,7 +168,7 @@
        border-radius:24px;padding:16px;margin-bottom:14px;cursor:pointer;font-family:var(--titulo);font-weight:600;font-size:1.3rem;color:var(--texto)}
   .entrada .grande:active{transform:translateY(3px);border-bottom-width:3px}
   .entrada .grande span{font-size:2.4rem}
-  .entrada .grande small{display:block;font-family:"Nunito";font-weight:700;font-size:.85rem;color:var(--suave)}
+  .entrada .grande small{display:block;font-family:"Nunito",system-ui,sans-serif;font-weight:700;font-size:.85rem;color:var(--suave)}
   .entrada .link{background:none;border:0;color:var(--pri-esc);font-weight:900;font-size:.95rem;margin-top:12px;cursor:pointer;text-decoration:underline}
   .entrada input{text-align:left}
   .entrada .codigo{text-align:center;font-family:var(--titulo);font-size:2rem;letter-spacing:8px;text-transform:uppercase}
@@ -443,6 +443,82 @@
 
   body.calmo *{animation:none!important;transition:none!important}
   @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
+
+  /* ===== Alinhamento ao mockup: contorno em tinta só no que se toca, o resto em bordas claras ===== */
+  .hb,.heroAv .lapis{border-bottom-width:2px}
+  .hb{width:46px;height:46px}
+  .heroChips span{border-width:2px}
+  #progressoDia .progresso{border:2px solid var(--tinta)!important;border-radius:20px;margin-top:-30px}
+  .progresso .trilho{border:0!important;height:14px;border-radius:10px;background:var(--borda)}
+  .progresso .trilho i{box-shadow:none;border-radius:10px}
+  .progresso.completo::before{display:none}
+  .progresso .estrela .ico{width:40px;height:40px}
+  .agendaFaixa{padding-top:12px}
+  .semana{display:block;padding:10px 0 0;touch-action:pan-y}
+  .semana .diasNav{display:grid}
+  .semana .diaNav{padding:4px 0}
+  .semana .diaNav .sem{font-size:.66rem}
+  .semana .diaNav .num{font-family:"Nunito",system-ui,sans-serif;font-weight:900;font-size:.95rem}
+  .semana .diaNav.hoje{box-shadow:none;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .semana .diaNav.sel{text-decoration:none}
+  .voltaHoje{display:block;margin:6px auto 0;border:0;background:none;color:var(--pri-esc);font:inherit;font-weight:900;font-size:.85rem;text-decoration:underline;cursor:pointer}
+  .periodo{margin:14px 2px 8px}
+  .periodo .tit{font-size:1.15rem}
+  .missao{border:2px solid var(--tinta)!important;border-bottom-width:4px!important;border-radius:20px;padding:10px 12px;min-height:0;margin-bottom:10px;background:#fff}
+  .missao:active{border-bottom-width:2px!important;margin-bottom:12px}
+  .missao.feita{background:#EEF9D2}
+  .missao .tx{font-size:1.1rem;font-weight:800}
+  .missao .ok{border:2px solid var(--tinta);width:44px;height:44px;background:#fff}
+  .missao .som{border:0!important;width:34px;height:34px}
+  .aviso{border-radius:16px}
+  nav{background:var(--creme);border-top:2px solid var(--tinta)}
+  nav button{border:0!important;font-size:.8rem}
+  nav button.on{background:#F3E9FF;color:var(--pri-esc)}
+  /* Avatar */
+  .palcoAv{border:0;background:#FFF3BF}
+  .palcoAv .btn.sec{border:2px solid var(--tinta);border-bottom-width:4px;background:#fff}
+  .numeros div{border:2px solid #ECE6D6}
+  .cartao{border:2px solid #ECE6D6}
+  /* Loja */
+  .cofre{border:0!important;border-radius:22px}
+  .produto{border:2px solid #ECE6D6!important;border-bottom-width:2px!important;border-radius:20px}
+  .trocar{border-bottom-width:4px}
+  .pedido{border:2px solid #ECE6D6}
+  /* Painel da família */
+  .bloco{border:2px solid #ECE6D6;border-bottom-width:2px;border-radius:20px}
+  .x,.ed{border-bottom-width:2px}
+  .chip{border-bottom-width:2px}
+  .gico{border-bottom-width:2px}
+  .btn.sec{border-bottom-width:2px}
+  .btn{border-bottom-width:4px}
+  #paisConteudo .resumoRotina{display:none}
+  #paisConteudo[data-aba="rotina"][data-secao=""] .resumoRotina{display:flex;flex-direction:column;gap:14px}
+  #paisConteudo[data-aba="rotina"][data-secao=""] .bloco[data-aba="rotina"]{display:none}
+  #paisConteudo[data-aba="rotina"]:not([data-secao=""]) .bloco[data-aba="rotina"]{display:none}
+  #paisConteudo[data-aba="rotina"][data-secao="missoes"] .bloco[data-secao="missoes"],
+  #paisConteudo[data-aba="rotina"][data-secao="agenda"] .bloco[data-secao="agenda"],
+  #paisConteudo[data-aba="rotina"][data-secao="pausas"] .bloco[data-secao="pausas"],
+  #paisConteudo[data-aba="rotina"][data-secao="sugestoes"] .bloco[data-secao="sugestoes"]{display:block}
+  .voltaSecao{display:none;border:0;background:none;font:inherit;font-weight:900;color:var(--pri-esc);padding:4px 2px 10px;cursor:pointer}
+  #paisConteudo[data-aba="rotina"]:not([data-secao=""]) .voltaSecao{display:block}
+  .listaRes{display:flex;flex-direction:column;background:#fff;border:2px solid #ECE6D6;border-radius:20px;overflow:hidden}
+  .linhaRes{display:flex;align-items:center;gap:12px;padding:14px;border:0;border-bottom:2px solid #F3EEE2;background:none;font:inherit;color:var(--tinta);text-align:left;cursor:pointer}
+  .linhaRes:last-child{border-bottom:0}
+  .linhaRes span{flex:1;display:flex;flex-direction:column}
+  .linhaRes b{font-size:1.05rem;font-weight:900}
+  .linhaRes small{font-size:.8rem;color:var(--suave);font-weight:700}
+  .linhaRes i{font-style:normal;font-size:1.4rem;color:var(--suave)}
+  .cartaoSemana{display:flex;flex-direction:column;gap:10px;padding:14px;background:#fff;border:2px solid #ECE6D6;border-radius:20px}
+  .cartaoSemana > b{font-family:var(--titulo);font-weight:600;font-size:1.1rem}
+  .linhaKid{display:flex;align-items:center;gap:10px}
+  .linhaKid .nk{width:56px;font-weight:800}
+  .trilhoK{flex:1;height:12px;border-radius:8px;background:var(--borda);overflow:hidden}
+  .trilhoK i{display:block;height:100%;background:var(--lima)}
+  .linhaKid .pk{width:42px;text-align:right;font-weight:800}
+  .abasPainel button.on{box-shadow:none}
+  .heroLinha{margin-top:34px}
+  #hero.compacto .heroLinha{margin-top:0}
+  .btn{text-transform:none;letter-spacing:0;font-size:1.02rem}
 </style>
 </head>
 <body>
@@ -776,8 +852,8 @@ function corTopo(c){
   const base = String(av.cor || (MARCA.personagens[av.p] || MARCA.personagens.orbita).cor).toUpperCase();
   return { "#7738EA": "#FFD52A", "#B06CFF": "#FFD52A", "#FF6654": "#29BCE5", "#FFD52A": "#B06CFF", "#29BCE5": "#FFD52A", "#A5DD37": "#B06CFF" }[base] || "#FFD52A";
 }
-const dataHoje = () => { const h = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" }); return h[0].toUpperCase() + h.slice(1); };
-let telaAtual = "missoes", painelAba = "rotina";
+const dataHoje = () => { const h = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" }).replace("-feira", ""); return h[0].toUpperCase() + h.slice(1); };
+let telaAtual = "missoes", painelAba = "rotina", painelSecao = "";
 
 function renderCabecalho(){
   const c = crianca(criancaAtiva), hero = $("#hero");
@@ -797,7 +873,7 @@ function renderCabecalho(){
       <button class="heroAv" id="heroAv" aria-label="${NUVEM.papel === "apoio" ? "Personagem de " + esc(c.nome) : "Mudar meu personagem"}">${avatarHTML(c, compacto ? 60 : 136)}
         ${NUVEM.papel !== "apoio" ? `<span class="lapis">${icone("acao_editar_personagem", compacto ? 16 : 22)}</span>` : ""}</button>
       <div class="heroTx">
-        <span class="oi">Oi, ${esc(c.nome)}!</span>
+        <span class="oi">${compacto ? esc(c.nome) : "Oi, " + esc(c.nome) + "!"}</span>
         <span class="dataH">${esc(dataHoje())}</span>
         ${compacto ? "" : `<div class="heroChips"><span>${icone("moeda", 20)} ${saldo(c.id)}</span><span>${icone("jogo_sequencia_de_dias", 20)} ${sequencia(c.id)}</span></div>`}
       </div>
@@ -813,7 +889,6 @@ function renderCabecalho(){
 function renderSemana(){
   const dias = diasDaSemana(diaSel);
   $("#semana").innerHTML = `
-    <button class="seta" id="semAnt" aria-label="Semana anterior">${icone("acao_semana_anterior", 22)}</button>
     <div class="diasNav">${dias.map(d => {
       const ts = criancaAtiva ? tarefasDe(criancaAtiva, d) : [];
       const completo = criancaAtiva && diaCompleto(isoDia(d), criancaAtiva, d);
@@ -821,10 +896,13 @@ function renderSemana(){
         <span class="sem">${NOME_DIA[d.getDay()]}</span><span class="num">${d.getDate()}</span>
         <i class="${completo ? "ok" : ts.length ? "tem" : ""}"></i></button>`; }).join("")}
     </div>
-    <button class="seta" id="semProx" aria-label="Próxima semana">${icone("acao_proxima_semana", 22)}</button>`;
+    ${ehHoje(diaSel) ? "" : `<button class="voltaHoje" id="irHoje">voltar para hoje</button>`}`;
   const mudaSemana = n => { const x = new Date(diaSel); x.setDate(x.getDate() + 7 * n); diaSel = x; render(); };
-  $("#semAnt").onclick = () => mudaSemana(-1);
-  $("#semProx").onclick = () => mudaSemana(1);
+  // deslizar o dedo na faixa dos dias troca de semana
+  const sem = $("#semana"); let x0 = null;
+  sem.ontouchstart = e => { x0 = e.touches[0].clientX; };
+  sem.ontouchend = e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) mudaSemana(dx < 0 ? 1 : -1); };
+  if ($("#irHoje")) $("#irHoje").onclick = () => { diaSel = new Date(); render(); };
   document.querySelectorAll(".diaNav").forEach(el => el.onclick = () => { diaSel = new Date(el.dataset.d + "T12:00:00"); render(); });
 }
 
@@ -875,7 +953,7 @@ function renderMissoes(){
       sequencia(c.id) > 0 ? `<span class="estadoChip">${icone("jogo_sequencia_de_dias", 24)} ${sequencia(c.id)} ${sequencia(c.id) === 1 ? "dia seguido" : "dias seguidos"}, sem perder nada</span>` : ""); }
   else if (!ts.length) corpo = estadoPersonagem(c, "periodo_tarde", "Dia de folga!", `Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Aproveita!`);
   else corpo = grupos.map(g => `
-    <div class="periodo"><span class="quem tit">${icone(g.p.icone, 26)} ${g.p.nome}</span><span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
+    <div class="periodo"><span class="quem tit">${icone(g.p.icone, 26)} ${g.p.nome}</span></div>
     ${g.itens.map(card).join("")}`).join("");
   $("#listaMissoes").innerHTML = aviso + corpo;
   document.querySelectorAll(".missao .som").forEach(b => b.onclick = e => { e.stopPropagation(); falar(b.dataset.falar); });
@@ -1060,7 +1138,22 @@ function renderPais(){
     .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
   const paraTxt = t => t.para === "todos" ? (t.revezar ? "revezando" : "todas as crianças") : "só " + (crianca(t.para)?.nome || "?");
 
+  const semanaKid = k => estatisticas(k.id, diasEntre(inicioSemana(new Date()), new Date())).pct;
+  const pausaAtual = dados.pausas.filter(pz => pz.fim >= hojeStr()).sort((a, b) => a.inicio.localeCompare(b.inicio))[0];
+  const linhaResumo = (secao, ic, titulo, sub) => `<button class="linhaRes" data-secao-abre="${secao}">${icone(ic, 34)}<span><b>${titulo}</b><small>${esc(sub)}</small></span><i aria-hidden="true">›</i></button>`;
   el.innerHTML = `
+    <div class="resumoRotina" data-aba="rotina" data-resumo="1">
+      <div class="listaRes">
+        ${linhaResumo("missoes", "tarefa", "Missões", `${dados.tarefas.length} missões · ${dados.tarefas.filter(t => t.revezar).length} revezando entre os irmãos`)}
+        ${linhaResumo("agenda", "acao_calendario", "Agenda", dados.atividades.map(a => a.nome).slice(0, 4).join(", ") || "Nada cadastrado")}
+        ${linhaResumo("pausas", "pausa_ferias", "Pausas", pausaAtual ? `${nomeMotivo(pausaAtual)} de ${dataCurta(pausaAtual.inicio)} a ${dataCurta(pausaAtual.fim)}` : "Nenhuma pausa marcada")}
+        ${linhaResumo("sugestoes", "entrada_comecar_do_zero", "Sugestões por idade", "Ideias de missões para cada faixa")}
+      </div>
+      <div class="cartaoSemana"><b>Esta semana</b>${dados.criancas.map(k => { const pc = semanaKid(k) ?? 0;
+        return `<div class="linhaKid">${avatarHTML(k, 36)}<span class="nk">${esc(k.nome)}</span><div class="trilhoK"><i style="width:${pc}%"></i></div><span class="pk">${pc}%</span></div>`; }).join("")}</div>
+      <button class="btn" data-secao-abre="missoes" data-nova="1">+ Nova missão</button>
+    </div>
+    <button class="voltaSecao" data-aba="rotina" id="voltaRotina">‹ Rotina</button>
     <h2 class="quem">${icone("painel_familia", 34)} Painel dos pais</h2>
 
     <div class="bloco"><b class="quem">${icone("tarefa", 26)} Missões</b>
@@ -1182,11 +1275,16 @@ function renderPais(){
     <button class="btn sec" id="sair">Sair do painel</button>`}`;
 
   ligarSeletores(el);
-  // cada bloco pertence a uma aba do painel
+  // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
   const abaDoBloco = t => /Pedidos|Recompensas/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
-  el.querySelectorAll(".bloco").forEach(b => b.dataset.aba = abaDoBloco(b.querySelector("b")?.textContent || ""));
+  const secaoDoBloco = t => /Sugestões/.test(t) ? "sugestoes" : /Pausas/.test(t) ? "pausas" : /Agenda/.test(t) ? "agenda" : "missoes";
+  el.querySelectorAll(".bloco").forEach(b => { const t = b.querySelector("b")?.textContent || ""; b.dataset.aba = abaDoBloco(t); if (b.dataset.aba === "rotina") b.dataset.secao = secaoDoBloco(t); });
   if ($("#sair")) $("#sair").dataset.aba = "familia";
   el.dataset.aba = painelAba;
+  el.dataset.secao = painelSecao;
+  el.querySelectorAll("[data-secao-abre]").forEach(b => b.onclick = () => { painelSecao = b.dataset.secaoAbre; renderPais(); window.scrollTo(0, 0);
+    if (b.dataset.nova) setTimeout(() => { $("#formTarefa")?.scrollIntoView({ block: "center" }); $("#tNome")?.focus(); }, 50); });
+  $("#voltaRotina").onclick = () => { painelSecao = ""; editando = null; renderPais(); window.scrollTo(0, 0); };
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
   const setD = (g, v) => { if (g === "a") diasAtv = v; else diasForm = v; };
@@ -1492,8 +1590,8 @@ function renderPainelTopo(){
     ${ultimo && (paisLiberado || NUVEM.papel === "pais") ? `<div class="alertaPedido">${ico(dados.recompensas.find(r => r.id === ultimo.rec)?.icone || "loja_presente", 34)}
       <span>${esc(crianca(ultimo.kid)?.nome || "Alguém")} pediu "${esc(ultimo.texto)}"${pend.length > 1 ? ` e mais ${pend.length - 1}` : ""}</span>
       <button class="ed" id="verPedidos">ver</button></div>` : ""}`;
-  $("#voltarCriancas").onclick = () => irPara("missoes");
-  document.querySelectorAll(".abasPainel [data-aba]").forEach(b => b.onclick = () => { painelAba = b.dataset.aba; irPara("painel"); });
+  $("#voltarCriancas").onclick = () => { painelSecao = ""; irPara("missoes"); };
+  document.querySelectorAll(".abasPainel [data-aba]").forEach(b => b.onclick = () => { painelAba = b.dataset.aba; painelSecao = ""; irPara("painel"); });
   if ($("#verPedidos")) $("#verPedidos").onclick = () => { painelAba = "loja"; irPara("painel"); };
 }
 
