@@ -1109,7 +1109,7 @@ function mostrarConquista(c, moedas){
     <h1>Dia completo, ${esc(c.nome)}!</h1>
     <p>Todas as missões de hoje feitas.</p>
     <div class="conqChips"><span>${icone("moeda", 30)} +<b id="conqMoedas">${menosMovimento() ? moedas : 0}</b></span><span>${icone("jogo_sequencia_de_dias", 30)} ${sequencia(c.id)} ${sequencia(c.id) === 1 ? "dia" : "dias"}</span></div>
-    <div class="conqBotoes"><button class="escuro" id="conqLoja">Ver a loja</button><button class="claro" id="conqFechar">Voltar para hoje</button></div>`;
+    <div class="conqBotoes"><button class="escuro" id="conqLoja">Ver os prêmios</button><button class="claro" id="conqFechar">Voltar para hoje</button></div>`;
   el.style.display = "flex";
   el.classList.remove("anima"); void el.offsetWidth; el.classList.add("anima");
   confete(150, "canhoes");
@@ -1153,25 +1153,25 @@ function renderLoja(){
   const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
   el.innerHTML = `
     <div class="cofre"><div class="moeda">${icone("moeda", 60)}</div><div style="flex:1"><small>Moedas de ${esc(c.nome)}</small><b>${s}</b></div>${avatarHTML(c, 64)}</div>
-    <h2 class="quem">${icone("loja", 34)} Loja de recompensas</h2>
+    <h2 class="quem">${icone("loja_presente", 34)} Prêmios para conquistar</h2>
     <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
       const pode = s >= r.custo, conf = confirmaTroca === r.id;
       return `<div class="produto ${pode ? "" : "falta"}">
         <div class="pic">${ico(r.icone, 52)}</div>
         <div class="ptx">${esc(r.texto)}</div>
         <div class="preco">${icone("moeda", 24)} ${r.custo}</div>
-        ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "Confirmar?" : pode ? "Trocar" : `Faltam ${r.custo - s}`}</button>`}
+        ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "É esse?" : pode ? "Escolher" : `Faltam ${r.custo - s}`}</button>`}
       </div>`; }).join("")}</div>
-    ${pedidos.length ? `<h2 class="quem">${icone("loja_pedidos", 32)} Meus pedidos</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
-      <span class="st ${t.status}">${t.status === "entregue" ? icone("loja_recebido", 20) + " Recebido" : icone("loja_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
+    ${pedidos.length ? `<h2 class="quem">${icone("loja_pedidos", 32)} Meus prêmios</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
+      <span class="st ${t.status}">${t.status === "entregue" ? icone("loja_recebido", 20) + " Ganhei!" : icone("loja_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
-    if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Trocar " + r.custo + " moedas por " + semEmoji(r.texto) + "?"); return renderLoja(); }
+    if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Escolher " + semEmoji(r.texto) + "? Usa " + r.custo + " moedas."); return renderLoja(); }
     confirmaTroca = null;
-    if (saldo(c.id) < r.custo) return toast("Moedas não são suficientes");
+    if (saldo(c.id) < r.custo) return toast("Ainda faltam moedas");
     const id = "x" + Date.now();
     dados.trocas[id] = { id, kid: c.id, rec: r.id, texto: r.texto, custo: r.custo, data: new Date().toISOString(), status: "pedido" };
-    salvar(); confete(30); vinheta("loja"); toast("Pedido feito! Agora é com os pais 🎁"); render();
+    salvar(); confete(30); vinheta("loja"); toast("Prêmio escolhido! Agora é com os pais 🎁"); render();
   });
 }
 
@@ -1341,15 +1341,15 @@ function renderPais(){
 
 
     ${(() => { const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
-      return `<div class="bloco"><b class="quem">${icone("loja_pedidos", 26)} Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
+      return `<div class="bloco"><b class="quem">${icone("loja_pedidos", 26)} Prêmios escolhidos</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
         <span class="acoes"><button class="ed" data-entregar="${t.id}">entregue ✓</button><button class="x" data-cancelar="${t.id}">cancelar</button></span>
-        <small>⭐ ${t.custo} · pedido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as estrelas.</small></div>`).join("")
-        : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nenhum pedido esperando. Quando uma criança trocar estrelas na loja, aparece aqui.</small>`}</div>`; })()}
+        <small>⭐ ${t.custo} · escolhido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as moedas.</small></div>`).join("")
+        : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nada esperando. Quando uma criança escolher um prêmio, aparece aqui.</small>`}</div>`; })()}
 
-    <div class="bloco"><b class="quem">${icone("loja_presente", 26)} Recompensas</b>
-      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na loja: a criança junta moedas e troca quando quiser.</small>
+    <div class="bloco"><b class="quem">${icone("loja_presente", 26)} Prêmios</b>
+      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na aba Prêmios: a criança junta moedas e escolhe quando quiser.</small>
       ${dados.recompensas.map(r => `<div class="item">${ico(r.icone, 28)}<span style="flex:1">${esc(r.texto)}</span>
-        <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Custo em estrelas">⭐
+        <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Moedas necessárias">⭐
         <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
       ${seletorIcone("prIc", "loja_presente", ["recompensa_", "loja_presente"])}
       <div class="row"><input id="prNova" placeholder="Nova recompensa. Ex.: Ir ao cinema"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
@@ -1508,11 +1508,11 @@ function renderPais(){
   $("#prAdd").onclick = () => {
     const n = $("#prNova").value.trim(); if (!n) return toast("Escreve a recompensa ✍️");
     dados.recompensas.push({ id: "r" + Date.now(), texto: n, icone: $("#prIc").value || "loja_presente", custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) });
-    salvar(); toast("Recompensa na loja 🎁"); render();
+    salvar(); toast("Prêmio adicionado 🎁"); render();
   };
   el.querySelectorAll("[data-custo]").forEach(inp => inp.onchange = () => {
     const r = dados.recompensas.find(x => x.id === inp.dataset.custo); if (!r) return;
-    r.custo = Math.max(1, parseInt(inp.value, 10) || r.custo); salvar(); toast("Preço atualizado ⭐"); });
+    r.custo = Math.max(1, parseInt(inp.value, 10) || r.custo); salvar(); toast("Moedas atualizadas ⭐"); });
   el.querySelectorAll("[data-del-r]").forEach(b => b.onclick = () => {
     if (dados.recompensas.length <= 1) return toast("Deixe pelo menos uma recompensa");
     const r = dados.recompensas.find(x => x.id === b.dataset.delR);
@@ -1520,7 +1520,7 @@ function renderPais(){
     if (r && dados.premio.texto === r.texto) dados.premio.texto = dados.recompensas[0].texto;
     salvar(); render(); });
   el.querySelectorAll("[data-entregar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.entregar]; if (t) { t.status = "entregue"; salvar(); toast("Entregue! 🎉"); render(); } });
-  el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Pedido cancelado, estrelas devolvidas"); render(); } });
+  el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Cancelado, moedas devolvidas"); render(); } });
   if ($("#sairConta")) $("#sairConta").onclick = sairDaConta;
   $("#prefSom").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); renderPais(); };
   $("#prefCalmo").onclick = () => { PREF.calmo = !PREF.calmo; gravarPref(); aplicarMovimento(); renderPais(); };
@@ -1743,10 +1743,10 @@ function renderResultados(){
 const ABAS = {
   missoes: { icone: "tarefa", nome: "Hoje" },
   avatar: { icone: "avatar", nome: "Avatar" },
-  loja: { icone: "loja", nome: "Loja" },
+  loja: { icone: "loja_presente", nome: "Prêmios" },
   mundos: { icone: "mundo", nome: "Mundos" }
 };
-const ABAS_PAINEL = [ { id: "rotina", nome: "Rotina" }, { id: "loja", nome: "Loja" }, { id: "resultados", nome: "Resultados" }, { id: "familia", nome: "Família" } ];
+const ABAS_PAINEL = [ { id: "rotina", nome: "Rotina" }, { id: "loja", nome: "Prêmios" }, { id: "resultados", nome: "Resultados" }, { id: "familia", nome: "Família" } ];
 function montarNav(){
   const abas = ["missoes", "avatar", "loja", "mundos"];
   $("#nav").innerHTML = abas.map(t => `<button data-t="${t}">${t === "avatar" ? `<span class="navAv">${avatarHTML(crianca(criancaAtiva), 30) || icone("tarefa", 30)}</span>` : `<span>${icone(ABAS[t].icone, 30)}</span>`}${ABAS[t].nome}</button>`).join("");
@@ -1775,7 +1775,7 @@ function renderPainelTopo(){
       ${icone("painel_familia", 34)}<b>Painel da família</b></div>
     <div class="abasPainel" role="tablist">${ABAS_PAINEL.map(a => `<button role="tab" aria-selected="${a.id === painelAba}" class="${a.id === painelAba ? "on" : ""}" data-aba="${a.id}">${a.nome}</button>`).join("")}</div>
     ${ultimo && (paisLiberado || NUVEM.papel === "pais") ? `<div class="alertaPedido">${ico(dados.recompensas.find(r => r.id === ultimo.rec)?.icone || "loja_presente", 34)}
-      <span>${esc(crianca(ultimo.kid)?.nome || "Alguém")} pediu "${esc(ultimo.texto)}"${pend.length > 1 ? ` e mais ${pend.length - 1}` : ""}</span>
+      <span>${esc(crianca(ultimo.kid)?.nome || "Alguém")} escolheu "${esc(ultimo.texto)}"${pend.length > 1 ? ` e mais ${pend.length - 1}` : ""}</span>
       <button class="ed" id="verPedidos">ver</button></div>` : ""}`;
   $("#voltarCriancas").onclick = () => { painelSecao = ""; irPara("missoes"); };
   document.querySelectorAll(".abasPainel [data-aba]").forEach(b => b.onclick = () => { painelAba = b.dataset.aba; painelSecao = ""; irPara("painel"); });
