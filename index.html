@@ -554,6 +554,10 @@
   .premioIc{border:0}
   .codigoFam{border:0}
   input,select{border-width:1.5px}
+  /* topo compacto (Avatar, Loja): só o nome, sem repetir o personagem que já aparece na página */
+  #hero.compacto{min-height:78px}
+  #hero.compacto .heroLinha{padding:12px 208px 0 2px}
+  #hero.compacto .oi{font-size:1.5rem}
 </style>
 </head>
 <body>
@@ -907,8 +911,8 @@ function renderCabecalho(){
   if (!c) hero.innerHTML = `${botoes}<div class="heroLinha"><div class="heroTx"><span class="oi">Missão Casa</span><span class="dataH">${esc(dataHoje())}</span></div></div>`;
   else hero.innerHTML = `${botoes}
     <div class="heroLinha">
-      <button class="heroAv" id="heroAv" aria-label="${NUVEM.papel === "apoio" ? "Personagem de " + esc(c.nome) : "Mudar meu personagem"}">${avatarHTML(c, compacto ? 60 : 136)}
-        ${NUVEM.papel !== "apoio" ? `<span class="lapis">${icone("acao_editar_personagem", compacto ? 16 : 22)}</span>` : ""}</button>
+      ${compacto ? "" : `<button class="heroAv" id="heroAv" aria-label="${NUVEM.papel === "apoio" ? "Personagem de " + esc(c.nome) : "Mudar meu personagem"}">${avatarHTML(c, 136)}
+        ${NUVEM.papel !== "apoio" ? `<span class="lapis">${icone("acao_editar_personagem", 22)}</span>` : ""}</button>`}
       <div class="heroTx">
         <span class="oi">${compacto ? esc(c.nome) : "Oi, " + esc(c.nome) + "!"}</span>
         <span class="dataH">${esc(dataHoje())}</span>
