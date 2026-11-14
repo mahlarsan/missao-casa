@@ -118,8 +118,8 @@
   /* Barra de navegação */
   nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;justify-content:space-around;
       padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:2px solid var(--borda);z-index:5}
-  nav button{background:none;border:2px solid transparent;font-weight:900;font-size:.85rem;color:var(--suave);display:flex;flex-direction:column;
-             align-items:center;gap:2px;padding:6px 18px;border-radius:16px;cursor:pointer;min-width:84px}
+  nav button{background:none;border:2px solid transparent;font-weight:900;font-size:.78rem;color:var(--suave);display:flex;flex-direction:column;
+             align-items:center;gap:2px;padding:6px 4px;border-radius:16px;cursor:pointer;flex:1;max-width:110px}
   nav button span{font-size:1.8rem;line-height:1}
   nav button.on{color:var(--azul-esc);background:#DDF4FF;border-color:#84D8FF}
   .tela{display:none}.tela.on{display:block;animation:entra .25s}
@@ -173,6 +173,8 @@
   .erro{color:#EA2B2B;font-weight:800;min-height:1.2em;margin:6px 0}
   .codigoFam{font-family:var(--titulo);font-weight:700;font-size:2rem;letter-spacing:6px;color:var(--azul-esc);background:#DDF4FF;border-radius:16px;padding:8px;text-align:center;margin:8px 0}
   .nuvem{font-size:.8rem;font-weight:800;opacity:.9;margin-top:2px}
+  .rot{color:var(--suave);font-weight:800;display:block;margin-top:10px}
+  .codigoFam.conv{font-size:1.25rem;letter-spacing:2px;user-select:all}
 
   /* Resultados */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
@@ -189,6 +191,32 @@
   .lista-r li:last-child{border:0}
   .lista-r li span{color:var(--suave)}
   .sub{font-family:var(--titulo);font-weight:600;font-size:1.05rem;margin:14px 0 2px;display:block}
+
+  /* Loja */
+  .cofre{display:flex;align-items:center;gap:14px;background:var(--amarelo);border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:14px 18px;margin-top:14px;color:#5A4300}
+  .cofre .moeda{font-size:2.6rem}
+  .cofre small{display:block;font-weight:800}
+  .cofre b{font-family:var(--titulo);font-weight:700;font-size:2.2rem;line-height:1;color:#3C2E00}
+  .vitrine{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .produto{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:8px}
+  .produto .ptx{font-weight:900;font-size:1rem;flex:1}
+  .produto .preco{font-family:var(--titulo);font-weight:600;font-size:1.15rem;color:#B07A00}
+  .produto.falta{opacity:.75}
+  .trocar{background:var(--verde);color:#fff;border:0;border-bottom:4px solid var(--verde-esc);border-radius:14px;padding:10px;font-weight:900;font-size:.95rem;cursor:pointer}
+  .trocar.conf{background:var(--laranja);border-color:#D97F00}
+  .trocar:disabled{background:var(--borda);border-color:var(--borda-esc);color:var(--suave);cursor:default}
+  .pedido{display:flex;justify-content:space-between;gap:8px;background:var(--card);border:2px solid var(--borda);border-radius:16px;padding:10px 12px;margin-bottom:8px;font-weight:800}
+  .pedido .st{white-space:nowrap;color:var(--suave)}
+  .pedido .st.entregue{color:var(--verde-esc)}
+  /* Pausa, áudio, tipos de agenda */
+  .aviso.pausa{background:#FFF4CC;color:#8A6200}
+  .pausaTag{background:#FFF4CC;color:#8A6200;border-radius:12px;padding:6px 10px;font-weight:800;font-size:.9rem;margin-bottom:6px}
+  .som{background:#F3E5FF;border:2px solid #E3C7FF;border-bottom-width:4px;border-radius:14px;width:44px;height:44px;font-size:1.2rem;cursor:pointer;flex:none}
+  .som:active{transform:translateY(2px);border-bottom-width:2px}
+  .atv{cursor:pointer}
+  .atv .hora{background:color-mix(in srgb, var(--t, var(--roxo)) 16%, white);color:color-mix(in srgb, var(--t, var(--roxo)) 80%, black)}
+  .nomeAtv{flex:1}
+  .nomeAtv small{display:block;font-size:.78rem;color:var(--suave);font-weight:800}
 
   @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 </style>
@@ -208,6 +236,11 @@
     <div id="agendaDia"></div>
     <h2 id="titMissoes">Missões</h2>
     <div id="listaMissoes"></div>
+  </section>
+
+  <!-- Tela: Loja -->
+  <section class="tela" id="t-loja">
+    <div id="lojaConteudo"></div>
   </section>
 
   <!-- Tela 2: Placar -->
@@ -249,6 +282,48 @@ const PERIODOS = [
   { id: "noite", nome: "Noite", icone: "🌙" },
   { id: "livre", nome: "Qualquer hora", icone: "⏰" }
 ];
+const TIPOS_ATV = [
+  { id: "escola", nome: "Escola", icone: "🏫", cor: "#1CB0F6" },
+  { id: "atividade", nome: "Aula / atividade", icone: "🎨", cor: "#CE82FF" },
+  { id: "saude", nome: "Saúde", icone: "🩺", cor: "#FF4B4B" },
+  { id: "passeio", nome: "Passeio / festa", icone: "🎈", cor: "#FF9600" },
+  { id: "outro", nome: "Outro", icone: "📌", cor: "#777777" }
+];
+const MOTIVOS_PAUSA = [
+  { id: "ferias", nome: "Férias", icone: "🏖️" },
+  { id: "feriado", nome: "Feriado", icone: "🎉" },
+  { id: "doente", nome: "Doente", icone: "🤒" },
+  { id: "viagem", nome: "Viagem", icone: "✈️" },
+  { id: "semaula", nome: "Sem aula", icone: "📚" },
+  { id: "outro", nome: "Outro", icone: "⏸️" }
+];
+// Sugestões de missões por idade
+const SUGESTOES = {
+  "3 a 5 anos": [
+    { nome: "Guardar os brinquedos", icone: "🧸", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Escovar os dentes", icone: "🪥", pontos: 5, periodos: ["manha","noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Colocar a roupa suja no cesto", icone: "🧺", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Ajudar a pôr a mesa", icone: "🍽️", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Regar as plantas", icone: "🪴", pontos: 5, periodos: ["livre"], dias: [3,6] },
+    { nome: "Dar comida ao bichinho", icone: "🐶", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6] }
+  ],
+  "6 a 8 anos": [
+    { nome: "Arrumar a cama", icone: "🛏️", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Arrumar a mochila", icone: "🎒", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4] },
+    { nome: "Fazer a lição de casa", icone: "📚", pontos: 10, periodos: ["tarde"], dias: [1,2,3,4,5] },
+    { nome: "Tirar o prato da mesa", icone: "🍽️", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Separar a roupa do dia seguinte", icone: "👕", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4] },
+    { nome: "Ler 15 minutos", icone: "📖", pontos: 10, periodos: ["noite"], dias: [0,1,2,3,4,5,6] }
+  ],
+  "9 a 12 anos": [
+    { nome: "Lavar a louça", icone: "🧽", pontos: 15, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
+    { nome: "Tirar o lixo", icone: "🗑️", pontos: 10, periodos: ["noite"], dias: [1,3,5] },
+    { nome: "Arrumar o quarto", icone: "🧹", pontos: 15, periodos: ["livre"], dias: [6] },
+    { nome: "Estender ou dobrar roupa", icone: "👚", pontos: 15, periodos: ["livre"], dias: [3,6] },
+    { nome: "Estudar para a prova", icone: "✏️", pontos: 15, periodos: ["tarde"], dias: [1,2,3,4] },
+    { nome: "Ajudar a preparar o lanche", icone: "🥪", pontos: 10, periodos: ["tarde"], dias: [6,0] }
+  ]
+};
 const NOME_DIA_LONGO = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
 
 const PADRAO = {
@@ -266,20 +341,22 @@ const PADRAO = {
     { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#CE82FF" }
   ],
   atividades: [
-    { id: "a1", nome: "Escola", icone: "🏫", hora: "07:30", para: "todos", dias: UTEIS },
-    { id: "a2", nome: "Curumim", icone: "🌳", hora: "13:00", para: "todos", dias: UTEIS }
+    { id: "a1", nome: "Escola", icone: "🏫", tipo: "escola", hora: "07:30", para: "todos", dias: UTEIS },
+    { id: "a2", nome: "Curumim", icone: "🌳", tipo: "atividade", hora: "13:00", para: "todos", dias: UTEIS }
   ],
   premio: { texto: "Escolher o filme de sexta + pipoca 🍿", meta: 150 },
   recompensas: [
-    "Escolher o filme de sexta + pipoca 🍿",
-    "Sorvete no fim de semana 🍦",
-    "Escolher o jantar de sábado 🍕",
-    "30 minutos a mais de tela 📱",
-    "Dormir mais tarde no sábado 🌙",
-    "Passeio no parque 🌳",
-    "Noite do pijama com uma amiga 🛏️",
-    "Escolher o jogo em família 🎲"
+    { id: "r1", texto: "Escolher o filme de sexta + pipoca 🍿", custo: 60 },
+    { id: "r2", texto: "Sorvete no fim de semana 🍦", custo: 40 },
+    { id: "r3", texto: "Escolher o jantar de sábado 🍕", custo: 50 },
+    { id: "r4", texto: "30 minutos a mais de tela 📱", custo: 30 },
+    { id: "r5", texto: "Dormir mais tarde no sábado 🌙", custo: 50 },
+    { id: "r6", texto: "Passeio no parque 🌳", custo: 40 },
+    { id: "r7", texto: "Noite do pijama com uma amiga 🛏️", custo: 100 },
+    { id: "r8", texto: "Escolher o jogo em família 🎲", custo: 30 }
   ],
+  pausas: [],
+  trocas: {},   // pedidos da loja: { id: { kid, rec, texto, custo, data, status: "pedido" | "entregue" | "cancelado" } }
   feitos: {} // { "2026-11-13": { "maya": ["t1","t3"] } }
 };
 let dados = carregar();
@@ -290,6 +367,9 @@ let editando = null;              // { tipo: "c" | "t", id }
 let diasForm = [];           // dias marcados no formulário de missão
 let periodosForm = [];    // períodos marcados no formulário de missão
 let diasAtv = [];           // dias marcados no formulário de agenda
+let atvRepete = true;             // formulário de agenda: repete toda semana ou só num dia
+let idadeSug = "6 a 8 anos";      // faixa escolhida nas sugestões
+let confirmaTroca = null;         // recompensa aguardando o segundo toque
 
 function carregar(){
   let d;
@@ -303,7 +383,12 @@ function normalizar(d){
   d.premio = d.premio || { texto: PADRAO.premio.texto, meta: 150 };
   d.atividades = d.atividades || [];
   if (!Array.isArray(d.recompensas)) d.recompensas = JSON.parse(JSON.stringify(PADRAO.recompensas));
-  if (d.premio?.texto && !d.recompensas.includes(d.premio.texto)) d.recompensas.unshift(d.premio.texto);
+  // versão anterior guardava recompensas como texto; agora cada uma tem custo em estrelas
+  d.recompensas = d.recompensas.map((r, i) => typeof r === "string" ? { id: "r" + i + "_" + r.length, texto: r, custo: 50 } : r);
+  if (d.premio?.texto && !d.recompensas.some(r => r.texto === d.premio.texto)) d.recompensas.unshift({ id: "rp", texto: d.premio.texto, custo: 50 });
+  d.pausas = Array.isArray(d.pausas) ? d.pausas : [];
+  d.trocas = d.trocas && typeof d.trocas === "object" ? d.trocas : {};
+  d.atividades.forEach(a => { if (!a.tipo) a.tipo = /escola|col[eé]gio/i.test(a.nome) ? "escola" : "atividade"; if (!Array.isArray(a.dias)) a.dias = []; });
   // versão anterior tinha revezamentos separados: viram missões com "revezar"
   if (Array.isArray(d.revezamentos)) {
     d.revezamentos.forEach((r, i) => {
@@ -363,8 +448,14 @@ function vezDe(t, d = new Date()){
 }
 const chaveDe = (t, p) => p === "livre" ? t.id : t.id + "@" + p;
 const tarefaDaChave = k => dados.tarefas.find(t => t.id === String(k).split("@")[0]);
+function pausaDe(idCrianca, d, oque){
+  const dia = isoDia(d);
+  return dados.pausas.find(p => p.inicio <= dia && dia <= p.fim && (p.para === "todos" || p.para === idCrianca)
+    && (p.oque === "tudo" || p.oque === oque));
+}
 function tarefasDe(idCrianca, d = new Date()){
   const ordemP = PERIODOS.map(p => p.id);
+  if (pausaDe(idCrianca, d, "missoes")) return [];
   return dados.tarefas.filter(t => {
     if (!t.dias.includes(d.getDay())) return false;
     if (t.para === "todos") return t.revezar && dados.criancas.length > 1 ? vezDe(t, d) === idCrianca : true;
@@ -373,11 +464,17 @@ function tarefasDe(idCrianca, d = new Date()){
     .sort((a, b) => ordemP.indexOf(a.periodo) - ordemP.indexOf(b.periodo));
 }
 function atividadesDe(idCrianca, d = new Date()){
-  return dados.atividades.filter(a => a.dias.includes(d.getDay()) && (a.para === "todos" || a.para === idCrianca))
+  const pausada = !!pausaDe(idCrianca, d, "agenda"), dia = isoDia(d);
+  return dados.atividades.filter(a => (a.para === "todos" || a.para === idCrianca)
+      && (a.data ? a.data === dia : (!pausada && a.dias.includes(d.getDay()))))
     .sort((a, b) => (a.hora || "99").localeCompare(b.hora || "99"));
 }
 const feitosEm = (dia, id) => (dados.feitos[dia] && dados.feitos[dia][id]) || [];
 function pontosDoDia(dia, id){ return feitosEm(dia, id).reduce((s, k) => s + (tarefaDaChave(k)?.pontos || 0), 0); }
+// Estrelas da loja: tudo o que a criança já ganhou menos o que já trocou
+function estrelasGanhas(id){ return Object.keys(dados.feitos).reduce((s, dia) => s + pontosDoDia(dia, id), 0); }
+function estrelasGastas(id){ return Object.values(dados.trocas).filter(t => t.kid === id && t.status !== "cancelado").reduce((s, t) => s + (Number(t.custo) || 0), 0); }
+const saldo = id => estrelasGanhas(id) - estrelasGastas(id);
 function pontosSemana(id){ return diasDaSemana().reduce((s, d) => s + pontosDoDia(isoDia(d), id), 0); }
 function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.key)); }
 // Sequência de dias completos. Dias sem missão (folga) não contam e não quebram.
@@ -442,17 +539,27 @@ function renderMissoes(){
   const r = rotuloDia(diaSel);
   $("#titMissoes").textContent = `Missões de ${r}, ${c.nome}!`;
   const atvs = atividadesDe(c.id, diaSel);
-  $("#agendaDia").innerHTML = `<div class="agenda"><b>📅 Agenda de ${r}</b>${atvs.length ? atvs.map(a => `
-    <div class="atv"><span class="hora">${esc(a.hora || "—")}</span><span class="ic">${esc(a.icone)}</span>${esc(a.nome)}</div>`).join("")
+  const tipoDe = a => TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4];
+  const pAg = pausaDe(c.id, diaSel, "agenda");
+  $("#agendaDia").innerHTML = `<div class="agenda"><b>📅 Agenda de ${r}</b>
+    ${pAg ? `<div class="pausaTag">${esc(iconeMotivo(pAg))} ${esc(nomeMotivo(pAg))}: agenda da semana pausada</div>` : ""}
+    ${atvs.length ? atvs.map(a => `
+    <div class="atv" data-falar="${esc(semEmoji(a.nome) + (a.hora ? ", às " + a.hora.replace(":", " e ") : ""))}" style="--t:${tipoDe(a).cor}">
+      <span class="hora">${esc(a.hora || "—")}</span><span class="ic">${esc(a.icone)}</span>
+      <span class="nomeAtv">${esc(a.nome)}<small>${[tipoDe(a).nome.toLowerCase() === a.nome.toLowerCase() ? "" : tipoDe(a).nome, a.data ? "só nesse dia" : ""].filter(Boolean).map(esc).join(" · ")}</small></span></div>`).join("")
     : `<div style="color:var(--suave);font-weight:700">Nada marcado. Dia livre! 🌈</div>`}</div>`;
+  document.querySelectorAll(".atv[data-falar]").forEach(el => el.onclick = () => falar(el.dataset.falar));
   const ts = tarefasDe(c.id, diaSel), feitas = feitosEm(isoDia(diaSel), c.id);
   const futuro = ehFuturo(diaSel), passado = !futuro && !ehHoje(diaSel);
-  const aviso = futuro ? `<div class="aviso">🗓️ Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
+  const pM = pausaDe(c.id, diaSel, "missoes");
+  const aviso = pM ? `<div class="aviso pausa">${esc(iconeMotivo(pM))} <b>${esc(nomeMotivo(pM))}</b>: missões pausadas até ${esc(dataCurta(pM.fim))} 💛</div>`
+              : futuro ? `<div class="aviso">🗓️ Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
               : passado ? `<div class="aviso">⏪ Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
   const card = t => `
     <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
       <div class="ic">${esc(t.icone)}</div>
       <div class="tx">${esc(t.nome)}<small><span class="pill">⭐ +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">🔄 sua vez!</span>` : ""}</small></div>
+      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " estrelas.")}">🔊</button>` : ""}
       <div class="ok">${feitas.includes(t.key)?"✓":""}</div>
     </div>`;
   const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
@@ -463,8 +570,10 @@ function renderMissoes(){
     <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
   $("#listaMissoes").innerHTML = progresso + aviso + (ts.length ? grupos.map(g => `
     <div class="periodo">${g.p.icone} ${g.p.nome}<span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
-    ${g.itens.map(card).join("")}`).join("") : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
+    ${g.itens.map(card).join("")}`).join("") : pM ? "" : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
+  document.querySelectorAll(".missao .som").forEach(b => b.onclick = e => { e.stopPropagation(); falar(b.dataset.falar); });
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
+    if (NUVEM.papel === "apoio") return toast("Quem marca é a criança 😉");
     if (!ehHoje(diaSel)) return toast(futuro ? "Esse dia ainda não chegou 😉" : "Só dá pra marcar as de hoje");
     alternar(el.dataset.id);
   });
@@ -485,7 +594,46 @@ function alternar(key){
   salvar(); render();
 }
 
+const iconeMotivo = p => (MOTIVOS_PAUSA.find(m => m.id === p.motivo) || MOTIVOS_PAUSA[5]).icone;
+const nomeMotivo = p => p.texto || (MOTIVOS_PAUSA.find(m => m.id === p.motivo) || MOTIVOS_PAUSA[5]).nome;
+const dataCurta = iso => new Date(iso + "T12:00:00").toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
+
+/* ===== Loja de recompensas ===== */
+function renderLoja(){
+  const el = $("#lojaConteudo"), c = crianca(criancaAtiva);
+  if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
+  const s = saldo(c.id);
+  const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
+  el.innerHTML = `
+    <div class="cofre"><div class="moeda">⭐</div><div><small>Estrelas de ${esc(c.nome)}</small><b>${s}</b></div></div>
+    <h2>🛍️ Loja de recompensas</h2>
+    <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
+      const pode = s >= r.custo, conf = confirmaTroca === r.id;
+      return `<div class="produto ${pode ? "" : "falta"}">
+        <div class="ptx">${esc(r.texto)}</div>
+        <div class="preco">⭐ ${r.custo}</div>
+        ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "Confirmar?" : pode ? "Trocar" : `Faltam ${r.custo - s}`}</button>`}
+      </div>`; }).join("")}</div>
+    ${pedidos.length ? `<h2>📦 Meus pedidos</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
+      <span class="st ${t.status}">${t.status === "entregue" ? "✅ Recebido" : "⏳ Esperando os pais"}</span></div>`).join("")}` : ""}`;
+  el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
+    const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
+    if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Trocar " + r.custo + " estrelas por " + semEmoji(r.texto) + "?"); return renderLoja(); }
+    confirmaTroca = null;
+    if (saldo(c.id) < r.custo) return toast("Estrelas não são suficientes");
+    const id = "x" + Date.now();
+    dados.trocas[id] = { id, kid: c.id, rec: r.id, texto: r.texto, custo: r.custo, data: new Date().toISOString(), status: "pedido" };
+    salvar(); confete(40); toast("Pedido feito! Agora é com os pais 🎁"); render();
+  });
+}
+
 function renderPlacar(){
+  if (!$("#sairAparelho") && (NUVEM.papel === "apoio" || NUVEM.papel === "crianca")) {
+    const b = document.createElement("button"); b.id = "sairAparelho"; b.className = "link"; b.style.cssText = "background:none;border:0;color:var(--suave);font-weight:800;margin:10px auto;display:block;text-decoration:underline;cursor:pointer";
+    b.textContent = "Sair deste aparelho"; let n = 0;
+    b.onclick = () => { if (++n < 2) { b.textContent = "Toque de novo pra sair"; return; } sairDaConta(); };
+    $("#t-placar").appendChild(b);
+  }
   const meta = Number(dados.premio.meta) || 100;
   $("#premio").innerHTML = `🎁 Prêmio da semana<b>${esc(dados.premio.texto)}</b>Quem chegar a ${meta} pontos até domingo ganha!`;
   const dias = diasDaSemana();
@@ -551,15 +699,43 @@ function renderPais(){
       </div>
     </div>
 
+    <div class="bloco"><b>✨ Sugestões de missões por idade</b>
+      <div class="chips">${Object.keys(SUGESTOES).map(f => `<button class="chip ${f === idadeSug ? "on" : ""}" data-idade="${f}">${f}</button>`).join("")}</div>
+      ${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
+        return `<div class="item">${sg.icone} ${esc(sg.nome)}<span class="acoes">${ja ? `<span style="color:var(--verde-esc);font-weight:900">✓ já tem</span>` : `<button class="ed" data-sug="${i}">+ adicionar</button>`}</span>
+        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).icone).join(" ")} · ${sg.pontos} pts</small></div>`; }).join("")}
+    </div>
+
+    <div class="bloco"><b>⏸️ Pausas (férias, feriado, doença)</b>
+      ${dados.pausas.length ? dados.pausas.slice().sort((a, b) => a.inicio.localeCompare(b.inicio)).map(pz => `<div class="item">${esc(iconeMotivo(pz))} ${esc(nomeMotivo(pz))}
+          <span class="acoes"><button class="x" data-del-p="${pz.id}">excluir</button></span>
+          <small>${esc(dataCurta(pz.inicio))}${pz.fim !== pz.inicio ? " a " + esc(dataCurta(pz.fim)) : ""} · pausa ${pz.oque === "tudo" ? "missões e agenda" : pz.oque === "agenda" ? "só a agenda" : "só as missões"} · ${pz.para === "todos" ? "todas as crianças" : "só " + esc(crianca(pz.para)?.nome || "?")}</small></div>`).join("")
+        : `<small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Nenhuma pausa marcada. Num dia pausado, a sequência 🔥 não quebra.</small>`}
+      <div class="chips">${MOTIVOS_PAUSA.map((m, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-motivo="${m.id}">${m.icone} ${m.nome}</button>`).join("")}</div>
+      <div class="row"><label style="flex:1"><small style="color:var(--suave);font-weight:800">De</small><input id="pIni" type="date" value="${hojeStr()}"></label>
+        <label style="flex:1"><small style="color:var(--suave);font-weight:800">Até</small><input id="pFim" type="date" value="${hojeStr()}"></label></div>
+      <div class="row"><select id="pOque"><option value="missoes">Pausar as missões</option><option value="tudo">Pausar missões e agenda</option><option value="agenda">Pausar só a agenda</option></select>
+        <select id="pPara">${opQuem("todos")}</select></div>
+      <button class="btn" id="pAdd">Adicionar pausa</button>
+    </div>
+
     <div class="bloco"><b>📅 Agenda (escola, aulas, atividades)</b>
       ${dados.atividades.map(a => `<div class="item">${esc(a.icone)} ${esc(a.nome)}
           <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">excluir</button></span>
-          <small>${resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
+          <small>${(TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4]).icone} ${a.data ? "dia " + esc(dataCurta(a.data)) + (a.data < hojeStr() ? " (já passou)" : "") : resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
       <div class="${aEd ? "editando" : ""}" id="formAtv">
         ${aEd ? `<b>✏️ Editando: ${esc(aEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova atividade</b>`}
         <div class="row"><input id="aIc" placeholder="Emoji" style="max-width:80px" value="${esc(aEd?.icone || "🎹")}"><input id="aNome" placeholder="Ex.: Aula de piano, EMIA" value="${esc(aEd?.nome || "")}"></div>
-        <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
-        ${chipsDias("a", diasAtv)}
+        <select id="aTipo">${TIPOS_ATV.map(x => `<option value="${x.id}" ${x.id === (aEd?.tipo || "atividade") ? "selected" : ""}>${x.icone} ${x.nome}</option>`).join("")}</select>
+        <div class="chips">
+          <button class="chip ${atvRepete ? "on" : ""}" data-rep="1">🔁 Toda semana</button>
+          <button class="chip ${atvRepete ? "" : "on"}" data-rep="0">📍 Só num dia</button>
+        </div>
+        <div id="aSemanal" style="${atvRepete ? "" : "display:none"}">
+          <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
+          ${chipsDias("a", diasAtv)}
+        </div>
+        <div id="aUnico" style="${atvRepete ? "display:none" : ""}"><input id="aData" type="date" value="${esc(aEd?.data || "")}"></div>
         <div class="row"><input id="aHora" type="time" value="${esc(aEd?.hora || "")}" style="max-width:130px"><select id="aPara">${opQuem(aEd?.para || "todos")}</select></div>
         <button class="btn" id="aSalvar">${aEd ? "Salvar alterações" : "Adicionar na agenda"}</button>
         ${aEd ? `<button class="btn sec" id="aCancelar">Cancelar</button>` : ""}
@@ -578,20 +754,34 @@ function renderPais(){
     </div>
 
 
-    <div class="bloco"><b>🎁 Prêmio da semana</b>
-      <small style="color:var(--suave);font-weight:800;display:block;margin-top:6px">Escolha a recompensa</small>
-      <select id="prTx">${dados.recompensas.map(r => `<option ${r === dados.premio.texto ? "selected" : ""}>${esc(r)}</option>`).join("")}</select>
-      <small style="color:var(--suave);font-weight:800">Pontos pra ganhar</small>
-      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar prêmio</button></div>
-      <small style="color:var(--suave);font-weight:800;display:block;margin-top:10px">Incluir nova recompensa</small>
-      <div class="row"><input id="prNova" placeholder="Ex.: Ir ao cinema 🎬"><button class="btn sec" id="prAdd" style="max-width:110px;margin-top:4px">Incluir</button></div>
-      <button class="x" id="prDel" style="margin-top:8px">excluir a recompensa selecionada</button></div>
+    ${(() => { const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
+      return `<div class="bloco"><b>📦 Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${esc(crianca(t.kid)?.avatar || "🙂")} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
+        <span class="acoes"><button class="ed" data-entregar="${t.id}">entregue ✓</button><button class="x" data-cancelar="${t.id}">cancelar</button></span>
+        <small>⭐ ${t.custo} · pedido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as estrelas.</small></div>`).join("")
+        : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nenhum pedido esperando. Quando uma criança trocar estrelas na loja, aparece aqui.</small>`}</div>`; })()}
+
+    <div class="bloco"><b>🎁 Recompensas</b>
+      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na loja: a criança junta estrelas e troca quando quiser.</small>
+      ${dados.recompensas.map(r => `<div class="item"><span style="flex:1">${esc(r.texto)}</span>
+        <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Custo em estrelas">⭐
+        <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
+      <div class="row"><input id="prNova" placeholder="Nova recompensa. Ex.: Ir ao cinema 🎬"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
+      <button class="btn sec" id="prAdd">Incluir recompensa</button>
+      <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece no Placar)</small>
+      <select id="prTx">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
+      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Pontos na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
 
     ${NUVEM.ativo ? `
     <div class="bloco"><b>👨‍👩‍👧 Nossa família</b>
-      <small style="color:var(--suave);font-weight:800;display:block;margin-top:6px">Código da família: use no celular ou tablet das crianças, em "Sou criança".</small>
+      <small class="rot">🧒 Código das crianças: no celular ou tablet delas, em "Sou criança"</small>
       <div class="codigoFam">${esc(NUVEM.codigo)}</div>
-      <small style="color:var(--suave);font-weight:700;display:block">Conectado como ${esc(NUVEM.email || "responsável")} · ${(NUVEM.aparelhos || 0)} aparelho(s) de criança conectado(s)</small>
+      ${NUVEM.convites ? `
+      <small class="rot">🧑‍🍼 Convite de responsável: pro pai, mãe ou outro responsável. Dá acesso total ao painel.</small>
+      <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.resp)}</div>
+      <small class="rot">👵 Convite da rede de apoio: avós, babá, tios. Só acompanham a rotina, sem mudar nada.</small>
+      <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.apoio)}</div>
+      <button class="x" id="novosConv" style="margin-top:6px">gerar convites novos (os antigos param de funcionar)</button>` : ""}
+      <small style="color:var(--suave);font-weight:700;display:block;margin-top:10px">Conectado como ${esc(NUVEM.email || "responsável")} · ${NUVEM.nPais} responsável(is) · ${(NUVEM.aparelhos || 0)} aparelho(s) de criança · ${NUVEM.nApoio} da rede de apoio</small>
       <button class="btn sec" id="sairConta">Sair da conta</button></div>` : `
     <div class="bloco"><b>🔑 Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
     <button class="btn sec" id="sair">Sair do painel</button>`}`;
@@ -609,19 +799,45 @@ function renderPais(){
     el.querySelectorAll(`[data-dia][data-g="${g}"]`).forEach(x => x.classList.toggle("on", getD(g).includes(Number(x.dataset.dia))));
   });
 
+  // sugestões
+  el.querySelectorAll("[data-idade]").forEach(b => b.onclick = () => { idadeSug = b.dataset.idade; renderPais(); });
+  el.querySelectorAll("[data-sug]").forEach(b => b.onclick = () => {
+    const sg = SUGESTOES[idadeSug][Number(b.dataset.sug)], cores = ["#1CB0F6","#FF86D0","#58CC02","#FF9600","#CE82FF","#FFC800"];
+    dados.tarefas.push({ id: "t" + Date.now(), para: "todos", cor: cores[dados.tarefas.length % cores.length], ...JSON.parse(JSON.stringify(sg)) });
+    salvar(); toast("Missão adicionada ⭐ Dá pra editar lá em cima"); render();
+  });
+
+  // pausas
+  let motivoSel = MOTIVOS_PAUSA[0].id;
+  el.querySelectorAll("[data-motivo]").forEach(b => b.onclick = () => { motivoSel = b.dataset.motivo;
+    el.querySelectorAll("[data-motivo]").forEach(x => x.classList.toggle("on", x === b)); });
+  $("#pAdd").onclick = () => {
+    const ini = $("#pIni").value, fim = $("#pFim").value || ini;
+    if (!ini) return toast("Escolha a data de início 📅");
+    if (fim < ini) return toast("A data final vem antes da inicial 🤔");
+    dados.pausas.push({ id: "p" + Date.now(), motivo: motivoSel, inicio: ini, fim, oque: $("#pOque").value, para: $("#pPara").value });
+    salvar(); toast("Pausa marcada ⏸️"); render();
+  };
+  el.querySelectorAll("[data-del-p]").forEach(b => b.onclick = () => { dados.pausas = dados.pausas.filter(x => x.id !== b.dataset.delP); salvar(); render(); });
+
   // agenda
   $("#aSalvar").onclick = () => {
     const n = $("#aNome").value.trim(); if (!n) return toast("Dá um nome pra atividade ✍️");
-    if (!diasAtv.length) return toast("Escolha pelo menos um dia 📅");
-    const campos = { nome: n, icone: $("#aIc").value || "📌", hora: $("#aHora").value, para: $("#aPara").value, dias: [...diasAtv] };
+    if (atvRepete && !diasAtv.length) return toast("Escolha pelo menos um dia 📅");
+    if (!atvRepete && !$("#aData").value) return toast("Escolha a data 📍");
+    const campos = { nome: n, icone: $("#aIc").value || "📌", tipo: $("#aTipo").value, hora: $("#aHora").value, para: $("#aPara").value,
+      dias: atvRepete ? [...diasAtv] : [], data: atvRepete ? null : $("#aData").value };
     if (aEd) Object.assign(aEd, campos); else dados.atividades.push({ id: "a"+Date.now(), ...campos });
     toast(aEd ? "Agenda atualizada ✨" : "Na agenda! 📅");
-    editando = null; diasAtv = []; salvar(); render();
+    editando = null; diasAtv = []; atvRepete = true; salvar(); render();
   };
-  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = []; renderPais(); };
+  el.querySelectorAll("[data-rep]").forEach(b => b.onclick = () => { atvRepete = b.dataset.rep === "1";
+    el.querySelectorAll("[data-rep]").forEach(x => x.classList.toggle("on", x === b));
+    $("#aSemanal").style.display = atvRepete ? "" : "none"; $("#aUnico").style.display = atvRepete ? "none" : ""; });
+  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = []; atvRepete = true; renderPais(); };
   el.querySelectorAll("[data-ed-a]").forEach(b => b.onclick = () => {
     const a = dados.atividades.find(a => a.id === b.dataset.edA);
-    editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; renderPais();
+    editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; atvRepete = !a.data; renderPais();
     $("#formAtv").scrollIntoView({ behavior: "smooth", block: "center" });
   });
   el.querySelectorAll("[data-del-a]").forEach(b => b.onclick = () => {
@@ -687,20 +903,37 @@ function renderPais(){
   $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
   $("#prAdd").onclick = () => {
     const n = $("#prNova").value.trim(); if (!n) return toast("Escreve a recompensa ✍️");
-    if (!dados.recompensas.includes(n)) dados.recompensas.push(n);
-    dados.premio = { texto: n, meta: Number($("#prMeta").value) || dados.premio.meta || 100 };
-    salvar(); toast("Recompensa incluída e escolhida 🎁"); render();
+    dados.recompensas.push({ id: "r" + Date.now(), texto: n, custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) });
+    salvar(); toast("Recompensa na loja 🎁"); render();
   };
-  $("#prDel").onclick = () => {
-    const sel = $("#prTx").value; if (dados.recompensas.length <= 1) return toast("Deixe pelo menos uma recompensa");
-    dados.recompensas = dados.recompensas.filter(r => r !== sel);
-    if (dados.premio.texto === sel) dados.premio.texto = dados.recompensas[0];
-    salvar(); toast("Tirada da lista"); render();
-  };
+  el.querySelectorAll("[data-custo]").forEach(inp => inp.onchange = () => {
+    const r = dados.recompensas.find(x => x.id === inp.dataset.custo); if (!r) return;
+    r.custo = Math.max(1, parseInt(inp.value, 10) || r.custo); salvar(); toast("Preço atualizado ⭐"); });
+  el.querySelectorAll("[data-del-r]").forEach(b => b.onclick = () => {
+    if (dados.recompensas.length <= 1) return toast("Deixe pelo menos uma recompensa");
+    const r = dados.recompensas.find(x => x.id === b.dataset.delR);
+    dados.recompensas = dados.recompensas.filter(x => x.id !== b.dataset.delR);
+    if (r && dados.premio.texto === r.texto) dados.premio.texto = dados.recompensas[0].texto;
+    salvar(); render(); });
+  el.querySelectorAll("[data-entregar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.entregar]; if (t) { t.status = "entregue"; salvar(); toast("Entregue! 🎉"); render(); } });
+  el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Pedido cancelado, estrelas devolvidas"); render(); } });
   if ($("#sairConta")) $("#sairConta").onclick = sairDaConta;
+  if ($("#novosConv")) $("#novosConv").onclick = async () => {
+    NUVEM.convites = novosConvites();
+    try { await NUVEM.ref.update({ convites: NUVEM.convites }); toast("Convites novos gerados 🔑"); } catch(e) { toast("Não consegui gerar agora"); }
+    renderPais(); };
   if ($("#pinSalvar")) $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
   if ($("#sair")) $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
 }
+
+/* ===== Áudio: lê em voz alta para quem ainda não lê ===== */
+const temVoz = typeof speechSynthesis !== "undefined" && typeof SpeechSynthesisUtterance !== "undefined";
+function falar(texto){
+  if (!temVoz) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(texto); u.lang = "pt-BR"; u.rate = 0.95;
+    const v = speechSynthesis.getVoices().find(v => /pt[-_]BR/i.test(v.lang)); if (v) u.voice = v; speechSynthesis.speak(u); } catch(e){}
+}
+const semEmoji = t => String(t).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").trim();
 
 /* ===== Efeitos ===== */
 let tt;
@@ -771,12 +1004,14 @@ function renderResultados(){
 /* ===== Navegação ===== */
 const ABAS = {
   missoes: { icone: "⭐", nome: "Missões" },
+  loja: { icone: "🛍️", nome: "Loja" },
   placar: { icone: "🏆", nome: "Placar" },
   resultados: { icone: "📊", nome: "Resultados" },
   pais: { icone: "🔒", nome: "Pais" }
 };
 function montarNav(){
-  const abas = NUVEM.papel === "crianca" ? ["missoes", "placar"] : ["missoes", "placar", "resultados", "pais"];
+  const abas = NUVEM.papel === "crianca" || NUVEM.papel === "apoio" ? ["missoes", "loja", "placar"]
+    : ["missoes", "loja", "placar", "resultados", "pais"];
   const atual = document.querySelector(".tela.on")?.id.slice(2);
   $("#nav").innerHTML = abas.map(t => `<button data-t="${t}"><span>${ABAS[t].icone}</span>${ABAS[t].nome}</button>`).join("");
   document.querySelectorAll("#nav button").forEach(b => b.onclick = () => irPara(b.dataset.t));
@@ -786,20 +1021,22 @@ function irPara(t){
   document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x.dataset.t === t));
   document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + t));
   $("#kids").style.display = (t === "pais" || t === "resultados") ? "none" : "flex";
+  confirmaTroca = null;
   render();
 }
 
 function render(deFora){
   if (!crianca(criancaAtiva)) criancaAtiva = dados.criancas[0]?.id;
   renderCabecalho(); renderMissoes(); renderPlacar();
+  if ($("#t-loja").classList.contains("on")) renderLoja();
   if ($("#t-resultados").classList.contains("on")) renderResultados();
   // mudança vinda de outro aparelho não apaga o que os pais estão digitando no painel
   if ($("#t-pais").classList.contains("on") && !deFora) renderPais();
 }
 
 /* ===== Nuvem (Firebase) — só liga se existir firebase-config.js ===== */
-const NUVEM = { ativo: false, papel: "local", codigo: null, ref: null, ultimo: {}, email: null, aparelhos: 0 };
-const CAMPOS_CONFIG = ["criancas", "tarefas", "atividades", "recompensas", "premio", "inicio"];
+const NUVEM = { ativo: false, papel: "local", codigo: null, ref: null, ultimo: {}, email: null, aparelhos: 0, nPais: 1, nApoio: 0, convites: null };
+const CAMPOS_CONFIG = ["criancas", "tarefas", "atividades", "recompensas", "premio", "inicio", "pausas"];
 const SESSAO = CHAVE + ".sessao";
 const FB_VERSAO = "10.14.1";
 const lerSessao = () => { try { return JSON.parse(localStorage.getItem(SESSAO)); } catch(e) { return null; } };
@@ -816,12 +1053,14 @@ async function carregaFirebase(cfg){
   return firebase;
 }
 const db = () => firebase.firestore();
+function novosConvites(){ return { resp: novoCodigo(), apoio: novoCodigo() }; }
 function novoCodigo(){ const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c = ""; const r = crypto.getRandomValues(new Uint32Array(6)); r.forEach(n => c += a[n % a.length]); return c; }
 
 function marcarSincronizado(){
   NUVEM.ultimo = {};
   CAMPOS_CONFIG.forEach(k => NUVEM.ultimo[k] = JSON.stringify(dados[k]));
   Object.entries(dados.feitos).forEach(([dia, porKid]) => Object.entries(porKid).forEach(([k, v]) => NUVEM.ultimo["f:" + dia + "|" + k] = JSON.stringify(v)));
+  Object.entries(dados.trocas).forEach(([id, v]) => NUVEM.ultimo["x:" + id] = JSON.stringify(v));
 }
 let syncTimer;
 function agendarSync(){ clearTimeout(syncTimer); syncTimer = setTimeout(sincronizar, 350); }
@@ -833,7 +1072,11 @@ async function sincronizar(){
     const chave = "f:" + dia + "|" + kid, j = JSON.stringify(v);
     if (j !== NUVEM.ultimo[chave]) { args.push(new firebase.firestore.FieldPath("feitos", dia, kid), JSON.parse(j)); marcar[chave] = j; }
   }));
-  if (!args.length) return;
+  if (NUVEM.papel !== "apoio") Object.entries(dados.trocas).forEach(([id, v]) => {
+    const chave = "x:" + id, j = JSON.stringify(v);
+    if (j !== NUVEM.ultimo[chave]) { args.push(new firebase.firestore.FieldPath("trocas", id), JSON.parse(j)); marcar[chave] = j; }
+  });
+  if (!args.length || NUVEM.papel === "apoio") return;
   try { await NUVEM.ref.update(...args); Object.assign(NUVEM.ultimo, marcar); }
   catch(e) { console.warn(e); toast("Não consegui salvar na nuvem. Tento de novo já já 🔄"); setTimeout(agendarSync, 5000); }
 }
@@ -844,10 +1087,12 @@ async function conectarFamilia(codigo, papel){
   try { const c = localStorage.getItem(CHAVE + ".fam." + codigo); if (c) dados = normalizar(JSON.parse(c)); } catch(e){}
   const snap = await NUVEM.ref.get();
   aplicarRemoto(snap.data());
+  // famílias criadas antes dos convites ganham os códigos agora
+  if (papel === "pais" && !snap.data()?.convites) { try { NUVEM.convites = novosConvites(); await NUVEM.ref.update({ convites: NUVEM.convites }); } catch(e){ console.warn(e); } }
   NUVEM.ativo = true; gravarSessao({ papel, familia: codigo });
   if (NUVEM.papel === "crianca") paisLiberado = false;
   $("#entrada").style.display = "none";
-  $("#statusNuvem").textContent = papel === "pais" ? "☁️ Família " + codigo : "☁️ Conectado à família";
+  $("#statusNuvem").textContent = papel === "pais" ? "☁️ Família " + codigo : papel === "apoio" ? "☁️ Rede de apoio da família" : "☁️ Conectado à família";
   montarNav();
   NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
     e => { console.warn(e); toast("Perdi o acesso a esta família"); });
@@ -856,7 +1101,9 @@ function aplicarRemoto(r){
   if (!r) return;
   CAMPOS_CONFIG.forEach(k => { if (r[k] !== undefined) dados[k] = r[k]; });
   dados.feitos = r.feitos || {};
-  NUVEM.aparelhos = (r.aparelhos || []).length;
+  dados.trocas = r.trocas || {};
+  NUVEM.aparelhos = (r.aparelhos || []).length; NUVEM.nPais = (r.pais || []).length; NUVEM.nApoio = (r.apoio || []).length;
+  if (r.convites) NUVEM.convites = r.convites;
   dados = normalizar(dados);
   marcarSincronizado();
   try { localStorage.setItem(CHAVE + ".fam." + NUVEM.codigo, JSON.stringify(dados)); } catch(e){}
@@ -876,9 +1123,11 @@ function telaEntrada(qual = "inicio", erro = ""){
     el.innerHTML = `<div class="caixa">${topo}<p>As missões da família, do jeito divertido.</p>
       <button class="grande" id="eResp"><span>🧑‍🍼</span><div>Sou responsável<small>Crio a família, as missões e vejo os resultados</small></div></button>
       <button class="grande" id="eKid"><span>🧒</span><div>Sou criança<small>Entro com o código da família</small></div></button>
+      <button class="grande" id="eApoio"><span>👵</span><div>Sou da rede de apoio<small>Avós, babá, tios: acompanho a rotina com um convite</small></div></button>
       <button class="link" id="eLocal">Usar sem conta, só neste aparelho</button></div>`;
     $("#eResp").onclick = () => telaEntrada("resp");
     $("#eKid").onclick = () => telaEntrada("kid");
+    $("#eApoio").onclick = () => telaEntrada("apoio");
     $("#eLocal").onclick = () => { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); };
   }
   if (qual === "resp") {
@@ -905,11 +1154,23 @@ function telaEntrada(qual = "inicio", erro = ""){
     el.innerHTML = `<div class="caixa">${topo}<p>Agora vamos criar a sua família no Missão Casa.</p>
       ${temLocal ? `<button class="grande" id="fLocal"><span>📲</span><div>Usar o que já cadastrei aqui<small>Leva crianças, missões, agenda e recompensas deste aparelho</small></div></button>` : ""}
       <button class="grande" id="fNova"><span>✨</span><div>Começar do zero<small>Com algumas missões de exemplo</small></div></button>
+      <button class="grande" id="fConvite"><span>💌</span><div>Tenho um convite<small>Outro responsável já criou a família e me mandou o código</small></div></button>
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="link" id="eSair">Sair da conta</button></div>`;
     if ($("#fLocal")) $("#fLocal").onclick = () => criarFamilia(carregar());
     $("#fNova").onclick = () => criarFamilia(normalizar(JSON.parse(JSON.stringify(PADRAO))));
+    $("#fConvite").onclick = () => telaEntrada("conviteResp");
     $("#eSair").onclick = sairDaConta;
+  }
+  if (qual === "conviteResp" || qual === "apoio") {
+    const resp = qual === "conviteResp";
+    el.innerHTML = `<div class="caixa">${topo}<p>${resp ? "Cole o convite de responsável que te mandaram 💌" : "Cole o convite da rede de apoio que a família te mandou 💌"}</p>
+      <input id="eConv" class="codigo" style="font-size:1.4rem;letter-spacing:3px" maxlength="13" autocomplete="off" autocapitalize="characters" placeholder="ABC123-XYZ789">
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <button class="btn" id="eEntrarConv">Entrar na família</button>
+      <button class="link" id="eVoltar">Voltar</button></div>`;
+    $("#eEntrarConv").onclick = () => entrarComConvite($("#eConv").value.trim().toUpperCase().replace(/\s/g, ""), resp ? "pais" : "apoio");
+    $("#eVoltar").onclick = () => telaEntrada(resp ? "criarFamilia" : "inicio");
   }
   if (qual === "kid") {
     el.innerHTML = `<div class="caixa">${topo}<p>Pede pro seu responsável o código da família 🔑</p>
@@ -932,12 +1193,26 @@ async function criarFamilia(base){
   const uid = firebase.auth().currentUser.uid;
   for (let tentativa = 0; tentativa < 5; tentativa++) {
     const codigo = novoCodigo();
-    const doc = { dono: uid, pais: [uid], aparelhos: [], criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {} };
+    const doc = { dono: uid, pais: [uid], aparelhos: [], apoio: [], convites: novosConvites(), criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {}, trocas: base.trocas || {} };
     CAMPOS_CONFIG.forEach(k => doc[k] = JSON.parse(JSON.stringify(base[k])));
     try { await db().collection("familias").doc(codigo).set(doc); dados = base; return conectarFamilia(codigo, "pais"); }
     catch(e) { console.warn(e); }
   }
   telaEntrada("criarFamilia", "Não consegui criar a família. Confere a internet e tenta de novo.");
+}
+async function entrarComConvite(convite, papel){
+  const m = convite.match(/^([A-Z0-9]{6})-?([A-Z0-9]{6})$/);
+  const tela = papel === "pais" ? "conviteResp" : "apoio";
+  if (!m) return telaEntrada(tela, "O convite tem o formato ABC123-XYZ789.");
+  const [, fam, segredo] = m;
+  try {
+    if (!firebase.auth().currentUser) await firebase.auth().signInAnonymously();
+    const uid = firebase.auth().currentUser.uid, ref = db().collection("familias").doc(fam);
+    try { await ref.get(); }
+    catch(e) { await ref.update({ [papel === "pais" ? "pais" : "apoio"]: firebase.firestore.FieldValue.arrayUnion(uid), entrouCom: segredo }); }
+    await conectarFamilia(fam, papel);
+    toast(papel === "pais" ? "Agora vocês dividem o painel 💛" : "Bem-vinda(o) à rede de apoio 💛");
+  } catch(e) { console.warn(e); telaEntrada(tela, "Esse convite não funcionou. Confere com quem te mandou, pode ter sido trocado."); }
 }
 async function entrarComoCrianca(codigo){
   if (codigo.length !== 6) return telaEntrada("kid", "O código tem 6 letras e números.");

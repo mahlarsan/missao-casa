@@ -1,13 +1,18 @@
 # 🏠 Missão Casa
 
-App gamificado da rotina da família: missões do dia por período (manhã, tarde, noite), revezamento automático entre irmãos, agenda das crianças (escola, aulas, atividades), placar com prêmio da semana e resultados para os pais.
+App gamificado da rotina da família: missões do dia por período (manhã, tarde, noite), revezamento automático entre irmãos, agenda das crianças por tipo (escola, atividade, saúde, passeio) com eventos de um dia só, pausas para férias/feriado/doença, loja de recompensas com estrelas, áudio para quem ainda não lê, sugestões de missões por idade e resultados para os pais.
 
 Ideia de Maitê e Maya.
 
 ## Dois jeitos de usar
 
 - **Só neste aparelho (sem conta):** funciona assim que abre. A área dos pais usa senha (padrão `1234`).
-- **Família na nuvem (Firebase):** o responsável cria conta, recebe um **código da família** e as crianças entram com esse código no celular ou tablet delas. O que uma criança marca aparece na hora para os pais.
+- **Família na nuvem (Firebase):** o responsável cria conta e recebe três códigos:
+  - **Código das crianças** (ex. `ABC123`): no celular ou tablet delas, em "Sou criança". Elas só marcam missões e fazem pedidos na loja.
+  - **Convite de responsável** (ex. `ABC123-XYZ789`): para o pai, a mãe ou outro responsável, que cria a própria conta e entra em "Tenho um convite". Acesso total ao painel.
+  - **Convite da rede de apoio** (ex. `ABC123-QWE456`): para avós, babá e tios, em "Sou da rede de apoio". Só acompanham a rotina, sem mudar nada.
+
+  Se um convite vazar, o painel tem um botão para gerar convites novos (os antigos param de funcionar).
 
 ## Como ligar a nuvem (uma vez só, uns 10 minutos)
 
@@ -27,8 +32,9 @@ Pronto: ao abrir o app aparece a tela de entrada ("Sou responsável" / "Sou cria
 
 Os dados das crianças ficam sob a conta do responsável. O app guarda só apelido, avatar (emoji), missões e agenda: nada de e-mail, foto ou documento das crianças. Antes de abrir para outras famílias, vale incluir um termo de consentimento dos responsáveis e uma revisão jurídica.
 
+> **Atualizou o app?** Sempre que o arquivo `firestore.rules` mudar, cole a versão nova em Firestore > Regras e publique de novo.
+
 ## Próximos passos
 
-- Segundo responsável (ex.: o pai) entrar na mesma família com convite próprio.
-- Exceções por data (feriado, dia sem aula, passeio).
 - Pais confirmarem a missão antes de os pontos valerem.
+- Lembretes (notificação) na hora das missões e da agenda.

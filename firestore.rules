@@ -5,29 +5,39 @@ service cloud.firestore {
       function logado() { return request.auth != null; }
       function souResponsavel() { return logado() && request.auth.uid in resource.data.pais; }
       function souAparelhoDeCrianca() { return logado() && request.auth.uid in resource.data.aparelhos; }
+      function souApoio() { return logado() && request.auth.uid in resource.data.get('apoio', []); }
       function mudou() { return request.resource.data.diff(resource.data).affectedKeys(); }
+      function entraUm(campo) {
+        return request.resource.data[campo].size() == resource.data.get(campo, []).size() + 1
+          && request.resource.data[campo].hasAll(resource.data.get(campo, []))
+          && request.auth.uid in request.resource.data[campo];
+      }
 
-      // ler: só quem é da família
-      allow read: if souResponsavel() || souAparelhoDeCrianca();
+      // ler: só quem é da família (responsáveis, aparelhos das crianças e rede de apoio)
+      allow read: if souResponsavel() || souAparelhoDeCrianca() || souApoio();
 
       // criar: o responsável cria a família no próprio nome
       allow create: if logado()
         && request.resource.data.dono == request.auth.uid
         && request.resource.data.pais == [request.auth.uid]
-        && request.resource.data.aparelhos == [];
+        && request.resource.data.aparelhos == []
+        && request.resource.data.apoio == [];
 
       allow update: if
         // responsável muda tudo, menos quem é dono e quem são os responsáveis
         (souResponsavel()
           && request.resource.data.dono == resource.data.dono
           && request.resource.data.pais == resource.data.pais)
-        // aparelho da criança só marca missões
-        || (souAparelhoDeCrianca() && mudou().hasOnly(['feitos']))
-        // quem tem o código entra como aparelho de criança (um por vez)
-        || (logado() && mudou().hasOnly(['aparelhos'])
-          && request.resource.data.aparelhos.size() == resource.data.aparelhos.size() + 1
-          && request.resource.data.aparelhos.hasAll(resource.data.aparelhos)
-          && request.auth.uid in request.resource.data.aparelhos);
+        // aparelho da criança só marca missões e faz pedidos na loja
+        || (souAparelhoDeCrianca() && mudou().hasOnly(['feitos', 'trocas']))
+        // quem tem o código da família entra como aparelho de criança (um por vez)
+        || (logado() && mudou().hasOnly(['aparelhos']) && entraUm('aparelhos'))
+        // segundo responsável entra com o convite de responsável
+        || (logado() && mudou().hasOnly(['pais', 'entrouCom']) && entraUm('pais')
+          && request.resource.data.entrouCom == resource.data.convites.resp)
+        // rede de apoio entra com o convite de apoio (só leitura depois disso)
+        || (logado() && mudou().hasOnly(['apoio', 'entrouCom']) && entraUm('apoio')
+          && request.resource.data.entrouCom == resource.data.convites.apoio);
 
       allow delete: if logado() && request.auth.uid == resource.data.dono;
     }
