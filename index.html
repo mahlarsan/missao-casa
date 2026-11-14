@@ -442,7 +442,6 @@
   .acoesFolha{position:sticky;bottom:-16px;background:var(--creme);padding-top:8px}
 
   body.calmo *{animation:none!important;transition:none!important}
-  @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 
   /* ===== Alinhamento ao mockup: contorno em tinta só no que se toca, o resto em bordas claras ===== */
   .hb,.heroAv .lapis{border-bottom-width:2px}
@@ -586,7 +585,6 @@
   @keyframes titulo{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:scale(1)}}
   @keyframes chipPula{0%{opacity:0;transform:translateY(20px) scale(.6)}100%{opacity:1;transform:none}}
   @keyframes flutua{0%,100%{translate:0 0}50%{translate:6px -14px}}
-  @media (prefers-reduced-motion: reduce){.conquista.anima *{animation:none!important}}
   body.calmo .conquista.anima *{animation:none!important}
 </style>
 </head>
@@ -1522,7 +1520,8 @@ const semEmoji = t => String(t).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]
 const PREF = (() => { try { return JSON.parse(localStorage.getItem(CHAVE + ".pref")) || {}; } catch(e) { return {}; } })();
 if (PREF.som === undefined) PREF.som = true;
 const gravarPref = () => { try { localStorage.setItem(CHAVE + ".pref", JSON.stringify(PREF)); } catch(e){} };
-const menosMovimento = () => PREF.calmo || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
+// Só o botão "Menos movimento" do painel desliga as animações (o "reduzir movimento" do celular estava apagando a festa)
+const menosMovimento = () => !!PREF.calmo;
 let audioCtx;
 // Sons curtos feitos no próprio aparelho (sem arquivo): "check" ao marcar, "tãdãm" no dia completo
 function tom(f, ini, dur, vol = 0.12, tipo = "triangle", fFim){
