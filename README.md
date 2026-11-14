@@ -36,6 +36,7 @@ O app segue o **Brand system 0.1** (pasta `marca/`, com o `Manual_de_Marca_v01.p
 - Personagens Órbita, Zigue, Pingo e Faísca, com acessórios em camadas SVG (viewBox 256×256). A criança monta o próprio avatar tocando no cartão dela.
 - Biblioteca de ícones da criação (pasta `marca/icones/`, 77 desenhos): navegação, ações, períodos, agenda, pausas, loja, entrada, painel e a biblioteca de missões, atividades e recompensas que os pais escolhem numa galeria. Emojis antigos viram o ícone equivalente automaticamente.
 - Gradientes só em momentos de conquista (palco do avatar, dia completo).
+- Navegação da criança: Hoje / Avatar / Loja / Mundos (em breve). O painel da família fica fora da barra, no cadeado do topo, com abas Rotina, Loja, Resultados e Família.
 - Microanimações de 250 a 450 ms sem flashes, vinheta curta com botão de mudo e opção "menos movimento".
 
 Pendências do manual: nome e logotipo, fonte licenciada (hoje usa Fredoka e Nunito, ambas de licença aberta), mecânica dos Mundos e testes com crianças.

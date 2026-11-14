@@ -290,6 +290,141 @@
   .semana .topo .hojeBtn{display:block;padding:0 12px}
   .item .ico{flex:none}
 
+  /* ---- Proposta de design 1: topo da criança ---- */
+  #hero{--topo:#FFD52A;background:var(--topo);color:var(--tinta);border-bottom:2px solid var(--tinta);border-radius:0 0 34px 34px;
+        padding:calc(16px + env(safe-area-inset-top)) 18px 50px;position:relative;overflow:hidden}
+  #hero::after{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:var(--creme);opacity:.5;left:-34px;top:-14px;border:0}
+  #hero > *{position:relative;z-index:1}
+  #hero.compacto{padding-bottom:16px;border-radius:0 0 28px 28px}
+  #hero.compacto::after{width:110px;height:110px;left:-20px;top:-20px}
+  .heroBotoes{position:absolute!important;z-index:3!important;right:14px;top:calc(14px + env(safe-area-inset-top));display:flex;gap:8px}
+  .hb{width:48px;height:48px;border-radius:16px;border:2px solid var(--tinta);border-bottom-width:4px;background:var(--creme);display:grid;place-items:center;padding:0;cursor:pointer;line-height:0}
+  .hb:active{transform:translateY(2px);border-bottom-width:2px}
+  .heroLinha{display:flex;align-items:flex-end;gap:10px;margin-top:26px}
+  #hero.compacto .heroLinha{align-items:center;margin-top:0;padding-right:170px}
+  #hero.compacto .dataH{display:none}
+  #hero.compacto .oi{font-size:1.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .heroAv{position:relative;border:0;background:none;padding:0;cursor:pointer;line-height:0;flex:none}
+  .heroAv .lapis{position:absolute;right:0;bottom:4px;background:var(--creme);border:2px solid var(--tinta);border-radius:12px;padding:5px;line-height:0}
+  #hero.compacto .heroAv .lapis{padding:3px;border-radius:9px;bottom:0}
+  .heroTx{display:flex;flex-direction:column;gap:6px;padding-bottom:10px;min-width:0}
+  #hero.compacto .heroTx{padding-bottom:0;gap:2px}
+  .oi{font-family:var(--titulo);font-weight:700;font-size:2rem;line-height:1}
+  #hero.compacto .oi{font-size:1.5rem}
+  .dataH{font-size:.85rem;font-weight:800}
+  .heroChips{display:flex;gap:6px;flex-wrap:wrap}
+  .heroChips span{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 4px;border-radius:12px;background:var(--creme);border:2px solid var(--tinta);font-weight:900}
+  #hero .nuvem{margin-top:10px;display:flex;align-items:center;gap:6px;font-size:.78rem}
+  body{background:#EFE6FF}
+  main{padding:0 16px}
+  #progressoDia .progresso{position:relative;z-index:2;margin:-34px 0 0;border:2px solid var(--tinta);border-bottom-width:2px;padding:12px 14px}
+  .progresso .linhaP,.linhaP{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .progresso .linhaP b{font-family:var(--titulo);font-weight:600;font-size:1.05rem}
+  .agendaFaixa{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 2px;scrollbar-width:none}
+  .agChip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 6px;border-radius:14px;background:#fff;border:0;font:inherit;font-weight:800;font-size:.85rem;color:var(--tinta);cursor:pointer;line-height:1.1}
+  .agChip b{font-weight:900}
+  .agChip.pausa{background:#FFF3BF}
+  .agChip.vazio{color:var(--suave);cursor:default}
+  .semana{display:flex;align-items:center;gap:4px;background:transparent;border:0;padding:8px 0 0;margin:0}
+  .semana .seta{flex:none;width:36px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0;cursor:pointer}
+  .semana .diasNav{flex:1;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+  .semana .diaNav{border:0;background:transparent;font:inherit;color:var(--tinta);display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 0 4px;border-radius:12px;min-height:0;cursor:pointer}
+  .semana .diaNav .sem{font-size:.68rem;color:#4A3F66;font-weight:900}
+  .semana .diaNav .num{font-family:var(--titulo);font-weight:600;font-size:1.05rem}
+  .semana .diaNav i{width:6px;height:6px;border-radius:50%;background:transparent}
+  .semana .diaNav i.tem{background:#C9B8F0}
+  .semana .diaNav i.ok{background:var(--lima);box-shadow:0 0 0 1.5px var(--tinta)}
+  .semana .diaNav.hoje{box-shadow:inset 0 0 0 2px var(--pri)}
+  .semana .diaNav.sel{background:var(--pri);color:#fff;box-shadow:none}
+  .semana .diaNav.sel .sem{color:#fff}
+  .periodo{margin:16px 2px 8px}
+  .periodo .tit{font-size:1.1rem}
+  .missao{gap:12px;padding:10px 12px;border-radius:20px;border-bottom-width:4px;min-height:72px;margin-bottom:10px}
+  .missao .ic{width:auto;height:auto;border:0;background:none;border-radius:0;line-height:0}
+  .missao .tx{font-size:1.05rem}
+  .missao .tx small{display:flex;gap:8px;align-items:center;font-weight:800;color:var(--suave);font-size:.78rem;margin-top:4px}
+  .missao .tx small .vez{color:var(--pri-esc)}
+  .missao .som{width:36px;height:36px;border:0;border-radius:10px;background:#F3E9FF}
+  .missao .ok{width:44px;height:44px}
+  .missao.feita .tx{color:var(--verde-esc)}
+  .estado{text-align:center;padding:18px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .estadoPalco{position:relative;width:230px;height:210px;display:grid;place-items:center;line-height:0}
+  .estadoPalco::before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:var(--topo);opacity:.35}
+  .estadoPalco .avatar{position:relative}
+  .estadoIc{position:absolute;right:0;top:0;transform:rotate(12deg)}
+  .estado h2{margin:4px 0 0;font-size:1.9rem;font-weight:700}
+  .estado p{margin:0;max-width:300px;font-weight:800;line-height:1.35}
+  .estadoChip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:16px;background:#FFF3BF;font-weight:800}
+  /* Aba Avatar */
+  .palcoAv{--topo:#FFD52A;position:relative;overflow:hidden;margin-top:14px;padding:18px 16px 16px;border-radius:28px;background:#FFFBEA;border:2px solid var(--tinta);display:flex;flex-direction:column;align-items:center;gap:6px}
+  .palcoAv .solzinho{position:absolute;width:230px;height:230px;border-radius:50%;background:var(--topo);top:-24px;left:50%;transform:translateX(-50%)}
+  .palcoAv > *:not(.solzinho){position:relative}
+  .palcoAv > b{font-family:var(--titulo);font-weight:600;font-size:1.8rem}
+  .numeros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+  .numeros div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;border-radius:18px;background:#fff;text-align:center}
+  .numeros b{font-family:var(--titulo);font-weight:700;font-size:1.6rem;line-height:1}
+  .numeros small{color:var(--suave);font-weight:800;font-size:.75rem}
+  .cartao{margin-top:12px;padding:14px;border-radius:20px;background:#fff}
+  .titC{font-family:var(--titulo);font-weight:600;font-size:1.15rem}
+  .linhaP .bom{color:var(--verde-esc);font-size:.85rem}
+  .linhaP span{font-size:.85rem;color:var(--suave)}
+  .barrasSemana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;height:90px;margin-top:10px}
+  .barraDia{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%;font-size:.72rem;font-weight:900;color:var(--suave)}
+  .barraDia i{display:block;width:100%;border-radius:8px;background:var(--lima);border:2px solid var(--tinta);box-sizing:border-box}
+  .barraDia.hoje i{background:var(--lilas)}
+  .barraDia.hoje{color:var(--tinta)}
+  .barraDia.vazia i{background:var(--borda);border:0}
+  .desafio{display:flex;align-items:center;gap:12px}
+  .desafio b{font-size:.95rem}
+  .desafio .trilho{height:12px;border-radius:8px;background:var(--borda);overflow:hidden;margin:6px 0 4px}
+  .desafio .trilho i{display:block;height:100%;background:var(--sol)}
+  .desafio small{color:var(--suave);font-weight:800}
+  .sairAp{display:block;margin:16px auto;background:none;border:0;color:var(--suave);font-weight:800;text-decoration:underline;cursor:pointer}
+  /* Loja com topo compacto */
+  .cofre{margin-top:14px}
+  /* Navegação da criança */
+  nav{border-top:2px solid var(--tinta)}
+  .navAv{line-height:0}
+  /* Dia completo */
+  .conquista{position:fixed;inset:0;z-index:45;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px 24px calc(28px + env(safe-area-inset-bottom));
+             background:linear-gradient(160deg,var(--sol) 0%,var(--lilas) 55%,var(--roxo-eletrico) 100%);color:var(--tinta);text-align:center;overflow:hidden;animation:sobe .35s ease-out}
+  .conquista .formas i{position:absolute;width:16px;height:16px;border:2px solid var(--tinta)}
+  .conquista .formas i:nth-child(1){left:12%;top:11%;border-radius:50%;background:var(--piscina)}
+  .conquista .formas i:nth-child(2){left:78%;top:8%;background:var(--lima);transform:rotate(20deg)}
+  .conquista .formas i:nth-child(3){left:22%;top:22%;background:var(--coral);transform:rotate(45deg)}
+  .conquista .formas i:nth-child(4){left:84%;top:24%;border-radius:50%;background:var(--creme)}
+  .conquista .formas i:nth-child(5){left:7%;top:36%;background:var(--sol);transform:rotate(30deg)}
+  .conquista .formas i:nth-child(6){left:88%;top:40%;border-radius:50%;background:var(--piscina)}
+  .conqAv{width:240px;height:240px;border-radius:50%;background:var(--creme);border:3px solid var(--tinta);display:grid;place-items:center;line-height:0;animation:pop .45s}
+  .conqAv .avatar{transform:rotate(-6deg)}
+  .conquista h1{margin:0;font-family:var(--titulo);font-weight:700;font-size:2.4rem;line-height:1.05}
+  .conquista p{margin:0;font-weight:800;font-size:1.05rem}
+  .conqChips{display:flex;gap:10px}
+  .conqChips span{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:18px;background:var(--creme);border:2px solid var(--tinta);font-weight:900;font-size:1.15rem}
+  .conqBotoes{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;margin-top:8px}
+  .conqBotoes button{padding:15px;border-radius:18px;font:inherit;font-weight:900;font-size:1.05rem;cursor:pointer}
+  .conqBotoes .escuro{background:var(--tinta);color:var(--creme);border:0;border-bottom:4px solid #000}
+  .conqBotoes .claro{background:var(--creme);color:var(--tinta);border:2px solid var(--tinta)}
+  /* Painel da família */
+  .painelTopo{display:none}
+  body.modoPainel #hero, body.modoPainel nav{display:none}
+  body.modoPainel{background:var(--creme);padding-bottom:30px}
+  body.modoPainel .painelTopo{display:block;max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px 0}
+  .ptLinha{display:flex;align-items:center;gap:10px}
+  .ptLinha b{font-family:var(--titulo);font-weight:600;font-size:1.5rem}
+  .abasPainel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:16px;background:#F3EEE2;margin-top:14px}
+  .abasPainel button{padding:10px 0;border-radius:12px;border:0;background:transparent;font:inherit;font-weight:800;font-size:.85rem;color:var(--suave);cursor:pointer}
+  .abasPainel button.on{background:#fff;color:var(--tinta);font-weight:900}
+  .alertaPedido{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:18px;background:#FFF3BF;font-weight:800}
+  .alertaPedido span{flex:1}
+  #paisConteudo > h2{display:none}
+  #paisConteudo[data-aba="rotina"] [data-aba]:not([data-aba="rotina"]),
+  #paisConteudo[data-aba="loja"] [data-aba]:not([data-aba="loja"]),
+  #paisConteudo[data-aba="familia"] [data-aba]:not([data-aba="familia"]){display:none}
+  #paisConteudo{padding-top:14px}
+  #resultadosConteudo > h2{display:none}
+  #resultadosConteudo{padding-top:14px}
+
   /* Folha do avatar */
   .folha{position:fixed;inset:0;background:rgba(36,32,52,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
   .folhaCaixa{background:var(--creme);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:28px 28px 0 0;border:2px solid var(--tinta);border-bottom:0;
@@ -311,21 +446,21 @@
 </style>
 </head>
 <body>
-<header>
-  <button class="somBtn" id="somBtn" aria-label="Ligar ou desligar o som"></button>
-  <h1>Missão Casa</h1>
-  <p id="hoje"></p>
-  <div class="nuvem" id="statusNuvem"></div>
-</header>
+<header id="hero"></header>
+<div class="painelTopo" id="painelTopo"></div>
 <main>
-  <div class="kids" id="kids"></div>
 
   <!-- Tela 1: Missões, com navegação pelos dias -->
   <section class="tela on" id="t-missoes">
-    <div class="semana" id="semana"></div>
+    <div id="progressoDia"></div>
     <div id="agendaDia"></div>
-    <h2 id="titMissoes">Missões</h2>
+    <div class="semana" id="semana"></div>
     <div id="listaMissoes"></div>
+  </section>
+
+  <!-- Tela: Avatar da criança -->
+  <section class="tela" id="t-avatar">
+    <div id="avatarConteudo"></div>
   </section>
 
   <!-- Tela: Loja -->
@@ -354,6 +489,7 @@
 <nav id="nav"></nav>
 <div class="toast" id="toast"></div>
 <div class="folha" id="folhaAvatar" style="display:none"></div>
+<div class="conquista" id="conquista" style="display:none" role="dialog" aria-label="Dia completo"></div>
 <div class="entrada" id="entrada" style="display:none"></div>
 
 <!-- Configuração do Firebase (opcional). Sem ela, o app funciona só neste aparelho. -->
@@ -372,6 +508,7 @@ function avatarSVG(av, tam = 64){
   const camada = c => av[c] && MARCA.acessorios[av[c]] ? MARCA.acessorios[av[c]].svg : "";
   return `<svg class="avatar" viewBox="0 0 256 256" width="${tam}" height="${tam}" aria-hidden="true">${corpo}${camada("olhos")}${camada("cabelo")}${camada("cabeca")}</svg>`;
 }
+MARCA.icones.avatar = MARCA.personagens.orbita.svg;
 // Ícone da biblioteca pelo nome; se não for da biblioteca (emoji escolhido antes), mostra o próprio texto
 const ico = (v, tam = 28) => v && MARCA.icones[v] ? icone(v, tam) : `<span class="emo">${esc(v || "")}</span>`;
 const EMOJI_ICONE = { "🛏️": "missao_cama", "🎒": "missao_mochila", "📚": "missao_caderno", "✏️": "missao_lapis", "📖": "missao_livro",
@@ -631,92 +768,178 @@ function sequencia(id){
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+/* Cor do topo: a criança pode escolher; sem escolha, a que contrasta com o personagem */
+const CORES_TOPO = ["#FFD52A", "#B06CFF", "#29BCE5", "#A5DD37", "#FF6654"];
+function corTopo(c){
+  const av = (c && dados.avatares[c.id]) || {};
+  if (av.fundo) return av.fundo;
+  const base = String(av.cor || (MARCA.personagens[av.p] || MARCA.personagens.orbita).cor).toUpperCase();
+  return { "#7738EA": "#FFD52A", "#B06CFF": "#FFD52A", "#FF6654": "#29BCE5", "#FFD52A": "#B06CFF", "#29BCE5": "#FFD52A", "#A5DD37": "#B06CFF" }[base] || "#FFD52A";
+}
+const dataHoje = () => { const h = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" }); return h[0].toUpperCase() + h.slice(1); };
+let telaAtual = "missoes", painelAba = "rotina";
+
 function renderCabecalho(){
-  { const h = new Date().toLocaleDateString("pt-BR", { weekday:"long", day:"numeric", month:"long" }); $("#hoje").textContent = h[0].toUpperCase() + h.slice(1); }
-  $("#kids").innerHTML = dados.criancas.map(c => `
-    <div class="kid ${c.id===criancaAtiva?"on":""}" data-id="${c.id}">
-      <div class="av">${avatarHTML(c, 68)}${c.id === criancaAtiva && NUVEM.papel !== "apoio" ? `<span class="lapis" aria-hidden="true">${icone("acao_editar_personagem", 18)}</span>` : ""}</div>${esc(c.nome)}
-      <small class="quem" style="justify-content:center;gap:4px">${icone("moeda", 16)} ${saldo(c.id)} · ${icone("jogo_sequencia_de_dias", 16)} ${sequencia(c.id)}</small>
-    </div>`).join("");
-  document.querySelectorAll(".kid").forEach(el => el.onclick = () => {
-    if (el.dataset.id === criancaAtiva && NUVEM.papel !== "apoio") return abrirAvatar(el.dataset.id);
-    criancaAtiva = el.dataset.id; render(); });
+  const c = crianca(criancaAtiva), hero = $("#hero");
+  const podePainel = NUVEM.papel === "local" || NUVEM.papel === "pais";
+  const outros = dados.criancas.filter(x => x.id !== criancaAtiva);
+  const botoes = `<div class="heroBotoes">
+      ${outros.map(o => `<button class="hb" data-troca="${o.id}" aria-label="Trocar para ${esc(o.nome)}">${avatarHTML(o, 38)}</button>`).join("")}
+      ${podePainel ? `<button class="hb" id="abrirPainel" aria-label="Painel da família">${icone("navegacao_area_dos_pais", 26)}</button>` : ""}
+      <button class="hb" id="somBtn" aria-label="Ligar ou desligar o som"></button>
+    </div>`;
+  const compacto = telaAtual !== "missoes";
+  hero.className = compacto ? "compacto" : "";
+  hero.style.setProperty("--topo", c ? corTopo(c) : "#FFD52A");
+  if (!c) hero.innerHTML = `${botoes}<div class="heroLinha"><div class="heroTx"><span class="oi">Missão Casa</span><span class="dataH">${esc(dataHoje())}</span></div></div>`;
+  else hero.innerHTML = `${botoes}
+    <div class="heroLinha">
+      <button class="heroAv" id="heroAv" aria-label="${NUVEM.papel === "apoio" ? "Personagem de " + esc(c.nome) : "Mudar meu personagem"}">${avatarHTML(c, compacto ? 60 : 136)}
+        ${NUVEM.papel !== "apoio" ? `<span class="lapis">${icone("acao_editar_personagem", compacto ? 16 : 22)}</span>` : ""}</button>
+      <div class="heroTx">
+        <span class="oi">Oi, ${esc(c.nome)}!</span>
+        <span class="dataH">${esc(dataHoje())}</span>
+        ${compacto ? "" : `<div class="heroChips"><span>${icone("moeda", 20)} ${saldo(c.id)}</span><span>${icone("jogo_sequencia_de_dias", 20)} ${sequencia(c.id)}</span></div>`}
+      </div>
+    </div>
+    ${NUVEM.statusHTML ? `<div class="nuvem">${NUVEM.statusHTML}</div>` : ""}`;
+  hero.querySelectorAll("[data-troca]").forEach(b => b.onclick = () => { criancaAtiva = b.dataset.troca; render(); });
+  if ($("#abrirPainel")) $("#abrirPainel").onclick = () => irPara("painel");
+  if ($("#heroAv") && NUVEM.papel !== "apoio") $("#heroAv").onclick = () => abrirAvatar(criancaAtiva);
+  $("#somBtn").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); if (PREF.som) vinheta("ok"); };
+  atualizarSomBtn();
 }
 
 function renderSemana(){
   const dias = diasDaSemana(diaSel);
-  const mes = dias[0].toLocaleDateString("pt-BR", { month:"long" });
-  const mes2 = dias[6].toLocaleDateString("pt-BR", { month:"long" });
   $("#semana").innerHTML = `
-    <div class="topo">
-      <button id="semAnt" aria-label="Semana anterior">${icone("acao_semana_anterior", 24)}</button>
-      <span>${mes === mes2 ? mes : mes + " / " + mes2}</span>
-      <span style="display:flex;gap:6px">
-        ${ehHoje(diaSel) ? "" : `<button class="hojeBtn" id="irHoje">Hoje</button>`}
-        <button id="semProx" aria-label="Próxima semana">${icone("acao_proxima_semana", 24)}</button>
-      </span>
-    </div>
+    <button class="seta" id="semAnt" aria-label="Semana anterior">${icone("acao_semana_anterior", 22)}</button>
     <div class="diasNav">${dias.map(d => {
       const ts = criancaAtiva ? tarefasDe(criancaAtiva, d) : [];
       const completo = criancaAtiva && diaCompleto(isoDia(d), criancaAtiva, d);
-      return `<div class="diaNav ${ehHoje(d)?"hoje":""} ${mesmoDia(d,diaSel)?"sel":""} ${FDS.includes(d.getDay())?"fds":""}" data-d="${isoDia(d)}">
-        <div class="sem">${NOME_DIA[d.getDay()]}</div>
-        <div class="num">${d.getDate()}</div>
-        <div class="pt">${completo ? icone("acao_missao_concluida", 14) : ts.length ? "•".repeat(Math.min(ts.length,4)) : ""}</div>
-      </div>`; }).join("")}
-    </div>`;
-  const mudaSemana = n => { const x = new Date(diaSel); x.setDate(x.getDate() + 7*n); diaSel = x; render(); };
+      return `<button class="diaNav ${ehHoje(d) ? "hoje" : ""} ${mesmoDia(d, diaSel) ? "sel" : ""}" data-d="${isoDia(d)}" aria-label="${esc(NOME_DIA_LONGO[d.getDay()] + " " + d.getDate())}">
+        <span class="sem">${NOME_DIA[d.getDay()]}</span><span class="num">${d.getDate()}</span>
+        <i class="${completo ? "ok" : ts.length ? "tem" : ""}"></i></button>`; }).join("")}
+    </div>
+    <button class="seta" id="semProx" aria-label="Próxima semana">${icone("acao_proxima_semana", 22)}</button>`;
+  const mudaSemana = n => { const x = new Date(diaSel); x.setDate(x.getDate() + 7 * n); diaSel = x; render(); };
   $("#semAnt").onclick = () => mudaSemana(-1);
   $("#semProx").onclick = () => mudaSemana(1);
-  if ($("#irHoje")) $("#irHoje").onclick = () => { diaSel = new Date(); render(); };
   document.querySelectorAll(".diaNav").forEach(el => el.onclick = () => { diaSel = new Date(el.dataset.d + "T12:00:00"); render(); });
+}
+
+function estadoPersonagem(c, iconeExtra, titulo, texto, extra = ""){
+  return `<div class="estado">
+    <div class="estadoPalco" style="--topo:${corTopo(c)}">${avatarHTML(c, 170)}${iconeExtra ? `<span class="estadoIc">${icone(iconeExtra, 88)}</span>` : ""}</div>
+    <h2>${esc(titulo)}</h2><p>${esc(texto)}</p>${extra}</div>`;
 }
 
 function renderMissoes(){
   const c = crianca(criancaAtiva);
-  if (!c) { $("#listaMissoes").innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais 🔒</div>`; $("#semana").innerHTML = ""; $("#agendaDia").innerHTML = ""; return; }
+  if (!c) { $("#listaMissoes").innerHTML = `<div class="vazio">Cadastre as crianças no painel da família.</div>`; $("#semana").innerHTML = ""; $("#agendaDia").innerHTML = ""; $("#progressoDia").innerHTML = ""; return; }
   renderSemana();
   const r = rotuloDia(diaSel);
-  $("#titMissoes").textContent = `Missões de ${r}, ${c.nome}!`;
   const atvs = atividadesDe(c.id, diaSel);
   const tipoDe = a => TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4];
   const pAg = pausaDe(c.id, diaSel, "agenda");
-  $("#agendaDia").innerHTML = `<div class="agenda"><b class="quem">${icone("acao_calendario", 30)} Agenda de ${r}</b>
-    ${pAg ? `<div class="pausaTag quem">${icone(iconeMotivo(pAg), 24)} ${esc(nomeMotivo(pAg))}: agenda da semana pausada</div>` : ""}
-    ${atvs.length ? atvs.map(a => `
-    <div class="atv" data-falar="${esc(semEmoji(a.nome) + (a.hora ? ", às " + a.hora.replace(":", " e ") : ""))}" style="--t:${tipoDe(a).cor}">
-      <span class="hora">${esc(a.hora || "—")}</span><span class="ic">${ico(a.icone, 34)}</span>
-      <span class="nomeAtv">${esc(a.nome)}<small>${[tipoDe(a).nome.toLowerCase() === a.nome.toLowerCase() ? "" : tipoDe(a).nome, a.data ? "só nesse dia" : ""].filter(Boolean).map(esc).join(" · ")}</small></span></div>`).join("")
-    : `<div style="color:var(--suave);font-weight:700">Nada marcado. Dia livre! 🌈</div>`}</div>`;
-  document.querySelectorAll(".atv[data-falar]").forEach(el => el.onclick = () => falar(el.dataset.falar));
+  const chipsAg = atvs.map(a => `<button class="agChip" data-falar="${esc(semEmoji(a.nome) + (a.hora ? ", às " + a.hora.replace(":", " e ") : ""))}" style="--t:${tipoDe(a).cor}">
+      ${ico(a.icone, 28)}<span><b>${esc(a.hora || "")}</b> ${esc(a.nome)}</span></button>`).join("");
+  $("#agendaDia").innerHTML = `<div class="agendaFaixa" aria-label="Agenda de ${esc(r)}">
+    ${pAg ? `<span class="agChip pausa">${icone(iconeMotivo(pAg), 26)}<span>${esc(nomeMotivo(pAg))}: agenda pausada</span></span>` : ""}
+    ${chipsAg || (pAg ? "" : `<span class="agChip vazio">${icone("acao_calendario", 26)}<span>Nada na agenda ${r === "hoje" ? "hoje" : "nesse dia"}</span></span>`)}</div>`;
+  document.querySelectorAll(".agChip[data-falar]").forEach(el => el.onclick = () => falar(el.dataset.falar));
+
   const ts = tarefasDe(c.id, diaSel), feitas = feitosEm(isoDia(diaSel), c.id);
   const futuro = ehFuturo(diaSel), passado = !futuro && !ehHoje(diaSel);
   const pM = pausaDe(c.id, diaSel, "missoes");
-  const aviso = pM ? `<div class="aviso pausa quem">${icone(iconeMotivo(pM), 30)} <span><b>${esc(nomeMotivo(pM))}</b>: missões pausadas até ${esc(dataCurta(pM.fim))} 💛</span></div>`
-              : futuro ? `<div class="aviso quem">${icone("acao_calendario", 26)} Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
-              : passado ? `<div class="aviso">⏪ Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
+  const nFeitas = ts.filter(t => feitas.includes(t.key)).length, pctDia = ts.length ? Math.round(nFeitas / ts.length * 100) : 0;
+  const moedasDia = ts.filter(t => feitas.includes(t.key)).reduce((s, t) => s + t.pontos, 0);
+  $("#progressoDia").innerHTML = ts.length ? `<div class="progresso ${nFeitas === ts.length ? "completo" : ""}">
+      <div class="estrela">${icone(nFeitas === ts.length ? "trofeu" : "tarefa", 40)}</div>
+      <div class="info"><div class="linhaP"><b>${nFeitas} de ${ts.length} missões${r === "hoje" ? "" : " · " + esc(r)}</b><span class="quem" style="gap:4px">+${moedasDia} ${icone("moeda", 18)}</span></div>
+      <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
+
+  const aviso = futuro ? `<div class="aviso quem">${icone("acao_calendario", 26)} Planejando: dá pra ver o que vem aí e marcar quando o dia chegar.</div>`
+              : passado ? `<div class="aviso quem">${icone("acao_calendario", 26)} Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
   const card = t => `
-    <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
-      <div class="ic">${ico(t.icone, 44)}</div>
-      <div class="tx">${esc(t.nome)}<small><span class="pill">${icone("moeda", 18)} +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">${icone("jogo_sua_vez", 18)} sua vez!</span>` : ""}</small></div>
-      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " moedas.")}">${icone("acao_ouvir_em_voz_alta", 28)}</button>` : ""}
-      <div class="ok">${feitas.includes(t.key) ? icone("acao_missao_concluida", 34) : ""}</div>
+    <div class="missao ${feitas.includes(t.key) ? "feita" : ""} ${futuro ? "futura" : ""}" data-id="${esc(t.key)}">
+      <div class="ic">${ico(t.icone, 50)}</div>
+      <div class="tx">${esc(t.nome)}<small><span class="quem" style="gap:4px">${icone("moeda", 16)} +${t.pontos}</span>${feitas.includes(t.key) ? `<span>feito</span>` : ""}${t.revezar && dados.criancas.length > 1 ? `<span class="vez quem" style="gap:3px">${icone("jogo_sua_vez", 16)} sua vez</span>` : ""}</small></div>
+      ${temVoz && !feitas.includes(t.key) ? `<button class="som" aria-label="Ouvir a missão" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " moedas.")}">${icone("acao_ouvir_em_voz_alta", 22)}</button>` : ""}
+      <div class="ok">${feitas.includes(t.key) ? icone("acao_missao_concluida", 30) : ""}</div>
     </div>`;
   const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
-  const nFeitas = ts.filter(t => feitas.includes(t.key)).length, pctDia = ts.length ? Math.round(nFeitas / ts.length * 100) : 0;
-  const frase = !ts.length ? "" : nFeitas === ts.length ? "Arrasou! Tudo feito 🎉" : nFeitas === 0 ? (futuro ? "O que vem por aí" : "Bora começar!") : "Continua assim!";
-  const progresso = ts.length ? `<div class="progresso ${nFeitas === ts.length ? "completo" : ""}"><div class="estrela">${icone(nFeitas === ts.length ? "trofeu" : "tarefa", 44)}</div>
-    <div class="info"><b>${frase}</b> <span style="color:var(--suave)">${nFeitas} de ${ts.length}</span>
-    <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
-  $("#listaMissoes").innerHTML = progresso + aviso + (ts.length ? grupos.map(g => `
-    <div class="periodo"><span class="quem tit">${icone(g.p.icone, 30)} ${g.p.nome}</span><span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
-    ${g.itens.map(card).join("")}`).join("") : pM ? "" : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
+  let corpo;
+  if (pM) { const volta = new Date(pM.fim + "T12:00:00"); volta.setDate(volta.getDate() + 1);
+    corpo = estadoPersonagem(c, iconeMotivo(pM), nomeMotivo(pM) + "!", `As missões voltam no dia ${dataCurta(isoDia(volta))} e a sua sequência fica guardadinha.`,
+      sequencia(c.id) > 0 ? `<span class="estadoChip">${icone("jogo_sequencia_de_dias", 24)} ${sequencia(c.id)} ${sequencia(c.id) === 1 ? "dia seguido" : "dias seguidos"}, sem perder nada</span>` : ""); }
+  else if (!ts.length) corpo = estadoPersonagem(c, "periodo_tarde", "Dia de folga!", `Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Aproveita!`);
+  else corpo = grupos.map(g => `
+    <div class="periodo"><span class="quem tit">${icone(g.p.icone, 26)} ${g.p.nome}</span><span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
+    ${g.itens.map(card).join("")}`).join("");
+  $("#listaMissoes").innerHTML = aviso + corpo;
   document.querySelectorAll(".missao .som").forEach(b => b.onclick = e => { e.stopPropagation(); falar(b.dataset.falar); });
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
     if (NUVEM.papel === "apoio") return toast("Quem marca é a criança 😉");
     if (!ehHoje(diaSel)) return toast(futuro ? "Esse dia ainda não chegou 😉" : "Só dá pra marcar as de hoje");
     alternar(el.dataset.id);
   });
+}
+
+/* ===== Aba Avatar: o progresso da própria criança, sem comparar com irmãos ===== */
+function renderAbaAvatar(){
+  const el = $("#avatarConteudo"), c = crianca(criancaAtiva);
+  if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel da família.</div>`; return; }
+  const dias = diasDaSemana(), meta = Number(dados.premio.meta) || 100;
+  const feitasNoDia = d => feitosEm(isoDia(d), c.id).length;
+  const daSemana = dias.reduce((s, d) => s + feitasNoDia(d), 0);
+  const ini = inicioSemana(new Date()); ini.setDate(ini.getDate() - 7);
+  const passada = [...Array(7)].reduce((s, _, i) => { const d = new Date(ini); d.setDate(ini.getDate() + i); return s + feitasNoDia(d); }, 0);
+  const comp = daSemana - passada;
+  const barras = dias.map(d => { const tot = tarefasDe(c.id, d).length, f = feitosEm(isoDia(d), c.id).filter(k => tarefasDe(c.id, d).some(t => t.key === k)).length;
+    const pct = tot ? Math.max(8, Math.round(f / tot * 100)) : 8;
+    return `<div class="barraDia ${ehHoje(d) ? "hoje" : ""} ${ehFuturo(d) || !tot || !f ? "vazia" : ""}"><i style="height:${ehFuturo(d) ? 8 : pct}%"></i><span>${NOME_DIA[d.getDay()][0]}</span></div>`; }).join("");
+  const rec = dados.recompensas.find(x => x.texto === dados.premio.texto), pts = pontosSemana(c.id);
+  el.innerHTML = `
+    <div class="palcoAv" style="--topo:${corTopo(c)}">
+      <span class="solzinho"></span>
+      ${avatarHTML(c, 190)}
+      <b>${esc(c.nome)}</b>
+      ${NUVEM.papel === "apoio" ? "" : `<button class="btn sec quem" id="mudarAv" style="width:auto;justify-content:center;text-transform:none;letter-spacing:0">${icone("acao_editar_personagem", 22)} Mudar meu personagem</button>`}
+    </div>
+    <div class="numeros">
+      <div>${icone("moeda", 32)}<b>${saldo(c.id)}</b><small>moedas</small></div>
+      <div>${icone("jogo_sequencia_de_dias", 32)}<b>${sequencia(c.id)}</b><small>dias seguidos</small></div>
+      <div>${icone("tarefa", 32)}<b>${daSemana}</b><small>missões na semana</small></div>
+    </div>
+    <div class="cartao">
+      <div class="linhaP"><b class="titC">Minha semana</b><span class="${comp >= 0 ? "bom" : ""}">${comp > 0 ? comp + " a mais que a passada" : comp === 0 ? "igual à semana passada" : "semana passada: " + passada}</span></div>
+      <div class="barrasSemana">${barras}</div>
+    </div>
+    <div class="cartao desafio">
+      ${ico(rec?.icone || "loja_presente", 48)}
+      <div style="flex:1"><b>Desafio da semana: ${esc(dados.premio.texto)}</b>
+        <div class="trilho"><i style="width:${Math.min(100, Math.round(pts / meta * 100))}%"></i></div>
+        <small>${pts >= meta ? "Conseguiu! Pede pros pais" : pts + " de " + meta + " moedas"}</small></div>
+    </div>
+    ${NUVEM.papel === "apoio" || NUVEM.papel === "crianca" ? `<button class="link sairAp" id="sairAparelho">Sair deste aparelho</button>` : ""}`;
+  if ($("#mudarAv")) $("#mudarAv").onclick = () => abrirAvatar(c.id);
+  if ($("#sairAparelho")) { let n = 0; $("#sairAparelho").onclick = () => { if (++n < 2) { $("#sairAparelho").textContent = "Toque de novo pra sair"; return; } sairDaConta(); }; }
+}
+
+/* ===== Dia completo: o momento de conquista (único lugar com gradiente) ===== */
+function mostrarConquista(c, moedas){
+  const el = $("#conquista");
+  el.innerHTML = `<div class="formas" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="conqAv">${avatarHTML(c, 200)}</div>
+    <h1>Dia completo, ${esc(c.nome)}!</h1>
+    <p>Todas as missões de hoje feitas.</p>
+    <div class="conqChips"><span>${icone("moeda", 30)} +${moedas}</span><span>${icone("jogo_sequencia_de_dias", 30)} ${sequencia(c.id)} ${sequencia(c.id) === 1 ? "dia" : "dias"}</span></div>
+    <div class="conqBotoes"><button class="escuro" id="conqLoja">Ver a loja</button><button class="claro" id="conqFechar">Voltar para hoje</button></div>`;
+  el.style.display = "flex";
+  $("#conqLoja").onclick = () => { el.style.display = "none"; irPara("loja"); };
+  $("#conqFechar").onclick = () => { el.style.display = "none"; };
+  falar("Dia completo, " + c.nome + "!");
 }
 
 function alternar(key){
@@ -728,7 +951,8 @@ function alternar(key){
   else {
     lista.push(key);
     const t = tarefaDaChave(key);
-    if (diaCompleto(dia, criancaAtiva, new Date())) { toast("🏆 Todas as missões feitas! Sequência: " + sequencia(criancaAtiva) + " 🔥"); confete(36); vinheta("tudo"); }
+    if (diaCompleto(dia, criancaAtiva, new Date())) { confete(36); vinheta("tudo");
+      mostrarConquista(crianca(criancaAtiva), tarefasDe(criancaAtiva, new Date()).reduce((s, x) => s + x.pontos, 0)); }
     else { toast(`+${t.pontos} moedas!`); vinheta("ok"); }
   }
   salvar(); render();
@@ -958,6 +1182,11 @@ function renderPais(){
     <button class="btn sec" id="sair">Sair do painel</button>`}`;
 
   ligarSeletores(el);
+  // cada bloco pertence a uma aba do painel
+  const abaDoBloco = t => /Pedidos|Recompensas/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
+  el.querySelectorAll(".bloco").forEach(b => b.dataset.aba = abaDoBloco(b.querySelector("b")?.textContent || ""));
+  if ($("#sair")) $("#sair").dataset.aba = "familia";
+  el.dataset.aba = painelAba;
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
   const setD = (g, v) => { if (g === "a") diasAtv = v; else diasForm = v; };
@@ -1153,8 +1382,9 @@ function renderAvatar(){
   const opc = (campo, valor, conteudo, rot) => `<button class="opc ${(a[campo] || null) === valor ? "on" : ""}" data-campo="${campo}" data-valor="${valor ?? ""}" aria-label="${esc(rot)}">${conteudo}</button>`;
   const comMudanca = (campo, valor) => avatarSVG({ ...a, [campo]: valor }, 64);
   $("#folhaAvatar").innerHTML = `<div class="folhaCaixa" role="dialog" aria-label="Personagem de ${esc(c.nome)}">
-    <div class="palco">${avatarSVG(a, 170)}</div>
+    <div class="palco" style="background:${a.fundo || "linear-gradient(135deg,var(--sol),var(--roxo-eletrico))"}">${avatarSVG(a, 170)}</div>
     <div class="secao"><b>Personagem</b><div class="opcs">${Object.entries(MARCA.personagens).map(([k, v]) => opc("p", k, avatarSVG({ ...a, p: k, cor: null }, 64) + `<small>${v.nome}</small>`, v.nome)).join("")}</div></div>
+    <div class="secao"><b>Cor do fundo</b><div class="opcs cores">${opc("fundo", null, `<i style="background:${corTopo({ id: "_" })}"></i><small>Automática</small>`, "Cor automática")}${CORES_TOPO.map(cor => opc("fundo", cor, `<i style="background:${cor}"></i>`, "Cor do fundo")).join("")}</div></div>
     <div class="secao"><b>Cor</b><div class="opcs cores">${opc("cor", null, `<i style="background:${MARCA.personagens[a.p].cor}"></i><small>Original</small>`, "Cor original")}${CORES_AVATAR.filter(x => x !== MARCA.personagens[a.p].cor).map(cor => opc("cor", cor, `<i style="background:${cor}"></i>`, "Cor")).join("")}</div></div>
     ${CAMADAS.slice().reverse().map(cm => `<div class="secao"><b>${cm.nome}</b><div class="opcs">${opc(cm.id, null, `<span class="nada">Nada</span>`, "Nada")}${Object.entries(MARCA.acessorios).filter(([, v]) => v.camada === cm.id).map(([k, v]) => opc(cm.id, k, comMudanca(cm.id, k) + `<small>${v.nome}</small>`, v.nome)).join("")}</div></div>`).join("")}
     <div class="row acoesFolha"><button class="btn sec" id="avCancelar">Cancelar</button><button class="btn" id="avPronto">Pronto!</button></div>
@@ -1228,30 +1458,51 @@ function renderResultados(){
 /* ===== Navegação ===== */
 const ABAS = {
   missoes: { icone: "tarefa", nome: "Hoje" },
+  avatar: { icone: "avatar", nome: "Avatar" },
   loja: { icone: "loja", nome: "Loja" },
-  placar: { icone: "trofeu", nome: "Placar" },
-  resultados: { icone: "grafico", nome: "Resultados" },
-  pais: { icone: "cadeado", nome: "Pais" }
+  mundos: { icone: "mundo", nome: "Mundos" }
 };
+const ABAS_PAINEL = [ { id: "rotina", nome: "Rotina" }, { id: "loja", nome: "Loja" }, { id: "resultados", nome: "Resultados" }, { id: "familia", nome: "Família" } ];
 function montarNav(){
-  const abas = NUVEM.papel === "crianca" || NUVEM.papel === "apoio" ? ["missoes", "loja", "placar"]
-    : ["missoes", "loja", "placar", "resultados", "pais"];
-  const atual = document.querySelector(".tela.on")?.id.slice(2);
-  $("#nav").innerHTML = abas.map(t => `<button data-t="${t}"><span>${icone(ABAS[t].icone, 30)}</span>${ABAS[t].nome}</button>`).join("");
+  const abas = ["missoes", "avatar", "loja", "mundos"];
+  $("#nav").innerHTML = abas.map(t => `<button data-t="${t}">${t === "avatar" ? `<span class="navAv">${avatarHTML(crianca(criancaAtiva), 30) || icone("tarefa", 30)}</span>` : `<span>${icone(ABAS[t].icone, 30)}</span>`}${ABAS[t].nome}</button>`).join("");
   document.querySelectorAll("#nav button").forEach(b => b.onclick = () => irPara(b.dataset.t));
-  irPara(abas.includes(atual) ? atual : "missoes");
+  if (telaAtual === "painel" && NUVEM.papel !== "local" && NUVEM.papel !== "pais") telaAtual = "missoes";
+  irPara(telaAtual);
 }
 function irPara(t){
+  if (t === "mundos") return toast("Os Mundos estão chegando 🌍");
+  telaAtual = t;
+  const painel = t === "painel";
+  document.body.classList.toggle("modoPainel", painel);
+  const alvo = painel ? (painelAba === "resultados" ? "resultados" : "pais") : t;
   document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x.dataset.t === t));
-  document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + t));
-  $("#kids").style.display = (t === "pais" || t === "resultados") ? "none" : "flex";
+  document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + alvo));
   confirmaTroca = null;
+  window.scrollTo(0, 0);
   render();
+}
+function renderPainelTopo(){
+  const pend = Object.values(dados.trocas).filter(x => x.status === "pedido");
+  const ultimo = pend.sort((a, b) => b.data.localeCompare(a.data))[0];
+  $("#painelTopo").innerHTML = `
+    <div class="ptLinha"><button class="hb" id="voltarCriancas" aria-label="Voltar para as crianças">${icone("acao_semana_anterior", 22)}</button>
+      ${icone("painel_familia", 34)}<b>Painel da família</b></div>
+    <div class="abasPainel" role="tablist">${ABAS_PAINEL.map(a => `<button role="tab" aria-selected="${a.id === painelAba}" class="${a.id === painelAba ? "on" : ""}" data-aba="${a.id}">${a.nome}</button>`).join("")}</div>
+    ${ultimo && (paisLiberado || NUVEM.papel === "pais") ? `<div class="alertaPedido">${ico(dados.recompensas.find(r => r.id === ultimo.rec)?.icone || "loja_presente", 34)}
+      <span>${esc(crianca(ultimo.kid)?.nome || "Alguém")} pediu "${esc(ultimo.texto)}"${pend.length > 1 ? ` e mais ${pend.length - 1}` : ""}</span>
+      <button class="ed" id="verPedidos">ver</button></div>` : ""}`;
+  $("#voltarCriancas").onclick = () => irPara("missoes");
+  document.querySelectorAll(".abasPainel [data-aba]").forEach(b => b.onclick = () => { painelAba = b.dataset.aba; irPara("painel"); });
+  if ($("#verPedidos")) $("#verPedidos").onclick = () => { painelAba = "loja"; irPara("painel"); };
 }
 
 function render(deFora){
   if (!crianca(criancaAtiva)) criancaAtiva = dados.criancas[0]?.id;
   renderCabecalho(); renderMissoes(); renderPlacar();
+  const navAv = document.querySelector("#nav .navAv"); if (navAv && crianca(criancaAtiva)) navAv.innerHTML = avatarHTML(crianca(criancaAtiva), 30);
+  if (telaAtual === "painel") renderPainelTopo();
+  if ($("#t-avatar").classList.contains("on")) renderAbaAvatar();
   if ($("#t-loja").classList.contains("on")) renderLoja();
   if ($("#t-resultados").classList.contains("on")) renderResultados();
   // mudança vinda de outro aparelho não apaga o que os pais estão digitando no painel
@@ -1321,7 +1572,7 @@ async function conectarFamilia(codigo, papel){
   NUVEM.ativo = true; gravarSessao({ papel, familia: codigo });
   if (NUVEM.papel === "crianca") paisLiberado = false;
   $("#entrada").style.display = "none";
-  $("#statusNuvem").innerHTML = icone("entrada_nuvem_conectada", 20) + " " + esc(papel === "pais" ? "Família " + codigo : papel === "apoio" ? "Rede de apoio da família" : "Conectado à família");
+  NUVEM.statusHTML = icone("entrada_nuvem_conectada", 18) + " " + esc(papel === "pais" ? "Família " + codigo : papel === "apoio" ? "Rede de apoio da família" : "Conectado à família");
   montarNav();
   NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
     e => { console.warn(e); toast("Perdi o acesso a esta família"); });
@@ -1456,7 +1707,7 @@ async function entrarComoCrianca(codigo){
   } catch(e) { console.warn(e); telaEntrada("kid", "Não achei essa família. Confere o código com seu responsável."); }
 }
 
-function modoLocal(){ NUVEM.ativo = false; NUVEM.papel = "local"; $("#statusNuvem").textContent = ""; montarNav(); }
+function modoLocal(){ NUVEM.ativo = false; NUVEM.papel = "local"; NUVEM.statusHTML = ""; montarNav(); }
 
 async function iniciar(){
   const cfg = window.FIREBASE_CONFIG;
@@ -1474,8 +1725,7 @@ async function iniciar(){
     telaEntrada("inicio");
   });
 }
-$("#somBtn").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); if (PREF.som) vinheta("ok"); };
-atualizarSomBtn(); aplicarMovimento();
+aplicarMovimento();
 iniciar();
 </script>
 </body>
