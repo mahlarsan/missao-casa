@@ -28,8 +28,8 @@ service cloud.firestore {
         (souResponsavel()
           && request.resource.data.dono == resource.data.dono
           && request.resource.data.pais == resource.data.pais)
-        // aparelho da criança só marca missões e faz pedidos na loja
-        || (souAparelhoDeCrianca() && mudou().hasOnly(['feitos', 'trocas']))
+        // aparelho da criança só marca missões, faz pedidos na loja e escolhe o próprio personagem
+        || (souAparelhoDeCrianca() && mudou().hasOnly(['feitos', 'trocas', 'avatares']))
         // quem tem o código da família entra como aparelho de criança (um por vez)
         || (logado() && mudou().hasOnly(['aparelhos']) && entraUm('aparelhos'))
         // segundo responsável entra com o convite de responsável

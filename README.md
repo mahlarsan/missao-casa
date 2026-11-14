@@ -28,6 +28,18 @@ Pronto: ao abrir o app aparece a tela de entrada ("Sou responsável" / "Sou cria
 
 > A `apiKey` do Firebase pode ficar pública no GitHub: ela só identifica o projeto. Quem protege os dados são as regras do passo 4.
 
+## Identidade visual
+
+O app segue o **Brand system 0.1** (pasta `marca/`, com o `Manual_de_Marca_v01.pdf`):
+
+- Paleta: amarelo sol `#FFD52A` e roxo elétrico `#7738EA` como protagonistas, creme `#FFFDF5` de respiro e tinta `#242034` nos textos e contornos. Coral, azul piscina, lima e lilás aparecem como apoio.
+- Personagens Órbita, Zigue, Pingo e Faísca, com acessórios em camadas SVG (viewBox 256×256). A criança monta o próprio avatar tocando no cartão dela.
+- Ícones da marca na navegação (Hoje, Loja, Placar, Resultados, Pais) e a moeda como unidade de troca.
+- Gradientes só em momentos de conquista (palco do avatar, dia completo).
+- Microanimações de 250 a 450 ms sem flashes, vinheta curta com botão de mudo e opção "menos movimento".
+
+Pendências do manual: nome e logotipo, fonte licenciada (hoje usa Fredoka e Nunito, ambas de licença aberta), mecânica dos Mundos e testes com crianças.
+
 ## Privacidade (LGPD)
 
 Os dados das crianças ficam sob a conta do responsável. O app guarda só apelido, avatar (emoji), missões e agenda: nada de e-mail, foto ou documento das crianças. Antes de abrir para outras famílias, vale incluir um termo de consentimento dos responsáveis e uma revisão jurídica.

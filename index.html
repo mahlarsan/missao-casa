@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#CE82FF">
+<meta name="theme-color" content="#7738EA">
 <title>Missão Casa</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  /* Paleta inspirada em apps infantis consagrados (Duolingo, Khan Academy Kids):
-     cores vivas e chapadas, contraste alto, cantos bem redondos e botões com "relevo". */
+  /* Brand system 0.1 — "A vida real vira brincadeira".
+     Amarelo e roxo protagonistas, creme como respiro, tinta nos textos e contornos.
+     Linguagem de jogo independente: formas expressivas com contorno em tinta, composição limpa. */
   :root{
-    --verde:#58CC02; --verde-esc:#58A700;
-    --azul:#1CB0F6;  --azul-esc:#1899D6;
-    --amarelo:#FFC800; --amarelo-esc:#E5A800;
-    --laranja:#FF9600; --vermelho:#FF4B4B; --roxo:#CE82FF; --roxo-esc:#A560E8; --rosa:#FF86D0;
-    --fundo:#F4FAFF; --card:#FFFFFF; --borda:#E5E5E5; --borda-esc:#CECECE;
-    --texto:#3C3C3C; --suave:#777777;
+    --sol:#FFD52A; --roxo-eletrico:#7738EA; --lilas:#B06CFF; --coral:#FF6654; --piscina:#29BCE5; --lima:#A5DD37; --creme:#FFFDF5; --tinta:#242034;
+    --pri:var(--roxo-eletrico); --pri-esc:#5A22C2;
+    --verde:var(--lima); --verde-esc:#4F7A0C;
+    --amarelo:var(--sol); --amarelo-esc:#D9B000;
+    --laranja:var(--coral); --vermelho:var(--coral); --roxo:var(--roxo-eletrico); --roxo-esc:#5A22C2; --rosa:var(--lilas);
+    --fundo:var(--creme); --card:#FFFFFF; --borda:#ECE6D6; --borda-esc:#D5CDBA;
+    --texto:var(--tinta); --suave:#615C74;
     --titulo:"Fredoka","Nunito",system-ui,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -27,7 +29,7 @@
        padding-bottom:calc(96px + env(safe-area-inset-bottom));line-height:1.3}
   button{font-family:inherit}
 
-  header{background:var(--azul);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 20px 46px;border-radius:0 0 32px 32px;position:relative;overflow:hidden}
+  header{background:var(--pri);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 20px 46px;border-radius:0 0 32px 32px;position:relative;overflow:hidden}
   header::after{content:"";position:absolute;right:-40px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.14)}
   header h1{margin:0;font-family:var(--titulo);font-weight:700;font-size:1.75rem;letter-spacing:.2px}
   header p{margin:4px 0 0;font-size:1rem;opacity:.95}
@@ -40,25 +42,25 @@
        text-align:center;cursor:pointer;font-family:var(--titulo);font-weight:600;font-size:1.2rem;transition:transform .1s}
   .kid:active{transform:translateY(3px);border-bottom-width:3px}
   .kid .av{font-size:2.6rem;line-height:1.1}
-  .kid.on{border-color:var(--azul);background:#DDF4FF}
+  .kid.on{border-color:var(--pri);background:#EFE6FF}
   .kid small{display:block;color:var(--suave);font-family:"Nunito";font-weight:800;font-size:.85rem;margin-top:2px}
 
   /* Semana */
   .semana{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:12px;margin-top:10px}
   .semana .topo{display:flex;align-items:center;justify-content:space-between;font-family:var(--titulo);font-weight:600;font-size:1.15rem;margin-bottom:10px;text-transform:capitalize}
-  .semana .topo button{background:var(--card);color:var(--azul);border:2px solid var(--borda);border-bottom-width:4px;border-radius:14px;
+  .semana .topo button{background:var(--card);color:var(--pri);border:2px solid var(--borda);border-bottom-width:4px;border-radius:14px;
        min-width:44px;height:44px;font-size:1.3rem;font-weight:900;cursor:pointer}
   .semana .topo button:active{transform:translateY(2px);border-bottom-width:2px}
-  .semana .topo .hojeBtn{padding:0 12px;font-size:.95rem;color:#fff;background:var(--azul);border-color:var(--azul-esc)}
+  .semana .topo .hojeBtn{padding:0 12px;font-size:.95rem;color:#fff;background:var(--pri);border-color:var(--pri-esc)}
   .diasNav{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
   .diaNav{border-radius:16px;padding:8px 0 6px;text-align:center;cursor:pointer;border:2px solid transparent;min-height:72px}
   .diaNav .sem{font-size:.75rem;color:var(--suave);font-weight:900;text-transform:uppercase;letter-spacing:.5px}
   .diaNav .num{font-family:var(--titulo);font-weight:600;font-size:1.35rem}
   .diaNav .pt{height:12px;font-size:.7rem;line-height:12px;color:var(--amarelo-esc);letter-spacing:1px}
   .diaNav.fds .num{color:var(--roxo-esc)}
-  .diaNav.hoje{background:#FFF4CC}
-  .diaNav.sel{border-color:var(--azul);background:#DDF4FF;border-bottom-width:4px}
-  .diaNav.sel .num{color:var(--azul-esc)}
+  .diaNav.hoje{background:#FFF3BF}
+  .diaNav.sel{border-color:var(--pri);background:#EFE6FF;border-bottom-width:4px}
+  .diaNav.sel .num{color:var(--pri-esc)}
 
   /* Progresso do dia */
   .progresso{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:22px;padding:12px 16px;margin:14px 0 4px}
@@ -69,14 +71,14 @@
   .progresso .trilho i{display:block;height:100%;background:var(--verde);border-radius:12px;transition:width .5s;
        box-shadow:inset 0 -5px 0 rgba(0,0,0,.08), inset 0 4px 0 rgba(255,255,255,.35)}
 
-  .aviso{background:#DDF4FF;color:var(--azul-esc);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1rem;margin:12px 0 0}
+  .aviso{background:#EFE6FF;color:var(--pri-esc);border-radius:18px;padding:12px 14px;font-weight:800;font-size:1rem;margin:12px 0 0}
 
   /* Agenda */
   .agenda{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:14px 16px;margin:14px 0 0}
   .agenda b{display:block;margin-bottom:6px;font-family:var(--titulo);font-weight:600;font-size:1.2rem}
   .atv{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px dashed var(--borda);font-weight:800;font-size:1.1rem}
   .atv:last-child{border:0}
-  .atv .hora{background:#F3E5FF;color:var(--roxo-esc);border-radius:12px;padding:4px 10px;font-size:.95rem;min-width:66px;text-align:center;font-weight:900}
+  .atv .hora{background:#F3E9FF;color:var(--roxo-esc);border-radius:12px;padding:4px 10px;font-size:.95rem;min-width:66px;text-align:center;font-weight:900}
   .atv .ic{font-size:1.7rem}
 
   /* Missões */
@@ -86,13 +88,13 @@
           padding:14px;margin-bottom:12px;cursor:pointer;min-height:84px;transition:transform .1s,background .2s}
   .missao:active{transform:translateY(3px);border-bottom-width:3px;margin-bottom:15px}
   .missao .ic{font-size:2.1rem;width:62px;height:62px;flex:none;border-radius:18px;display:grid;place-items:center;
-              background:color-mix(in srgb, var(--c, var(--azul)) 22%, white)}
+              background:color-mix(in srgb, var(--c, var(--pri)) 22%, white)}
   .missao .tx{flex:1;font-weight:900;font-size:1.2rem;line-height:1.2}
   .missao .tx small{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:.85rem}
-  .pill{background:#FFF4CC;color:#B07A00;border-radius:10px;padding:2px 8px;font-weight:900}
-  .pill.vez{background:#F3E5FF;color:var(--roxo-esc)}
+  .pill{background:#FFF3BF;color:#6E5400;border-radius:10px;padding:2px 8px;font-weight:900}
+  .pill.vez{background:#F3E9FF;color:var(--roxo-esc)}
   .missao .ok{width:48px;height:48px;flex:none;border-radius:50%;border:3px solid var(--borda-esc);display:grid;place-items:center;font-size:1.5rem;color:#fff;font-weight:900}
-  .missao.feita{background:#D7FFB8;border-color:var(--verde)}
+  .missao.feita{background:#EEF9D2;border-color:var(--verde)}
   .missao.feita .ok{background:var(--verde);border-color:var(--verde-esc);animation:pop .35s}
   .missao.feita .tx{color:var(--verde-esc)}
   .missao.futura{cursor:default}
@@ -101,8 +103,8 @@
   .vazio{text-align:center;color:var(--suave);padding:28px 16px;font-weight:800;font-size:1.15rem}
 
   /* Placar */
-  .premio{background:var(--amarelo);color:#5A4300;border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:16px 18px;font-weight:800;margin-bottom:14px;font-size:1rem}
-  .premio b{font-family:var(--titulo);font-weight:600;font-size:1.5rem;display:block;margin:4px 0;color:#3C2E00}
+  .premio{background:var(--amarelo);color:#4A3A00;border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:16px 18px;font-weight:800;margin-bottom:14px;font-size:1rem}
+  .premio b{font-family:var(--titulo);font-weight:600;font-size:1.5rem;display:block;margin:4px 0;color:#242034}
   .placar{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:24px;padding:14px 16px;margin-bottom:14px}
   .placar .linha{display:flex;justify-content:space-between;font-family:var(--titulo);font-weight:600;font-size:1.35rem}
   .barra{height:22px;background:var(--borda);border-radius:14px;margin:10px 0 8px;overflow:hidden}
@@ -121,7 +123,7 @@
   nav button{background:none;border:2px solid transparent;font-weight:900;font-size:.78rem;color:var(--suave);display:flex;flex-direction:column;
              align-items:center;gap:2px;padding:6px 4px;border-radius:16px;cursor:pointer;flex:1;max-width:110px}
   nav button span{font-size:1.8rem;line-height:1}
-  nav button.on{color:var(--azul-esc);background:#DDF4FF;border-color:#84D8FF}
+  nav button.on{color:var(--pri-esc);background:#EFE6FF;border-color:#C9A8FF}
   .tela{display:none}.tela.on{display:block;animation:entra .25s}
   @keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 
@@ -134,18 +136,18 @@
   .item .acoes{margin-left:auto;display:flex;gap:6px}
   .item small{color:var(--suave);font-weight:700;width:100%;padding-left:2px}
   .x,.ed{border:2px solid;border-bottom-width:4px;border-radius:12px;padding:5px 12px;font-weight:900;cursor:pointer;font-size:.85rem}
-  .x{background:#FFF0F0;color:#EA2B2B;border-color:#FFC1C1}
-  .ed{background:#DDF4FF;color:var(--azul-esc);border-color:#84D8FF}
-  input,select{font:inherit;font-size:1rem;padding:12px;border-radius:14px;border:2px solid var(--borda);width:100%;margin:5px 0;background:#F7F7F7;color:var(--texto)}
-  input:focus,select:focus{outline:none;border-color:var(--azul);background:#fff}
+  .x{background:#FFEDEA;color:#C93A2A;border-color:#FFC2BA}
+  .ed{background:#EFE6FF;color:var(--pri-esc);border-color:#C9A8FF}
+  input,select{font:inherit;font-size:1rem;padding:12px;border-radius:14px;border:2px solid var(--borda);width:100%;margin:5px 0;background:#F8F5EC;color:var(--texto)}
+  input:focus,select:focus{outline:none;border-color:var(--pri);background:#fff}
   .row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
   .btn{background:var(--verde);color:#fff;border:0;border-bottom:5px solid var(--verde-esc);border-radius:16px;padding:13px;font-size:1rem;font-weight:900;
        width:100%;margin-top:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.6px}
   .btn:active{transform:translateY(3px);border-bottom-width:2px}
-  .btn.sec{background:#fff;color:var(--azul-esc);border:2px solid var(--borda);border-bottom-width:5px}
+  .btn.sec{background:#fff;color:var(--pri-esc);border:2px solid var(--borda);border-bottom-width:5px}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
   .chip{border:2px solid var(--borda);border-bottom-width:4px;background:#fff;border-radius:14px;padding:8px 11px;font-weight:900;font-size:.9rem;cursor:pointer;color:var(--suave)}
-  .chip.on{background:#DDF4FF;border-color:var(--azul);color:var(--azul-esc)}
+  .chip.on{background:#EFE6FF;border-color:var(--pri);color:var(--pri-esc)}
   .chip.atalho{border-style:dashed;border-bottom-width:2px}
   .editando{outline:3px solid var(--amarelo);border-radius:16px;padding:10px;margin:8px -4px}
   .pin{max-width:280px;margin:40px auto;text-align:center}
@@ -160,30 +162,30 @@
   .entrada{position:fixed;inset:0;background:var(--fundo);z-index:30;overflow:auto;padding:calc(30px + env(safe-area-inset-top)) 22px 30px}
   .entrada .caixa{max-width:420px;margin:0 auto;text-align:center}
   .entrada .logo{font-size:4.2rem;line-height:1}
-  .entrada h1{font-family:var(--titulo);font-weight:700;font-size:2rem;margin:8px 0 4px;color:var(--azul-esc)}
+  .entrada h1{font-family:var(--titulo);font-weight:700;font-size:2rem;margin:8px 0 4px;color:var(--pri-esc)}
   .entrada p{color:var(--suave);margin:4px 0 22px}
   .entrada .grande{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:2px solid var(--borda);border-bottom-width:6px;
        border-radius:24px;padding:16px;margin-bottom:14px;cursor:pointer;font-family:var(--titulo);font-weight:600;font-size:1.3rem;color:var(--texto)}
   .entrada .grande:active{transform:translateY(3px);border-bottom-width:3px}
   .entrada .grande span{font-size:2.4rem}
   .entrada .grande small{display:block;font-family:"Nunito";font-weight:700;font-size:.85rem;color:var(--suave)}
-  .entrada .link{background:none;border:0;color:var(--azul-esc);font-weight:900;font-size:.95rem;margin-top:12px;cursor:pointer;text-decoration:underline}
+  .entrada .link{background:none;border:0;color:var(--pri-esc);font-weight:900;font-size:.95rem;margin-top:12px;cursor:pointer;text-decoration:underline}
   .entrada input{text-align:left}
   .entrada .codigo{text-align:center;font-family:var(--titulo);font-size:2rem;letter-spacing:8px;text-transform:uppercase}
-  .erro{color:#EA2B2B;font-weight:800;min-height:1.2em;margin:6px 0}
-  .codigoFam{font-family:var(--titulo);font-weight:700;font-size:2rem;letter-spacing:6px;color:var(--azul-esc);background:#DDF4FF;border-radius:16px;padding:8px;text-align:center;margin:8px 0}
+  .erro{color:#C93A2A;font-weight:800;min-height:1.2em;margin:6px 0}
+  .codigoFam{font-family:var(--titulo);font-weight:700;font-size:2rem;letter-spacing:6px;color:var(--pri-esc);background:#EFE6FF;border-radius:16px;padding:8px;text-align:center;margin:8px 0}
   .nuvem{font-size:.8rem;font-weight:800;opacity:.9;margin-top:2px}
   .rot{color:var(--suave);font-weight:800;display:block;margin-top:10px}
   .codigoFam.conv{font-size:1.25rem;letter-spacing:2px;user-select:all}
 
   /* Resultados */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-  .kpi{background:#F7F7F7;border-radius:16px;padding:10px 6px;text-align:center}
+  .kpi{background:#F8F5EC;border-radius:16px;padding:10px 6px;text-align:center}
   .kpi b{display:block;font-family:var(--titulo);font-weight:700;font-size:1.5rem}
   .kpi small{color:var(--suave);font-weight:800;font-size:.75rem}
   .colunas{display:flex;align-items:flex-end;gap:10px;height:120px;margin:12px 0 4px;padding:0 4px}
   .colunas div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-weight:900;font-size:.8rem}
-  .colunas i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:var(--azul);min-height:4px}
+  .colunas i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:var(--pri);min-height:4px}
   .colunas div.atual i{background:var(--verde)}
   .colunas span{color:var(--suave);font-size:.72rem;margin-top:4px}
   .lista-r{margin:6px 0 0;padding:0;list-style:none}
@@ -193,37 +195,99 @@
   .sub{font-family:var(--titulo);font-weight:600;font-size:1.05rem;margin:14px 0 2px;display:block}
 
   /* Loja */
-  .cofre{display:flex;align-items:center;gap:14px;background:var(--amarelo);border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:14px 18px;margin-top:14px;color:#5A4300}
+  .cofre{display:flex;align-items:center;gap:14px;background:var(--amarelo);border:2px solid var(--amarelo-esc);border-bottom-width:6px;border-radius:24px;padding:14px 18px;margin-top:14px;color:#4A3A00}
   .cofre .moeda{font-size:2.6rem}
   .cofre small{display:block;font-weight:800}
-  .cofre b{font-family:var(--titulo);font-weight:700;font-size:2.2rem;line-height:1;color:#3C2E00}
+  .cofre b{font-family:var(--titulo);font-weight:700;font-size:2.2rem;line-height:1;color:#242034}
   .vitrine{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .produto{background:var(--card);border:2px solid var(--borda);border-bottom-width:5px;border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:8px}
   .produto .ptx{font-weight:900;font-size:1rem;flex:1}
-  .produto .preco{font-family:var(--titulo);font-weight:600;font-size:1.15rem;color:#B07A00}
+  .produto .preco{font-family:var(--titulo);font-weight:600;font-size:1.15rem;color:#6E5400}
   .produto.falta{opacity:.75}
   .trocar{background:var(--verde);color:#fff;border:0;border-bottom:4px solid var(--verde-esc);border-radius:14px;padding:10px;font-weight:900;font-size:.95rem;cursor:pointer}
-  .trocar.conf{background:var(--laranja);border-color:#D97F00}
+  .trocar.conf{background:var(--laranja);border-color:#D94A3A}
   .trocar:disabled{background:var(--borda);border-color:var(--borda-esc);color:var(--suave);cursor:default}
   .pedido{display:flex;justify-content:space-between;gap:8px;background:var(--card);border:2px solid var(--borda);border-radius:16px;padding:10px 12px;margin-bottom:8px;font-weight:800}
   .pedido .st{white-space:nowrap;color:var(--suave)}
   .pedido .st.entregue{color:var(--verde-esc)}
   /* Pausa, áudio, tipos de agenda */
-  .aviso.pausa{background:#FFF4CC;color:#8A6200}
-  .pausaTag{background:#FFF4CC;color:#8A6200;border-radius:12px;padding:6px 10px;font-weight:800;font-size:.9rem;margin-bottom:6px}
-  .som{background:#F3E5FF;border:2px solid #E3C7FF;border-bottom-width:4px;border-radius:14px;width:44px;height:44px;font-size:1.2rem;cursor:pointer;flex:none}
+  .aviso.pausa{background:#FFF3BF;color:#6E5400}
+  .pausaTag{background:#FFF3BF;color:#6E5400;border-radius:12px;padding:6px 10px;font-weight:800;font-size:.9rem;margin-bottom:6px}
+  .som{background:#F3E9FF;border:2px solid #DCC6FF;border-bottom-width:4px;border-radius:14px;width:44px;height:44px;font-size:1.2rem;cursor:pointer;flex:none}
   .som:active{transform:translateY(2px);border-bottom-width:2px}
   .atv{cursor:pointer}
   .atv .hora{background:color-mix(in srgb, var(--t, var(--roxo)) 16%, white);color:color-mix(in srgb, var(--t, var(--roxo)) 80%, black)}
   .nomeAtv{flex:1}
   .nomeAtv small{display:block;font-size:.78rem;color:var(--suave);font-weight:800}
 
+  /* ---- Brand system 0.1: contorno em tinta nos elementos de jogo ---- */
+  header{background:var(--pri);padding-right:70px}
+  header::after{right:-36px;top:-56px;width:150px;height:150px;background:var(--sol);border:3px solid var(--tinta)}
+  .somBtn{position:absolute;right:14px;top:calc(14px + env(safe-area-inset-top));z-index:2;width:48px;height:48px;border-radius:16px;background:var(--creme);
+          border:2px solid var(--tinta);border-bottom-width:4px;display:grid;place-items:center;cursor:pointer;padding:0}
+  .somBtn:active{transform:translateY(2px);border-bottom-width:2px}
+  .kid,.missao,.produto,.cofre,.premio,.entrada .grande{border-color:var(--tinta);border-width:2px;border-bottom-width:5px}
+  .kid:active,.missao:active,.entrada .grande:active{border-bottom-width:2px}
+  .kid .av{position:relative;display:block;width:68px;margin:0 auto 2px;line-height:0}
+  .kid .lapis{position:absolute;right:-8px;bottom:0;font-size:.9rem;line-height:1;background:var(--sol);border:2px solid var(--tinta);border-radius:10px;padding:3px}
+  .kid.on{border-color:var(--pri);background:#EFE6FF;box-shadow:0 0 0 3px #C9A8FF}
+  .missao .ic{border:2px solid var(--tinta)}
+  .missao .ok{border-color:var(--tinta)}
+  .missao.feita{background:#EEF9D2;border-color:var(--tinta)}
+  .missao.feita .ok{background:var(--lima);border-color:var(--tinta);color:var(--tinta)}
+  .missao.feita .tx{color:var(--verde-esc)}
+  .pill{display:inline-flex;align-items:center;gap:4px;background:#FFF3BF;color:var(--tinta)}
+  .pill.vez{background:#F3E9FF;color:var(--pri-esc)}
+  .ico{flex:none;display:inline-block;vertical-align:middle}
+  .quem{display:inline-flex;align-items:center;gap:8px}
+  .progresso .estrela{line-height:0}
+  .progresso .trilho{border:2px solid var(--tinta);height:20px}
+  .progresso.completo{position:relative;overflow:hidden;border-color:var(--tinta);background:#FFFBEA}
+  .progresso.completo::before{content:"";position:absolute;inset:0 0 auto 0;height:8px;background:linear-gradient(90deg,var(--sol),var(--roxo-eletrico))}
+  .barra{border:2px solid var(--tinta)}
+  .cofre{background:var(--sol);color:var(--tinta)}
+  .cofre b{color:var(--tinta)}
+  .premio{background:var(--sol);color:var(--tinta)}
+  .btn{background:var(--pri);border-bottom-color:var(--pri-esc)}
+  .btn.sec{border-color:var(--tinta);color:var(--tinta)}
+  .trocar{background:var(--pri);border-bottom-color:var(--pri-esc)}
+  .trocar.conf{background:var(--coral);border-bottom-color:#C93A2A}
+  nav{border-top:2px solid var(--tinta);background:var(--creme)}
+  nav button.on{background:#EFE6FF;border-color:var(--pri);color:var(--pri-esc)}
+  nav button span{line-height:0}
+  .diaNav.hoje{background:#FFF3BF}
+  .entrada .logo{display:flex;justify-content:center;gap:4px;line-height:0}
+  .entrada h1{color:var(--pri)}
+  .confete{width:14px;height:14px;top:-20px;border:2px solid var(--tinta);animation:cai 1.2s cubic-bezier(.3,.1,.6,1) forwards}
+  .colunas i{background:var(--piscina);border:2px solid var(--tinta)}
+  .colunas div.atual i{background:var(--lima)}
+  .codigoFam{color:var(--pri-esc);background:#EFE6FF}
+  .atv .hora{border:2px solid color-mix(in srgb, var(--t, var(--roxo)) 45%, white)}
+
+  /* Folha do avatar */
+  .folha{position:fixed;inset:0;background:rgba(36,32,52,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+  .folhaCaixa{background:var(--creme);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:28px 28px 0 0;border:2px solid var(--tinta);border-bottom:0;
+              padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:sobe .3s ease-out}
+  @keyframes sobe{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .palco{display:grid;place-items:center;background:linear-gradient(135deg,var(--sol),var(--roxo-eletrico));border:2px solid var(--tinta);border-radius:24px;padding:10px;margin-bottom:6px}
+  .secao b{display:block;font-family:var(--titulo);font-weight:600;font-size:1.1rem;margin:14px 4px 8px}
+  .opcs{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px}
+  .opc{flex:none;min-width:84px;background:#fff;border:2px solid var(--borda);border-bottom-width:4px;border-radius:18px;padding:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--tinta)}
+  .opc small{font-size:.72rem;font-weight:800}
+  .opc.on{border-color:var(--pri);background:#EFE6FF;box-shadow:0 0 0 3px #C9A8FF}
+  .opc .nada{height:64px;display:grid;place-items:center;font-weight:900;color:var(--suave)}
+  .opcs.cores .opc{min-width:58px}
+  .opcs.cores i{display:block;width:40px;height:40px;border-radius:50%;border:2px solid var(--tinta)}
+  .acoesFolha{position:sticky;bottom:-16px;background:var(--creme);padding-top:8px}
+
+  body.calmo *{animation:none!important;transition:none!important}
   @media (prefers-reduced-motion: reduce){ *{animation:none!important;transition:none!important} }
 </style>
 </head>
 <body>
 <header>
-  <h1>🏠 Missão Casa</h1>
+  <button class="somBtn" id="somBtn" aria-label="Ligar ou desligar o som"></button>
+  <h1>Missão Casa</h1>
   <p id="hoje"></p>
   <div class="nuvem" id="statusNuvem"></div>
 </header>
@@ -263,12 +327,30 @@
 
 <nav id="nav"></nav>
 <div class="toast" id="toast"></div>
+<div class="folha" id="folhaAvatar" style="display:none"></div>
 <div class="entrada" id="entrada" style="display:none"></div>
 
 <!-- Configuração do Firebase (opcional). Sem ela, o app funciona só neste aparelho. -->
 <script src="firebase-config.js"></script>
 
 <script>
+/* ===== Brand system 0.1 (arquivos originais em /marca) ===== */
+const MARCA = {"personagens": {"orbita": {"nome": "Órbita", "cor": "#7738EA", "svg": "<path d=\"M55 120 C42 56 87 31 141 43 C206 52 220 103 195 169 C173 216 86 218 60 167Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><ellipse cx=\"103\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><ellipse cx=\"158\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><path d=\"M113 156 Q134 177 156 151\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/>"}, "zigue": {"nome": "Zigue", "cor": "#FFD52A", "svg": "<path d=\"M75 55 L170 39 210 101 180 204 78 205 42 131Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M89 115 l18 -8 M151 107 l18 8\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"130\" r=\"7\" fill=\"#242034\"/><circle cx=\"159\" cy=\"130\" r=\"7\" fill=\"#242034\"/><path d=\"M118 161 Q130 154 145 163\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "pingo": {"nome": "Pingo", "cor": "#29BCE5", "svg": "<path d=\"M128 34 C160 76 212 109 204 158 C198 209 57 226 50 158 C44 111 98 72 128 34Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"100\" cy=\"139\" r=\"9\" fill=\"#242034\"/><circle cx=\"154\" cy=\"139\" r=\"9\" fill=\"#242034\"/><path d=\"M117 168 Q129 181 142 168\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "faisca": {"nome": "Faísca", "cor": "#FF6654", "svg": "<path d=\"M123 26 L146 79 199 55 183 112 224 143 175 162 183 214 128 193 76 219 81 164 34 139 76 109 62 56 108 81Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><circle cx=\"101\" cy=\"131\" r=\"8\" fill=\"#242034\"/><circle cx=\"156\" cy=\"131\" r=\"8\" fill=\"#242034\"/><path d=\"M111 159 Q129 180 148 159\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}}, "acessorios": {"cabelo_cacheado": {"nome": "Cacheado", "camada": "cabelo", "svg": "<circle cx=\"77\" cy=\"70\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"98\" cy=\"50\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"124\" cy=\"45\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"150\" cy=\"49\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"176\" cy=\"69\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "cabelo_franja": {"nome": "Franja", "camada": "cabelo", "svg": "<path d=\"M73 80 Q75 37 127 39 Q178 37 185 80 L154 70 139 88 116 69 96 90Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu": {"nome": "Chapéu", "camada": "cabeca", "svg": "<path d=\"M76 96 Q76 45 128 43 Q180 45 180 96Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M54 98 Q130 78 207 101\" stroke=\"#242034\" stroke-width=\"13\" fill=\"none\" stroke-linecap=\"round\"/>"}, "bone": {"nome": "Boné", "camada": "cabeca", "svg": "<path d=\"M67 80 Q80 27 129 32 Q179 34 187 81 Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M117 79 Q169 69 214 88 Q176 106 124 96Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu_coco": {"nome": "Chapéu-coco", "camada": "cabeca", "svg": "<path d=\"M86 82 L91 41 Q130 20 167 41 L174 82Z\" fill=\"#269BFA\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M55 83 Q127 101 203 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "coroa": {"nome": "Coroa", "camada": "cabeca", "svg": "<path d=\"M78 91 L65 42 100 60 128 27 155 60 191 42 178 91Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "coroa_estrelada": {"nome": "Coroa estrelada", "camada": "cabeca", "svg": "<path d=\"M66 87 L62 44 94 62 126 27 156 62 192 44 187 87Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"127\" cy=\"72\" r=\"7\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "laco": {"nome": "Laço", "camada": "cabeca", "svg": "<path d=\"M128 63 Q84 28 79 66 Q77 99 128 76 Q177 103 179 66 Q171 30 128 63Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"128\" cy=\"69\" r=\"11\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "anteninhas": {"nome": "Anteninhas", "camada": "cabeca", "svg": "<path d=\"M105 71 Q91 25 74 21 M150 68 Q165 23 186 21\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"74\" cy=\"21\" r=\"11\" fill=\"#55CE70\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"186\" cy=\"21\" r=\"11\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "chifrinhos": {"nome": "Chifrinhos", "camada": "cabeca", "svg": "<path d=\"M79 79 Q63 41 82 23 L111 74Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M145 73 L174 23 Q194 42 179 79Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "orelhas": {"nome": "Orelhas", "camada": "cabeca", "svg": "<path d=\"M80 96 Q32 9 72 19 Q102 27 110 84 M150 84 Q159 27 189 19 Q229 9 176 96\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "orelhas_gato": {"nome": "Orelhas de gato", "camada": "cabeca", "svg": "<path d=\"M72 89 L64 31 115 73Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M144 73 L194 31 186 89Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "fone": {"nome": "Fone", "camada": "cabeca", "svg": "<path d=\"M68 135 L68 107 Q70 57 128 57 Q186 57 188 107 L188 135\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M56 117 Q74 108 83 121 L83 159 Q67 172 56 153Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M174 121 Q190 108 201 117 L201 153 Q189 171 174 159Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos": {"nome": "Óculos", "camada": "olhos", "svg": "<path d=\"M63 105 H116 L121 126 Q114 153 88 149 Q67 148 63 124Z M138 105 H190 L192 124 Q188 151 162 149 Q139 148 138 126Z M116 113 Q127 105 138 113\" fill=\"none\" stroke=\"#242034\" stroke-width=\"9\" stroke-linejoin=\"round\"/>"}, "oculos_redondos": {"nome": "Óculos redondos", "camada": "olhos", "svg": "<circle cx=\"91\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"165\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><path d=\"M115 125 Q128 116 141 125\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos_sol": {"nome": "Óculos de sol", "camada": "olhos", "svg": "<path d=\"M62 115 L110 115 106 142 Q84 158 66 136Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M143 115 L191 115 187 136 Q165 158 146 142Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M108 119 Q128 108 144 119\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "camiseta": {"nome": "Camiseta", "camada": "roupa", "svg": "<path d=\"M81 166 L57 177 71 200 86 194 85 234 170 234 171 194 186 200 199 177 173 166 151 161 Q128 188 105 161Z\" fill=\"#269BFA\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "moletom": {"nome": "Moletom", "camada": "roupa", "svg": "<path d=\"M80 159 L54 182 70 205 87 193 86 236 171 236 170 193 188 205 204 182 176 159 155 146 Q128 170 101 146Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M106 174 Q128 190 150 174\" fill=\"none\" stroke=\"#242034\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "gravata": {"nome": "Gravata", "camada": "roupa", "svg": "<path d=\"M115 172 L141 172 135 189 146 221 128 237 110 221 121 189Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "mochila": {"nome": "Mochila", "camada": "costas", "svg": "<path d=\"M177 114 Q215 102 218 147 L217 197 Q193 214 174 195Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M186 120 Q191 104 206 118\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}}, "icones": {"tarefa": "<rect x=\"56\" y=\"52\" width=\"144\" height=\"156\" rx=\"22\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M82 128 l24 24 65 -69\" fill=\"none\" stroke=\"#7738EA\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>", "loja": "<path d=\"M53 106 L73 62 H184 L205 106 V204 H53Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M53 106 H205\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M104 204 V143 H154 V204\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"7\"/>", "moeda": "<circle cx=\"128\" cy=\"128\" r=\"83\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M128 76 l16 34 38 5 -28 27 7 39 -33 -18 -34 18 7 -39 -28 -27 39 -5Z\" fill=\"#7738EA\"/>", "mundo": "<circle cx=\"128\" cy=\"128\" r=\"78\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M73 101 Q111 57 135 104 Q160 117 193 98 M77 165 Q122 130 155 176\" fill=\"none\" stroke=\"#A5DD37\" stroke-width=\"22\" stroke-linecap=\"round\"/>", "trofeu": "<path d=\"M80 56 H176 V104 C176 140 154 160 128 160 C102 160 80 140 80 104Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M80 74 H56 Q56 116 86 120 M176 74 H200 Q200 116 170 120\" fill=\"none\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/><path d=\"M128 160 V188\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"84\" y=\"188\" width=\"88\" height=\"24\" rx=\"6\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"8\"/>", "grafico": "<path d=\"M48 212 H208\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/><rect x=\"60\" y=\"132\" width=\"36\" height=\"80\" rx=\"6\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"110\" y=\"92\" width=\"36\" height=\"120\" rx=\"6\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"160\" y=\"56\" width=\"36\" height=\"156\" rx=\"6\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"8\"/>", "cadeado": "<path d=\"M88 118 V90 C88 64 106 46 128 46 C150 46 168 64 168 90 V118\" fill=\"none\" stroke=\"#242034\" stroke-width=\"10\" stroke-linecap=\"round\"/><rect x=\"62\" y=\"114\" width=\"132\" height=\"102\" rx=\"22\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"8\"/><circle cx=\"128\" cy=\"160\" r=\"14\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"6\"/>", "som": "<path d=\"M56 104 H92 L140 64 V192 L92 152 H56Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M164 100 Q184 128 164 156 M184 80 Q218 128 184 176\" fill=\"none\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/>", "mudo": "<path d=\"M56 104 H92 L140 64 V192 L92 152 H56Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M166 104 L210 152 M210 104 L166 152\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/>"}};
+const CAMADAS = [
+  { id: "costas", nome: "Costas", atras: true }, { id: "roupa", nome: "Roupa" }, { id: "olhos", nome: "Óculos" },
+  { id: "cabelo", nome: "Cabelo" }, { id: "cabeca", nome: "Cabeça" }
+];
+const CORES_AVATAR = ["#7738EA", "#B06CFF", "#FF6654", "#FFD52A", "#29BCE5", "#A5DD37"];
+const icone = (nome, tam = 28, rot = "") => `<svg class="ico" viewBox="0 0 256 256" width="${tam}" height="${tam}" aria-hidden="${rot ? "false" : "true"}" ${rot ? `role="img" aria-label="${rot}"` : ""}>${MARCA.icones[nome]}</svg>`;
+function avatarSVG(av, tam = 64){
+  av = av || {}; const base = MARCA.personagens[av.p] || MARCA.personagens.orbita;
+  const corpo = base.svg.replace(/fill="#[0-9A-Fa-f]{6}"/, `fill="${av.cor || base.cor}"`);
+  const camada = c => av[c] && MARCA.acessorios[av[c]] ? MARCA.acessorios[av[c]].svg : "";
+  return `<svg class="avatar" viewBox="0 0 256 256" width="${tam}" height="${tam}" aria-hidden="true">${camada("costas")}${corpo}${camada("roupa")}${camada("olhos")}${camada("cabelo")}${camada("cabeca")}</svg>`;
+}
+const avatarDe = c => avatarSVG(c ? dados.avatares[c.id] : null);
+const avatarHTML = (c, tam) => c ? avatarSVG(dados.avatares[c.id], tam) : "";
+
 /* ===== Dados (por enquanto ficam salvos neste aparelho) ===== */
 const CHAVE = "missaoCasa.v1";
 const TODOS = [0,1,2,3,4,5,6];          // 0 = domingo ... 6 = sábado (padrão do JavaScript)
@@ -283,10 +365,10 @@ const PERIODOS = [
   { id: "livre", nome: "Qualquer hora", icone: "⏰" }
 ];
 const TIPOS_ATV = [
-  { id: "escola", nome: "Escola", icone: "🏫", cor: "#1CB0F6" },
-  { id: "atividade", nome: "Aula / atividade", icone: "🎨", cor: "#CE82FF" },
-  { id: "saude", nome: "Saúde", icone: "🩺", cor: "#FF4B4B" },
-  { id: "passeio", nome: "Passeio / festa", icone: "🎈", cor: "#FF9600" },
+  { id: "escola", nome: "Escola", icone: "🏫", cor: "#29BCE5" },
+  { id: "atividade", nome: "Aula / atividade", icone: "🎨", cor: "#7738EA" },
+  { id: "saude", nome: "Saúde", icone: "🩺", cor: "#FF6654" },
+  { id: "passeio", nome: "Passeio / festa", icone: "🎈", cor: "#FF6654" },
   { id: "outro", nome: "Outro", icone: "📌", cor: "#777777" }
 ];
 const MOTIVOS_PAUSA = [
@@ -333,12 +415,12 @@ const PADRAO = {
     { id: "leon", nome: "Leon", avatar: "🦁" }
   ],
   tarefas: [
-    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", periodos: ["manha"], dias: TODOS, cor: "#1CB0F6" },
-    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", periodos: ["noite"], dias: UTEIS, cor: "#FF86D0" },
-    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: [1,3,5], cor: "#58CC02" },
-    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 0, dias: TODOS, cor: "#FF9600" },
-    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: TODOS, cor: "#1CB0F6" },
-    { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#CE82FF" }
+    { id: "t1", nome: "Arrumar a cama", icone: "🛏️", pontos: 5, para: "todos", periodos: ["manha"], dias: TODOS, cor: "#29BCE5" },
+    { id: "t2", nome: "Guardar o material da escola", icone: "🎒", pontos: 5, para: "todos", periodos: ["noite"], dias: UTEIS, cor: "#B06CFF" },
+    { id: "t3", nome: "Tirar o lixo", icone: "🗑️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: [1,3,5], cor: "#A5DD37" },
+    { id: "t4", nome: "Arrumar a mesa", icone: "🍽️", pontos: 10, para: "todos", periodos: ["noite"], revezar: true, offset: 0, dias: TODOS, cor: "#FF6654" },
+    { id: "t6", nome: "Tomar banho primeiro", icone: "🛁", pontos: 5, para: "todos", periodos: ["noite"], revezar: true, offset: 1, dias: TODOS, cor: "#29BCE5" },
+    { id: "t5", nome: "Arrumar o quarto", icone: "🧸", pontos: 15, para: "todos", dias: [6], cor: "#7738EA" }
   ],
   atividades: [
     { id: "a1", nome: "Escola", icone: "🏫", tipo: "escola", hora: "07:30", para: "todos", dias: UTEIS },
@@ -356,6 +438,7 @@ const PADRAO = {
     { id: "r8", texto: "Escolher o jogo em família 🎲", custo: 30 }
   ],
   pausas: [],
+  avatares: {},  // { idCriança: { p: "orbita", cor, cabelo, cabeca, olhos, roupa, costas } }
   trocas: {},   // pedidos da loja: { id: { kid, rec, texto, custo, data, status: "pedido" | "entregue" | "cancelado" } }
   feitos: {} // { "2026-11-13": { "maya": ["t1","t3"] } }
 };
@@ -387,6 +470,9 @@ function normalizar(d){
   d.recompensas = d.recompensas.map((r, i) => typeof r === "string" ? { id: "r" + i + "_" + r.length, texto: r, custo: 50 } : r);
   if (d.premio?.texto && !d.recompensas.some(r => r.texto === d.premio.texto)) d.recompensas.unshift({ id: "rp", texto: d.premio.texto, custo: 50 });
   d.pausas = Array.isArray(d.pausas) ? d.pausas : [];
+  d.avatares = d.avatares && typeof d.avatares === "object" ? d.avatares : {};
+  const bases = ["orbita", "faisca", "pingo", "zigue"];
+  d.criancas.forEach((c, i) => { if (!d.avatares[c.id]) d.avatares[c.id] = { p: bases[i % 4] }; });
   d.trocas = d.trocas && typeof d.trocas === "object" ? d.trocas : {};
   d.atividades.forEach(a => { if (!a.tipo) a.tipo = /escola|col[eé]gio/i.test(a.nome) ? "escola" : "atividade"; if (!Array.isArray(a.dias)) a.dias = []; });
   // versão anterior tinha revezamentos separados: viram missões com "revezar"
@@ -394,12 +480,16 @@ function normalizar(d){
     d.revezamentos.forEach((r, i) => {
       const ligadas = d.tarefas.filter(t => t.para === "vez:" + r.id);
       ligadas.forEach(t => { t.para = "todos"; t.revezar = true; t.offset = i; });
-      if (!ligadas.length) d.tarefas.push({ id: "t" + r.id, nome: r.nome, icone: r.icone, pontos: 5, para: "todos", revezar: true, offset: i, dias: [...TODOS], cor: "#1CB0F6" });
+      if (!ligadas.length) d.tarefas.push({ id: "t" + r.id, nome: r.nome, icone: r.icone, pontos: 5, para: "todos", revezar: true, offset: i, dias: [...TODOS], cor: "#29BCE5" });
     });
     delete d.revezamentos;
   }
   // versões antigas não tinham "dias" nas missões: vale todo dia
   d.tarefas.forEach(t => { if (!Array.isArray(t.dias)) t.dias = [...TODOS]; });
+  // cores da versão anterior viram as cores da marca
+  const CORES_ANTIGAS = { "#1cb0f6": "#29BCE5", "#3ba7ff": "#29BCE5", "#ff86d0": "#B06CFF", "#ff5fa2": "#B06CFF", "#58cc02": "#A5DD37", "#2bc48a": "#A5DD37",
+    "#ff9600": "#FF6654", "#ff8a3d": "#FF6654", "#ce82ff": "#7738EA", "#7c5cff": "#7738EA", "#ffc800": "#FFD52A", "#ffc93c": "#FFD52A" };
+  d.tarefas.forEach(t => { const n = CORES_ANTIGAS[String(t.cor || "").toLowerCase()]; if (n) t.cor = n; });
   d.tarefas.forEach(t => { if (!Array.isArray(t.periodos) || !t.periodos.length) t.periodos = ["livre"]; });
   return d;
 }
@@ -497,10 +587,12 @@ function renderCabecalho(){
   { const h = new Date().toLocaleDateString("pt-BR", { weekday:"long", day:"numeric", month:"long" }); $("#hoje").textContent = h[0].toUpperCase() + h.slice(1); }
   $("#kids").innerHTML = dados.criancas.map(c => `
     <div class="kid ${c.id===criancaAtiva?"on":""}" data-id="${c.id}">
-      <div class="av">${esc(c.avatar)}</div>${esc(c.nome)}
-      <small>⭐ ${pontosSemana(c.id)} · 🔥 ${sequencia(c.id)}</small>
+      <div class="av">${avatarHTML(c, 68)}${c.id === criancaAtiva && NUVEM.papel !== "apoio" ? `<span class="lapis" aria-hidden="true">✏️</span>` : ""}</div>${esc(c.nome)}
+      <small>${icone("moeda", 16)} ${saldo(c.id)} · 🔥 ${sequencia(c.id)}</small>
     </div>`).join("");
-  document.querySelectorAll(".kid").forEach(el => el.onclick = () => { criancaAtiva = el.dataset.id; render(); });
+  document.querySelectorAll(".kid").forEach(el => el.onclick = () => {
+    if (el.dataset.id === criancaAtiva && NUVEM.papel !== "apoio") return abrirAvatar(el.dataset.id);
+    criancaAtiva = el.dataset.id; render(); });
 }
 
 function renderSemana(){
@@ -558,14 +650,14 @@ function renderMissoes(){
   const card = t => `
     <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
       <div class="ic">${esc(t.icone)}</div>
-      <div class="tx">${esc(t.nome)}<small><span class="pill">⭐ +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">🔄 sua vez!</span>` : ""}</small></div>
-      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " estrelas.")}">🔊</button>` : ""}
+      <div class="tx">${esc(t.nome)}<small><span class="pill">${icone("moeda", 18)} +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">🔄 sua vez!</span>` : ""}</small></div>
+      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " moedas.")}">🔊</button>` : ""}
       <div class="ok">${feitas.includes(t.key)?"✓":""}</div>
     </div>`;
   const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
   const nFeitas = ts.filter(t => feitas.includes(t.key)).length, pctDia = ts.length ? Math.round(nFeitas / ts.length * 100) : 0;
   const frase = !ts.length ? "" : nFeitas === ts.length ? "Arrasou! Tudo feito 🎉" : nFeitas === 0 ? (futuro ? "O que vem por aí" : "Bora começar!") : "Continua assim!";
-  const progresso = ts.length ? `<div class="progresso"><div class="estrela">${nFeitas === ts.length ? "🏆" : "⭐"}</div>
+  const progresso = ts.length ? `<div class="progresso ${nFeitas === ts.length ? "completo" : ""}"><div class="estrela">${icone(nFeitas === ts.length ? "trofeu" : "tarefa", 44)}</div>
     <div class="info"><b>${frase}</b> <span style="color:var(--suave)">${nFeitas} de ${ts.length}</span>
     <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
   $("#listaMissoes").innerHTML = progresso + aviso + (ts.length ? grupos.map(g => `
@@ -588,8 +680,8 @@ function alternar(key){
   else {
     lista.push(key);
     const t = tarefaDaChave(key);
-    if (diaCompleto(dia, criancaAtiva, new Date())) { toast("🏅 Todas as missões feitas! Sequência: " + sequencia(criancaAtiva) + " 🔥"); confete(40); }
-    else { toast(`+${t.pontos} pontos! ⭐`); confete(12); }
+    if (diaCompleto(dia, criancaAtiva, new Date())) { toast("🏆 Todas as missões feitas! Sequência: " + sequencia(criancaAtiva) + " 🔥"); confete(36); vinheta("tudo"); }
+    else { toast(`+${t.pontos} moedas!`); vinheta("ok"); }
   }
   salvar(); render();
 }
@@ -605,25 +697,25 @@ function renderLoja(){
   const s = saldo(c.id);
   const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
   el.innerHTML = `
-    <div class="cofre"><div class="moeda">⭐</div><div><small>Estrelas de ${esc(c.nome)}</small><b>${s}</b></div></div>
-    <h2>🛍️ Loja de recompensas</h2>
+    <div class="cofre"><div class="moeda">${icone("moeda", 60)}</div><div style="flex:1"><small>Moedas de ${esc(c.nome)}</small><b>${s}</b></div>${avatarHTML(c, 64)}</div>
+    <h2 class="quem">${icone("loja", 34)} Loja de recompensas</h2>
     <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
       const pode = s >= r.custo, conf = confirmaTroca === r.id;
       return `<div class="produto ${pode ? "" : "falta"}">
         <div class="ptx">${esc(r.texto)}</div>
-        <div class="preco">⭐ ${r.custo}</div>
+        <div class="preco">${icone("moeda", 24)} ${r.custo}</div>
         ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "Confirmar?" : pode ? "Trocar" : `Faltam ${r.custo - s}`}</button>`}
       </div>`; }).join("")}</div>
     ${pedidos.length ? `<h2>📦 Meus pedidos</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
       <span class="st ${t.status}">${t.status === "entregue" ? "✅ Recebido" : "⏳ Esperando os pais"}</span></div>`).join("")}` : ""}`;
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
-    if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Trocar " + r.custo + " estrelas por " + semEmoji(r.texto) + "?"); return renderLoja(); }
+    if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Trocar " + r.custo + " moedas por " + semEmoji(r.texto) + "?"); return renderLoja(); }
     confirmaTroca = null;
-    if (saldo(c.id) < r.custo) return toast("Estrelas não são suficientes");
+    if (saldo(c.id) < r.custo) return toast("Moedas não são suficientes");
     const id = "x" + Date.now();
     dados.trocas[id] = { id, kid: c.id, rec: r.id, texto: r.texto, custo: r.custo, data: new Date().toISOString(), status: "pedido" };
-    salvar(); confete(40); toast("Pedido feito! Agora é com os pais 🎁"); render();
+    salvar(); confete(30); vinheta("loja"); toast("Pedido feito! Agora é com os pais 🎁"); render();
   });
 }
 
@@ -635,14 +727,14 @@ function renderPlacar(){
     $("#t-placar").appendChild(b);
   }
   const meta = Number(dados.premio.meta) || 100;
-  $("#premio").innerHTML = `🎁 Prêmio da semana<b>${esc(dados.premio.texto)}</b>Quem chegar a ${meta} pontos até domingo ganha!`;
+  $("#premio").innerHTML = `🎁 Prêmio da semana<b>${esc(dados.premio.texto)}</b>Quem juntar ${meta} moedas na semana ganha!`;
   const dias = diasDaSemana();
   $("#listaPlacar").innerHTML = [...dados.criancas].sort((a,b) => pontosSemana(b.id) - pontosSemana(a.id)).map(c => {
     const p = pontosSemana(c.id), pct = Math.min(100, Math.round(p / meta * 100));
     return `<div class="placar">
-      <div class="linha"><span>${esc(c.avatar)} ${esc(c.nome)}</span><span>${p} ⭐</span></div>
+      <div class="linha"><span class="quem">${avatarHTML(c, 40)} ${esc(c.nome)}</span><span class="quem">${p} ${icone("moeda", 26)}</span></div>
       <div class="barra"><i style="width:${pct}%"></i></div>
-      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} pontos`} · 🔥 ${sequencia(c.id)} dia(s) seguidos</small>
+      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} moedas`} · 🔥 ${sequencia(c.id)} dia(s) seguidos</small>
       <div class="dias">${dias.map(d => {
         const livre = tarefasDe(c.id, d).length === 0, ok = diaCompleto(isoDia(d), c.id, d);
         return `<span><i class="${ok ? "sim" : livre ? "livre" : ""}">${ok ? "✓" : livre ? "–" : ""}</i>${NOME_DIA[d.getDay()][0]}</span>`; }).join("")}</div>
@@ -743,11 +835,12 @@ function renderPais(){
     </div>
 
     <div class="bloco"><b>🧒 Crianças</b>
-      ${dados.criancas.map(c => `<div class="item">${esc(c.avatar)} ${esc(c.nome)}
+      ${dados.criancas.map(c => `<div class="item">${avatarHTML(c, 32)} ${esc(c.nome)}
           <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">excluir</button></span></div>`).join("")}
       <div class="${cEd ? "editando" : ""}">
         ${cEd ? `<b>✏️ Editando: ${esc(cEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova criança</b>`}
-        <div class="row"><input id="cAv" placeholder="Emoji" style="max-width:80px" value="${esc(cEd?.avatar || "🐼")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}"></div>
+        <div class="row"><input id="cAv" type="hidden" value="${esc(cEd?.avatar || "🙂")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}"></div>
+        <small style="color:var(--suave);font-weight:700;display:block">O personagem, a cor e os acessórios a própria criança escolhe, tocando no cartão dela.</small>
         <button class="btn" id="cSalvar">${cEd ? "Salvar alterações" : "Adicionar criança"}</button>
         ${cEd ? `<button class="btn sec" id="cCancelar">Cancelar</button>` : ""}
       </div>
@@ -755,13 +848,13 @@ function renderPais(){
 
 
     ${(() => { const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
-      return `<div class="bloco"><b>📦 Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${esc(crianca(t.kid)?.avatar || "🙂")} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
+      return `<div class="bloco"><b>📦 Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
         <span class="acoes"><button class="ed" data-entregar="${t.id}">entregue ✓</button><button class="x" data-cancelar="${t.id}">cancelar</button></span>
         <small>⭐ ${t.custo} · pedido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as estrelas.</small></div>`).join("")
         : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nenhum pedido esperando. Quando uma criança trocar estrelas na loja, aparece aqui.</small>`}</div>`; })()}
 
     <div class="bloco"><b>🎁 Recompensas</b>
-      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na loja: a criança junta estrelas e troca quando quiser.</small>
+      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na loja: a criança junta moedas e troca quando quiser.</small>
       ${dados.recompensas.map(r => `<div class="item"><span style="flex:1">${esc(r.texto)}</span>
         <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Custo em estrelas">⭐
         <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
@@ -770,6 +863,12 @@ function renderPais(){
       <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece no Placar)</small>
       <select id="prTx">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
       <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Pontos na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
+
+    <div class="bloco"><b>📱 Neste aparelho</b>
+      <div class="chips">
+        <button class="chip ${PREF.som ? "on" : ""}" id="prefSom">🔊 Som ${PREF.som ? "ligado" : "desligado"}</button>
+        <button class="chip ${PREF.calmo ? "on" : ""}" id="prefCalmo">🐢 Menos movimento ${PREF.calmo ? "ligado" : "desligado"}</button>
+      </div></div>
 
     ${NUVEM.ativo ? `
     <div class="bloco"><b>👨‍👩‍👧 Nossa família</b>
@@ -802,7 +901,7 @@ function renderPais(){
   // sugestões
   el.querySelectorAll("[data-idade]").forEach(b => b.onclick = () => { idadeSug = b.dataset.idade; renderPais(); });
   el.querySelectorAll("[data-sug]").forEach(b => b.onclick = () => {
-    const sg = SUGESTOES[idadeSug][Number(b.dataset.sug)], cores = ["#1CB0F6","#FF86D0","#58CC02","#FF9600","#CE82FF","#FFC800"];
+    const sg = SUGESTOES[idadeSug][Number(b.dataset.sug)], cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
     dados.tarefas.push({ id: "t" + Date.now(), para: "todos", cor: cores[dados.tarefas.length % cores.length], ...JSON.parse(JSON.stringify(sg)) });
     salvar(); toast("Missão adicionada ⭐ Dá pra editar lá em cima"); render();
   });
@@ -867,7 +966,7 @@ function renderPais(){
     campos.revezar = campos.para === "todos" && revezarForm;
     if (campos.revezar && !(tEd?.revezar)) campos.offset = dados.tarefas.filter(t => t.revezar).length;
     if (tEd) Object.assign(tEd, campos);
-    else { const cores = ["#1CB0F6","#FF86D0","#58CC02","#FF9600","#CE82FF","#FFC800"];
+    else { const cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
       dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
     toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
     editando = null; diasForm = []; periodosForm = []; salvar(); render();
@@ -918,6 +1017,8 @@ function renderPais(){
   el.querySelectorAll("[data-entregar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.entregar]; if (t) { t.status = "entregue"; salvar(); toast("Entregue! 🎉"); render(); } });
   el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Pedido cancelado, estrelas devolvidas"); render(); } });
   if ($("#sairConta")) $("#sairConta").onclick = sairDaConta;
+  $("#prefSom").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); renderPais(); };
+  $("#prefCalmo").onclick = () => { PREF.calmo = !PREF.calmo; gravarPref(); aplicarMovimento(); renderPais(); };
   if ($("#novosConv")) $("#novosConv").onclick = async () => {
     NUVEM.convites = novosConvites();
     try { await NUVEM.ref.update({ convites: NUVEM.convites }); toast("Convites novos gerados 🔑"); } catch(e) { toast("Não consegui gerar agora"); }
@@ -935,16 +1036,66 @@ function falar(texto){
 }
 const semEmoji = t => String(t).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").trim();
 
+/* ===== Som e movimento (preferências deste aparelho) ===== */
+const PREF = (() => { try { return JSON.parse(localStorage.getItem(CHAVE + ".pref")) || {}; } catch(e) { return {}; } })();
+if (PREF.som === undefined) PREF.som = true;
+const gravarPref = () => { try { localStorage.setItem(CHAVE + ".pref", JSON.stringify(PREF)); } catch(e){} };
+const menosMovimento = () => PREF.calmo || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
+let audioCtx;
+function vinheta(tipo = "ok"){
+  if (!PREF.som) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const notas = tipo === "tudo" ? [523, 659, 784, 1047] : tipo === "loja" ? [784, 988] : [660, 880];
+    notas.forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime + i * 0.09;
+      o.type = "triangle"; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22); o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.25); });
+  } catch(e){}
+}
+function atualizarSomBtn(){ const b = $("#somBtn"); if (b) { b.innerHTML = icone(PREF.som ? "som" : "mudo", 26); b.setAttribute("aria-pressed", PREF.som ? "true" : "false"); } }
+function aplicarMovimento(){ document.body.classList.toggle("calmo", !!PREF.calmo); }
+
 /* ===== Efeitos ===== */
 let tt;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 1800); }
+// Conquista: formas da paleta caindo (sem flashes). Desliga em "menos movimento".
 function confete(n){
-  const em = ["⭐","🎉","✨","💜","🌟","🎈"];
+  if (menosMovimento()) return;
+  const cores = ["#FFD52A", "#7738EA", "#B06CFF", "#FF6654", "#29BCE5", "#A5DD37"], formas = ["50%", "4px", "50% 0"];
   for (let i = 0; i < n; i++) { const s = document.createElement("div"); s.className = "confete";
-    s.textContent = em[i % em.length]; s.style.left = Math.random()*100 + "vw"; s.style.animationDelay = Math.random()*.4 + "s";
-    document.body.appendChild(s); setTimeout(() => s.remove(), 2000); }
+    s.style.background = cores[i % cores.length]; s.style.borderRadius = formas[i % formas.length];
+    s.style.left = Math.random() * 100 + "vw"; s.style.animationDelay = Math.random() * .25 + "s";
+    document.body.appendChild(s); setTimeout(() => s.remove(), 1600); }
   try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
 }
+
+/* ===== Avatar em camadas (a criança escolhe) ===== */
+let avatarRascunho = null, avatarDono = null;
+function abrirAvatar(id){
+  avatarDono = id; avatarRascunho = JSON.parse(JSON.stringify(dados.avatares[id] || { p: "orbita" }));
+  renderAvatar(); $("#folhaAvatar").style.display = "flex"; falar("Escolha o seu personagem");
+}
+function renderAvatar(){
+  const c = crianca(avatarDono), a = avatarRascunho; if (!c) return;
+  const opc = (campo, valor, conteudo, rot) => `<button class="opc ${(a[campo] || null) === valor ? "on" : ""}" data-campo="${campo}" data-valor="${valor ?? ""}" aria-label="${esc(rot)}">${conteudo}</button>`;
+  const comMudanca = (campo, valor) => avatarSVG({ ...a, [campo]: valor }, 64);
+  $("#folhaAvatar").innerHTML = `<div class="folhaCaixa" role="dialog" aria-label="Personagem de ${esc(c.nome)}">
+    <div class="palco">${avatarSVG(a, 170)}</div>
+    <div class="secao"><b>Personagem</b><div class="opcs">${Object.entries(MARCA.personagens).map(([k, v]) => opc("p", k, avatarSVG({ ...a, p: k, cor: null }, 64) + `<small>${v.nome}</small>`, v.nome)).join("")}</div></div>
+    <div class="secao"><b>Cor</b><div class="opcs cores">${opc("cor", null, `<i style="background:${MARCA.personagens[a.p].cor}"></i><small>Original</small>`, "Cor original")}${CORES_AVATAR.filter(x => x !== MARCA.personagens[a.p].cor).map(cor => opc("cor", cor, `<i style="background:${cor}"></i>`, "Cor")).join("")}</div></div>
+    ${CAMADAS.slice().reverse().map(cm => `<div class="secao"><b>${cm.nome}</b><div class="opcs">${opc(cm.id, null, `<span class="nada">Nada</span>`, "Nada")}${Object.entries(MARCA.acessorios).filter(([, v]) => v.camada === cm.id).map(([k, v]) => opc(cm.id, k, comMudanca(cm.id, k) + `<small>${v.nome}</small>`, v.nome)).join("")}</div></div>`).join("")}
+    <div class="row acoesFolha"><button class="btn sec" id="avCancelar">Cancelar</button><button class="btn" id="avPronto">Pronto!</button></div>
+  </div>`;
+  document.querySelectorAll("#folhaAvatar .opc").forEach(b => b.onclick = () => {
+    const v = b.dataset.valor || null; a[b.dataset.campo] = v;
+    if (b.dataset.campo === "p") a.cor = null;
+    const rolar = $("#folhaAvatar .folhaCaixa").scrollTop; renderAvatar(); $("#folhaAvatar .folhaCaixa").scrollTop = rolar; vinheta("ok");
+  });
+  $("#avCancelar").onclick = () => { $("#folhaAvatar").style.display = "none"; };
+  $("#avPronto").onclick = () => { Object.keys(a).forEach(k => { if (a[k] === null) delete a[k]; });
+    dados.avatares[avatarDono] = a; $("#folhaAvatar").style.display = "none"; salvar(); vinheta("loja"); toast("Ficou demais! ✨"); render(); };
+}
+$("#folhaAvatar").onclick = e => { if (e.target.id === "folhaAvatar") $("#folhaAvatar").style.display = "none"; };
 
 /* ===== Resultados (painel dos pais) ===== */
 function estatisticas(idCrianca, dias){
@@ -983,7 +1134,7 @@ function renderResultados(){
       const fim = new Date(ini); fim.setDate(fim.getDate()+6); return { ini, fim }; }).filter(w => isoDia(w.fim) >= (dados.inicio || ""));
     const premios = semanasPassadas.filter(w => diasEntre(w.ini, w.fim).reduce((s, d) => s + pontosDoDia(isoDia(d), c.id), 0) >= meta).length;
     return `<div class="bloco">
-      <b>${esc(c.avatar)} ${esc(c.nome)}</b>
+      <b class="quem">${avatarHTML(c, 36)} ${esc(c.nome)}</b>
       <div class="kpis">
         <div class="kpi"><b>${semana.pct ?? "–"}${semana.pct === null ? "" : "%"}</b><small>missões feitas na semana</small></div>
         <div class="kpi"><b>${pontosSemana(c.id)}</b><small>pontos na semana (meta ${meta})</small></div>
@@ -1003,17 +1154,17 @@ function renderResultados(){
 
 /* ===== Navegação ===== */
 const ABAS = {
-  missoes: { icone: "⭐", nome: "Missões" },
-  loja: { icone: "🛍️", nome: "Loja" },
-  placar: { icone: "🏆", nome: "Placar" },
-  resultados: { icone: "📊", nome: "Resultados" },
-  pais: { icone: "🔒", nome: "Pais" }
+  missoes: { icone: "tarefa", nome: "Hoje" },
+  loja: { icone: "loja", nome: "Loja" },
+  placar: { icone: "trofeu", nome: "Placar" },
+  resultados: { icone: "grafico", nome: "Resultados" },
+  pais: { icone: "cadeado", nome: "Pais" }
 };
 function montarNav(){
   const abas = NUVEM.papel === "crianca" || NUVEM.papel === "apoio" ? ["missoes", "loja", "placar"]
     : ["missoes", "loja", "placar", "resultados", "pais"];
   const atual = document.querySelector(".tela.on")?.id.slice(2);
-  $("#nav").innerHTML = abas.map(t => `<button data-t="${t}"><span>${ABAS[t].icone}</span>${ABAS[t].nome}</button>`).join("");
+  $("#nav").innerHTML = abas.map(t => `<button data-t="${t}"><span>${icone(ABAS[t].icone, 30)}</span>${ABAS[t].nome}</button>`).join("");
   document.querySelectorAll("#nav button").forEach(b => b.onclick = () => irPara(b.dataset.t));
   irPara(abas.includes(atual) ? atual : "missoes");
 }
@@ -1061,6 +1212,7 @@ function marcarSincronizado(){
   CAMPOS_CONFIG.forEach(k => NUVEM.ultimo[k] = JSON.stringify(dados[k]));
   Object.entries(dados.feitos).forEach(([dia, porKid]) => Object.entries(porKid).forEach(([k, v]) => NUVEM.ultimo["f:" + dia + "|" + k] = JSON.stringify(v)));
   Object.entries(dados.trocas).forEach(([id, v]) => NUVEM.ultimo["x:" + id] = JSON.stringify(v));
+  Object.entries(dados.avatares).forEach(([id, v]) => NUVEM.ultimo["v:" + id] = JSON.stringify(v));
 }
 let syncTimer;
 function agendarSync(){ clearTimeout(syncTimer); syncTimer = setTimeout(sincronizar, 350); }
@@ -1075,6 +1227,10 @@ async function sincronizar(){
   if (NUVEM.papel !== "apoio") Object.entries(dados.trocas).forEach(([id, v]) => {
     const chave = "x:" + id, j = JSON.stringify(v);
     if (j !== NUVEM.ultimo[chave]) { args.push(new firebase.firestore.FieldPath("trocas", id), JSON.parse(j)); marcar[chave] = j; }
+  });
+  if (NUVEM.papel !== "apoio") Object.entries(dados.avatares).forEach(([id, v]) => {
+    const chave = "v:" + id, j = JSON.stringify(v);
+    if (j !== NUVEM.ultimo[chave]) { args.push(new firebase.firestore.FieldPath("avatares", id), JSON.parse(j)); marcar[chave] = j; }
   });
   if (!args.length || NUVEM.papel === "apoio") return;
   try { await NUVEM.ref.update(...args); Object.assign(NUVEM.ultimo, marcar); }
@@ -1102,6 +1258,7 @@ function aplicarRemoto(r){
   CAMPOS_CONFIG.forEach(k => { if (r[k] !== undefined) dados[k] = r[k]; });
   dados.feitos = r.feitos || {};
   dados.trocas = r.trocas || {};
+  dados.avatares = r.avatares || dados.avatares || {};
   NUVEM.aparelhos = (r.aparelhos || []).length; NUVEM.nPais = (r.pais || []).length; NUVEM.nApoio = (r.apoio || []).length;
   if (r.convites) NUVEM.convites = r.convites;
   dados = normalizar(dados);
@@ -1118,7 +1275,7 @@ async function sairDaConta(){
 /* ----- Tela de entrada ----- */
 function telaEntrada(qual = "inicio", erro = ""){
   const el = $("#entrada"); el.style.display = "block";
-  const topo = `<div class="logo">🏠</div><h1>Missão Casa</h1>`;
+  const topo = `<div class="logo">${["orbita", "zigue", "pingo", "faisca"].map(k => avatarSVG({ p: k }, 64)).join("")}</div><h1>Missão Casa</h1>`;
   if (qual === "inicio") {
     el.innerHTML = `<div class="caixa">${topo}<p>As missões da família, do jeito divertido.</p>
       <button class="grande" id="eResp"><span>🧑‍🍼</span><div>Sou responsável<small>Crio a família, as missões e vejo os resultados</small></div></button>
@@ -1193,7 +1350,7 @@ async function criarFamilia(base){
   const uid = firebase.auth().currentUser.uid;
   for (let tentativa = 0; tentativa < 5; tentativa++) {
     const codigo = novoCodigo();
-    const doc = { dono: uid, pais: [uid], aparelhos: [], apoio: [], convites: novosConvites(), criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {}, trocas: base.trocas || {} };
+    const doc = { dono: uid, pais: [uid], aparelhos: [], apoio: [], convites: novosConvites(), criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {}, trocas: base.trocas || {}, avatares: base.avatares || {} };
     CAMPOS_CONFIG.forEach(k => doc[k] = JSON.parse(JSON.stringify(base[k])));
     try { await db().collection("familias").doc(codigo).set(doc); dados = base; return conectarFamilia(codigo, "pais"); }
     catch(e) { console.warn(e); }
@@ -1244,6 +1401,8 @@ async function iniciar(){
     telaEntrada("inicio");
   });
 }
+$("#somBtn").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); if (PREF.som) vinheta("ok"); };
+atualizarSomBtn(); aplicarMovimento();
 iniciar();
 </script>
 </body>
