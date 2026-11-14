@@ -1058,7 +1058,6 @@ function mostrarConquista(c, moedas){
   el.style.display = "flex";
   $("#conqLoja").onclick = () => { el.style.display = "none"; irPara("loja"); };
   $("#conqFechar").onclick = () => { el.style.display = "none"; };
-  falar("Dia completo, " + c.nome + "!");
 }
 
 function alternar(key){
@@ -1483,14 +1482,37 @@ if (PREF.som === undefined) PREF.som = true;
 const gravarPref = () => { try { localStorage.setItem(CHAVE + ".pref", JSON.stringify(PREF)); } catch(e){} };
 const menosMovimento = () => PREF.calmo || (typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches);
 let audioCtx;
+// Sons curtos feitos no próprio aparelho (sem arquivo): "check" ao marcar, "tãdãm" no dia completo
+function tom(f, ini, dur, vol = 0.12, tipo = "triangle", fFim){
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime + ini;
+  o.type = tipo; o.frequency.setValueAtTime(f, t); if (fFim) o.frequency.exponentialRampToValueAtTime(fFim, t + dur * 0.6);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + dur + 0.02);
+}
+function estalo(ini, vol = 0.08){
+  // "tic" de papel: um sopro de ruído bem curto e agudo
+  const n = Math.floor(audioCtx.sampleRate * 0.03), buf = audioCtx.createBuffer(1, n, audioCtx.sampleRate), d = buf.getChannelData(0);
+  for (let k = 0; k < n; k++) d[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / n, 3);
+  const src = audioCtx.createBufferSource(), f = audioCtx.createBiquadFilter(), g = audioCtx.createGain();
+  f.type = "highpass"; f.frequency.value = 2500; g.gain.value = vol; src.buffer = buf;
+  src.connect(f).connect(g).connect(audioCtx.destination); src.start(audioCtx.currentTime + ini);
+}
 function vinheta(tipo = "ok"){
   if (!PREF.som) return;
   try {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    const notas = tipo === "tudo" ? [523, 659, 784, 1047] : tipo === "loja" ? [784, 988] : [660, 880];
-    notas.forEach((f, i) => { const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime + i * 0.09;
-      o.type = "triangle"; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22); o.connect(g).connect(audioCtx.destination); o.start(t); o.stop(t + 0.25); });
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (tipo === "tudo") {            // tã... dãm!
+      [392, 494, 587].forEach(f => tom(f, 0, 0.16, 0.07, "square"));
+      [523, 659, 784, 1047].forEach(f => tom(f, 0.2, 0.9, 0.07, "square"));
+      [523, 1047].forEach(f => tom(f, 0.2, 1.1, 0.06, "triangle"));
+    } else if (tipo === "loja") {     // moedinha
+      tom(988, 0, 0.08, 0.1, "square"); tom(1319, 0.08, 0.3, 0.1, "square");
+    } else {                          // check: tic + "plim" rápido subindo
+      estalo(0, 0.09);
+      tom(700, 0.02, 0.09, 0.12, "sine", 1400);
+      tom(1400, 0.07, 0.12, 0.06, "sine", 1800);
+    }
   } catch(e){}
 }
 function atualizarSomBtn(){ const b = $("#somBtn"); if (b) { b.innerHTML = icone(PREF.som ? "som" : "mudo", 26); b.setAttribute("aria-pressed", PREF.som ? "true" : "false"); } }
