@@ -34,7 +34,7 @@ O app segue o **Brand system 0.1** (pasta `marca/`, com o `Manual_de_Marca_v01.p
 
 - Paleta: amarelo sol `#FFD52A` e roxo elétrico `#7738EA` como protagonistas, creme `#FFFDF5` de respiro e tinta `#242034` nos textos e contornos. Coral, azul piscina, lima e lilás aparecem como apoio.
 - Personagens Órbita, Zigue, Pingo e Faísca, com acessórios em camadas SVG (viewBox 256×256). A criança monta o próprio avatar tocando no cartão dela.
-- Ícones da marca na navegação (Hoje, Loja, Placar, Resultados, Pais) e a moeda como unidade de troca.
+- Biblioteca de ícones da criação (pasta `marca/icones/`, 77 desenhos): navegação, ações, períodos, agenda, pausas, loja, entrada, painel e a biblioteca de missões, atividades e recompensas que os pais escolhem numa galeria. Emojis antigos viram o ícone equivalente automaticamente.
 - Gradientes só em momentos de conquista (palco do avatar, dia completo).
 - Microanimações de 250 a 450 ms sem flashes, vinheta curta com botão de mudo e opção "menos movimento".
 

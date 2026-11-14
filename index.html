@@ -264,6 +264,32 @@
   .codigoFam{color:var(--pri-esc);background:#EFE6FF}
   .atv .hora{border:2px solid color-mix(in srgb, var(--t, var(--roxo)) 45%, white)}
 
+  /* Ícones da biblioteca */
+  .emo{font-size:1.6em;line-height:1}
+  .missao .ic .emo{font-size:2.1rem}
+  .missao .ok .ico{display:block}
+  .missao.feita .ok{background:#fff}
+  .som{display:grid;place-items:center;padding:0}
+  .periodo .tit{gap:8px;background:none;border:0;padding:0;font-family:var(--titulo);font-size:1.25rem;font-weight:600;color:var(--tinta)}
+  .nuvem{display:flex;align-items:center;gap:6px}
+  .pausaTag.quem,.aviso.quem{display:flex;gap:10px}
+  .premio{display:flex;align-items:center;gap:14px}
+  .premioIc{flex:none;background:var(--creme);border:2px solid var(--tinta);border-radius:20px;padding:6px;line-height:0}
+  .pic{line-height:0}
+  .pedido .st{display:inline-flex;align-items:center;gap:6px}
+  .dias span i .ico{vertical-align:-4px}
+  .dias span i.sim{background:#EEF9D2;border:2px solid var(--tinta)}
+  .entrada .grande span{line-height:0}
+  .chip{display:inline-flex;align-items:center;gap:6px}
+  .seletor{margin:6px 0}
+  .galeria{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 8px}
+  .gico{flex:none;width:54px;height:54px;border-radius:14px;border:2px solid var(--borda);border-bottom-width:4px;background:#fff;display:grid;place-items:center;cursor:pointer;padding:0}
+  .gico.on{border-color:var(--pri);background:#EFE6FF;box-shadow:0 0 0 3px #C9A8FF}
+  .emojiLivre{max-width:190px}
+  .semana .topo button{display:grid;place-items:center;padding:0}
+  .semana .topo .hojeBtn{display:block;padding:0 12px}
+  .item .ico{flex:none}
+
   /* Folha do avatar */
   .folha{position:fixed;inset:0;background:rgba(36,32,52,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
   .folhaCaixa{background:var(--creme);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:28px 28px 0 0;border:2px solid var(--tinta);border-bottom:0;
@@ -309,7 +335,7 @@
 
   <!-- Tela 2: Placar -->
   <section class="tela" id="t-placar">
-    <h2>🏆 Placar da semana</h2>
+    <h2 class="quem" id="titPlacar">Placar da semana</h2>
     <div class="premio" id="premio"></div>
     <div id="listaPlacar"></div>
   </section>
@@ -335,7 +361,7 @@
 
 <script>
 /* ===== Brand system 0.1 (arquivos originais em /marca) ===== */
-const MARCA = {"personagens": {"orbita": {"nome": "Órbita", "cor": "#7738EA", "svg": "<path d=\"M55 120 C42 56 87 31 141 43 C206 52 220 103 195 169 C173 216 86 218 60 167Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><ellipse cx=\"103\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><ellipse cx=\"158\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><path d=\"M113 156 Q134 177 156 151\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/>"}, "zigue": {"nome": "Zigue", "cor": "#FFD52A", "svg": "<path d=\"M75 55 L170 39 210 101 180 204 78 205 42 131Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M89 115 l18 -8 M151 107 l18 8\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"130\" r=\"7\" fill=\"#242034\"/><circle cx=\"159\" cy=\"130\" r=\"7\" fill=\"#242034\"/><path d=\"M118 161 Q130 154 145 163\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "pingo": {"nome": "Pingo", "cor": "#29BCE5", "svg": "<path d=\"M128 34 C160 76 212 109 204 158 C198 209 57 226 50 158 C44 111 98 72 128 34Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"100\" cy=\"139\" r=\"9\" fill=\"#242034\"/><circle cx=\"154\" cy=\"139\" r=\"9\" fill=\"#242034\"/><path d=\"M117 168 Q129 181 142 168\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "faisca": {"nome": "Faísca", "cor": "#FF6654", "svg": "<path d=\"M123 26 L146 79 199 55 183 112 224 143 175 162 183 214 128 193 76 219 81 164 34 139 76 109 62 56 108 81Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><circle cx=\"101\" cy=\"131\" r=\"8\" fill=\"#242034\"/><circle cx=\"156\" cy=\"131\" r=\"8\" fill=\"#242034\"/><path d=\"M111 159 Q129 180 148 159\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}}, "acessorios": {"cabelo_cacheado": {"nome": "Cacheado", "camada": "cabelo", "svg": "<circle cx=\"77\" cy=\"70\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"98\" cy=\"50\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"124\" cy=\"45\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"150\" cy=\"49\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"176\" cy=\"69\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "cabelo_franja": {"nome": "Franja", "camada": "cabelo", "svg": "<path d=\"M73 80 Q75 37 127 39 Q178 37 185 80 L154 70 139 88 116 69 96 90Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu": {"nome": "Chapéu", "camada": "cabeca", "svg": "<path d=\"M76 96 Q76 45 128 43 Q180 45 180 96Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M54 98 Q130 78 207 101\" stroke=\"#242034\" stroke-width=\"13\" fill=\"none\" stroke-linecap=\"round\"/>"}, "bone": {"nome": "Boné", "camada": "cabeca", "svg": "<path d=\"M67 80 Q80 27 129 32 Q179 34 187 81 Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M117 79 Q169 69 214 88 Q176 106 124 96Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu_coco": {"nome": "Chapéu-coco", "camada": "cabeca", "svg": "<path d=\"M86 82 L91 41 Q130 20 167 41 L174 82Z\" fill=\"#269BFA\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M55 83 Q127 101 203 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "coroa": {"nome": "Coroa", "camada": "cabeca", "svg": "<path d=\"M78 91 L65 42 100 60 128 27 155 60 191 42 178 91Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "coroa_estrelada": {"nome": "Coroa estrelada", "camada": "cabeca", "svg": "<path d=\"M66 87 L62 44 94 62 126 27 156 62 192 44 187 87Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"127\" cy=\"72\" r=\"7\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "laco": {"nome": "Laço", "camada": "cabeca", "svg": "<path d=\"M128 63 Q84 28 79 66 Q77 99 128 76 Q177 103 179 66 Q171 30 128 63Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"128\" cy=\"69\" r=\"11\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "anteninhas": {"nome": "Anteninhas", "camada": "cabeca", "svg": "<path d=\"M105 71 Q91 25 74 21 M150 68 Q165 23 186 21\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"74\" cy=\"21\" r=\"11\" fill=\"#55CE70\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"186\" cy=\"21\" r=\"11\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "chifrinhos": {"nome": "Chifrinhos", "camada": "cabeca", "svg": "<path d=\"M79 79 Q63 41 82 23 L111 74Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M145 73 L174 23 Q194 42 179 79Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "orelhas": {"nome": "Orelhas", "camada": "cabeca", "svg": "<path d=\"M80 96 Q32 9 72 19 Q102 27 110 84 M150 84 Q159 27 189 19 Q229 9 176 96\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "orelhas_gato": {"nome": "Orelhas de gato", "camada": "cabeca", "svg": "<path d=\"M72 89 L64 31 115 73Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M144 73 L194 31 186 89Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "fone": {"nome": "Fone", "camada": "cabeca", "svg": "<path d=\"M68 135 L68 107 Q70 57 128 57 Q186 57 188 107 L188 135\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M56 117 Q74 108 83 121 L83 159 Q67 172 56 153Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M174 121 Q190 108 201 117 L201 153 Q189 171 174 159Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos": {"nome": "Óculos", "camada": "olhos", "svg": "<path d=\"M63 105 H116 L121 126 Q114 153 88 149 Q67 148 63 124Z M138 105 H190 L192 124 Q188 151 162 149 Q139 148 138 126Z M116 113 Q127 105 138 113\" fill=\"none\" stroke=\"#242034\" stroke-width=\"9\" stroke-linejoin=\"round\"/>"}, "oculos_redondos": {"nome": "Óculos redondos", "camada": "olhos", "svg": "<circle cx=\"91\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"165\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><path d=\"M115 125 Q128 116 141 125\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos_sol": {"nome": "Óculos de sol", "camada": "olhos", "svg": "<path d=\"M62 115 L110 115 106 142 Q84 158 66 136Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M143 115 L191 115 187 136 Q165 158 146 142Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M108 119 Q128 108 144 119\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}}, "icones": {"tarefa": "<rect x=\"56\" y=\"52\" width=\"144\" height=\"156\" rx=\"22\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M82 128 l24 24 65 -69\" fill=\"none\" stroke=\"#7738EA\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>", "loja": "<path d=\"M53 106 L73 62 H184 L205 106 V204 H53Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M53 106 H205\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M104 204 V143 H154 V204\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"7\"/>", "moeda": "<circle cx=\"128\" cy=\"128\" r=\"83\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M128 76 l16 34 38 5 -28 27 7 39 -33 -18 -34 18 7 -39 -28 -27 39 -5Z\" fill=\"#7738EA\"/>", "mundo": "<circle cx=\"128\" cy=\"128\" r=\"78\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M73 101 Q111 57 135 104 Q160 117 193 98 M77 165 Q122 130 155 176\" fill=\"none\" stroke=\"#A5DD37\" stroke-width=\"22\" stroke-linecap=\"round\"/>", "trofeu": "<path d=\"M80 56 H176 V104 C176 140 154 160 128 160 C102 160 80 140 80 104Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M80 74 H56 Q56 116 86 120 M176 74 H200 Q200 116 170 120\" fill=\"none\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/><path d=\"M128 160 V188\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"84\" y=\"188\" width=\"88\" height=\"24\" rx=\"6\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"8\"/>", "grafico": "<path d=\"M48 212 H208\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/><rect x=\"60\" y=\"132\" width=\"36\" height=\"80\" rx=\"6\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"110\" y=\"92\" width=\"36\" height=\"120\" rx=\"6\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"8\"/><rect x=\"160\" y=\"56\" width=\"36\" height=\"156\" rx=\"6\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"8\"/>", "cadeado": "<path d=\"M88 118 V90 C88 64 106 46 128 46 C150 46 168 64 168 90 V118\" fill=\"none\" stroke=\"#242034\" stroke-width=\"10\" stroke-linecap=\"round\"/><rect x=\"62\" y=\"114\" width=\"132\" height=\"102\" rx=\"22\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"8\"/><circle cx=\"128\" cy=\"160\" r=\"14\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"6\"/>", "som": "<path d=\"M56 104 H92 L140 64 V192 L92 152 H56Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M164 100 Q184 128 164 156 M184 80 Q218 128 184 176\" fill=\"none\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/>", "mudo": "<path d=\"M56 104 H92 L140 64 V192 L92 152 H56Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"8\" stroke-linejoin=\"round\"/><path d=\"M166 104 L210 152 M210 104 L166 152\" stroke=\"#242034\" stroke-width=\"8\" stroke-linecap=\"round\"/>"}};
+const MARCA = {"personagens": {"orbita": {"nome": "Órbita", "cor": "#7738EA", "svg": "<path d=\"M55 120 C42 56 87 31 141 43 C206 52 220 103 195 169 C173 216 86 218 60 167Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><ellipse cx=\"103\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><ellipse cx=\"158\" cy=\"116\" rx=\"8\" ry=\"12\" fill=\"#242034\"/><path d=\"M113 156 Q134 177 156 151\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/>"}, "zigue": {"nome": "Zigue", "cor": "#FFD52A", "svg": "<path d=\"M75 55 L170 39 210 101 180 204 78 205 42 131Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><path d=\"M89 115 l18 -8 M151 107 l18 8\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"130\" r=\"7\" fill=\"#242034\"/><circle cx=\"159\" cy=\"130\" r=\"7\" fill=\"#242034\"/><path d=\"M118 161 Q130 154 145 163\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "pingo": {"nome": "Pingo", "cor": "#29BCE5", "svg": "<path d=\"M128 34 C160 76 212 109 204 158 C198 209 57 226 50 158 C44 111 98 72 128 34Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"100\" cy=\"139\" r=\"9\" fill=\"#242034\"/><circle cx=\"154\" cy=\"139\" r=\"9\" fill=\"#242034\"/><path d=\"M117 168 Q129 181 142 168\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}, "faisca": {"nome": "Faísca", "cor": "#FF6654", "svg": "<path d=\"M123 26 L146 79 199 55 183 112 224 143 175 162 183 214 128 193 76 219 81 164 34 139 76 109 62 56 108 81Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/><circle cx=\"101\" cy=\"131\" r=\"8\" fill=\"#242034\"/><circle cx=\"156\" cy=\"131\" r=\"8\" fill=\"#242034\"/><path d=\"M111 159 Q129 180 148 159\" stroke=\"#242034\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>"}}, "acessorios": {"cabelo_cacheado": {"nome": "Cacheado", "camada": "cabelo", "svg": "<circle cx=\"77\" cy=\"70\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"98\" cy=\"50\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"124\" cy=\"45\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"150\" cy=\"49\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"176\" cy=\"69\" r=\"17\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "cabelo_franja": {"nome": "Franja", "camada": "cabelo", "svg": "<path d=\"M73 80 Q75 37 127 39 Q178 37 185 80 L154 70 139 88 116 69 96 90Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu": {"nome": "Chapéu", "camada": "cabeca", "svg": "<path d=\"M76 96 Q76 45 128 43 Q180 45 180 96Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M54 98 Q130 78 207 101\" stroke=\"#242034\" stroke-width=\"13\" fill=\"none\" stroke-linecap=\"round\"/>"}, "bone": {"nome": "Boné", "camada": "cabeca", "svg": "<path d=\"M67 80 Q80 27 129 32 Q179 34 187 81 Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M117 79 Q169 69 214 88 Q176 106 124 96Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "chapeu_coco": {"nome": "Chapéu-coco", "camada": "cabeca", "svg": "<path d=\"M86 82 L91 41 Q130 20 167 41 L174 82Z\" fill=\"#269BFA\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M55 83 Q127 101 203 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "coroa": {"nome": "Coroa", "camada": "cabeca", "svg": "<path d=\"M78 91 L65 42 100 60 128 27 155 60 191 42 178 91Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "coroa_estrelada": {"nome": "Coroa estrelada", "camada": "cabeca", "svg": "<path d=\"M66 87 L62 44 94 62 126 27 156 62 192 44 187 87Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"127\" cy=\"72\" r=\"7\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "laco": {"nome": "Laço", "camada": "cabeca", "svg": "<path d=\"M128 63 Q84 28 79 66 Q77 99 128 76 Q177 103 179 66 Q171 30 128 63Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"128\" cy=\"69\" r=\"11\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "anteninhas": {"nome": "Anteninhas", "camada": "cabeca", "svg": "<path d=\"M105 71 Q91 25 74 21 M150 68 Q165 23 186 21\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"74\" cy=\"21\" r=\"11\" fill=\"#55CE70\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"186\" cy=\"21\" r=\"11\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"6\"/>"}, "chifrinhos": {"nome": "Chifrinhos", "camada": "cabeca", "svg": "<path d=\"M79 79 Q63 41 82 23 L111 74Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M145 73 L174 23 Q194 42 179 79Z\" fill=\"#FF7538\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "orelhas": {"nome": "Orelhas", "camada": "cabeca", "svg": "<path d=\"M80 96 Q32 9 72 19 Q102 27 110 84 M150 84 Q159 27 189 19 Q229 9 176 96\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\" stroke-linejoin=\"round\"/>"}, "orelhas_gato": {"nome": "Orelhas de gato", "camada": "cabeca", "svg": "<path d=\"M72 89 L64 31 115 73Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M144 73 L194 31 186 89Z\" fill=\"#9147F5\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "fone": {"nome": "Fone", "camada": "cabeca", "svg": "<path d=\"M68 135 L68 107 Q70 57 128 57 Q186 57 188 107 L188 135\" fill=\"none\" stroke=\"#242034\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M56 117 Q74 108 83 121 L83 159 Q67 172 56 153Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M174 121 Q190 108 201 117 L201 153 Q189 171 174 159Z\" fill=\"#FF4CA4\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos": {"nome": "Óculos", "camada": "olhos", "svg": "<path d=\"M63 105 H116 L121 126 Q114 153 88 149 Q67 148 63 124Z M138 105 H190 L192 124 Q188 151 162 149 Q139 148 138 126Z M116 113 Q127 105 138 113\" fill=\"none\" stroke=\"#242034\" stroke-width=\"9\" stroke-linejoin=\"round\"/>"}, "oculos_redondos": {"nome": "Óculos redondos", "camada": "olhos", "svg": "<circle cx=\"91\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><circle cx=\"165\" cy=\"127\" r=\"24\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\"/><path d=\"M115 125 Q128 116 141 125\" fill=\"none\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}, "oculos_sol": {"nome": "Óculos de sol", "camada": "olhos", "svg": "<path d=\"M62 115 L110 115 106 142 Q84 158 66 136Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M143 115 L191 115 187 136 Q165 158 146 142Z\" fill=\"#242034\" stroke=\"#242034\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M108 119 Q128 108 144 119\" fill=\"none\" stroke=\"#242034\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>"}}, "icones": {"tarefa": "<rect x=\"56\" y=\"52\" width=\"144\" height=\"156\" rx=\"22\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M82 128 l24 24 65 -69\" fill=\"none\" stroke=\"#7738EA\" stroke-width=\"13\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>", "loja": "<path d=\"M53 106 L73 62 H184 L205 106 V204 H53Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M53 106 H205\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M104 204 V143 H154 V204\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"7\"/>", "moeda": "<circle cx=\"128\" cy=\"128\" r=\"83\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M128 76 l16 34 38 5 -28 27 7 39 -33 -18 -34 18 7 -39 -28 -27 39 -5Z\" fill=\"#7738EA\"/>", "mundo": "<circle cx=\"128\" cy=\"128\" r=\"78\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"8\"/><path d=\"M73 101 Q111 57 135 104 Q160 117 193 98 M77 165 Q122 130 155 176\" fill=\"none\" stroke=\"#A5DD37\" stroke-width=\"22\" stroke-linecap=\"round\"/>", "trofeu": "<g transform=\"translate(48 47) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 22H5Q5 47 27 47 M80 22H95Q95 47 73 47\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M45 60H55V78L72 82V91H28V82L45 78Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M20 10H80L76 42Q72 63 50 66Q28 63 24 42Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "grafico": "<g transform=\"translate(48 49.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 88V49H30V88Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M38 88V10H62V88Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M70 88V32H94V88Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "cadeado": "<g transform=\"translate(48 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M25 48V32C25 -2 75 -2 75 32V48H64V31C64 12 36 12 36 31V48Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"10\" y=\"40\" width=\"80\" height=\"52\" rx=\"11\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"62\" r=\"6\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 67V77\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "som": "<g transform=\"translate(54 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 35H24L48 13V87L24 65H5Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M60 33Q77 50 60 67 M72 17Q104 50 72 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "mudo": "<g transform=\"translate(53 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 35H24L48 13V87L24 65H5Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M63 36L89 64 M89 36L63 64\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "acao_calendario": "<g transform=\"translate(48 47.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"6\" y=\"17\" width=\"88\" height=\"76\" rx=\"10\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 44V27Q6 17 17 17H83Q94 17 94 27V44Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M28 7V26 M72 7V26\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><rect x=\"25\" y=\"57\" width=\"17\" height=\"17\" rx=\"3\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "acao_editar_personagem": "<g transform=\"translate(45 52.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M8 91L15 63L67 11L88 32L36 84Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M64 14L73 5Q79 1 84 7L94 17Q99 22 91 30L85 36Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M16 63L36 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "acao_missao_concluida": "<g transform=\"translate(48 50.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 50L18 35L39 55L80 11L96 25L40 86Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "acao_ouvir_em_voz_alta": "<g transform=\"translate(49.5 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M13 8H74Q92 8 92 26V60Q92 73 76 73H47L24 92V73H18Q6 73 6 58V25Q6 8 13 8Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M32 36V49 M49 25V59 M66 33V51\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "acao_proxima_semana": "<g transform=\"translate(47.5 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M36 6L21 22L49 50L21 78L36 94L80 50Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "acao_semana_anterior": "<g transform=\"translate(48.5 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M64 6L79 22L51 50L79 78L64 94L20 50Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "agenda_aula_ou_atividade": "<g transform=\"translate(50 47.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M92 48C84 5 41 -1 16 26C-9 55 12 91 45 91Q64 92 61 74Q57 59 76 61Q94 62 92 48Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"29\" cy=\"43\" r=\"8\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"51\" cy=\"28\" r=\"8\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"73\" cy=\"40\" r=\"7\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "agenda_escola": "<g transform=\"translate(48 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10 44L50 13L90 44V91H10Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M4 45L50 8L96 45L89 52L50 22L11 52Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"37\" y=\"59\" width=\"26\" height=\"32\" rx=\"3\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "agenda_outro_compromisso": "<g transform=\"translate(53 50) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 17L33 4L83 54L70 67L61 58L49 65L38 76L24 62L35 50L41 38Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M34 69L10 94\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "agenda_passeio_ou_festa": "<g transform=\"translate(46.5 51.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M52 65Q74 80 49 92\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M49 67C8 48 15 4 50 4C87 4 94 47 54 67L60 74H43Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "agenda_saude": "<g transform=\"translate(43 41.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 10H27V18H20V39Q20 57 36 57Q53 57 53 39V18H46V10H61V38Q61 61 42 65V72Q42 90 59 90Q78 90 78 70V56H86V72Q85 98 60 98Q33 98 33 72V65Q12 61 12 39Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"82\" cy=\"49\" r=\"12\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "atividade_arvore": "<g transform=\"translate(47.5 51.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M44 48H56L61 92H38Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M23 65Q-1 62 9 40Q12 33 22 32Q18 14 37 13Q47 -3 64 8Q77 12 78 27Q97 28 94 47Q94 71 67 64Q49 77 34 64Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "atividade_bola": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"44\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 32L68 44L61 64H39L32 44Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 32V10 M68 44L91 37 M61 64L75 85 M39 64L25 85 M32 44L9 37\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "atividade_piano": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"18\" width=\"94\" height=\"64\" rx=\"8\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"9\" y=\"37\" width=\"82\" height=\"39\" rx=\"2\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M29 39V75 M50 39V75 M71 39V75\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M23 38H34V58H23Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M65 38H76V58H65Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "atividade_pincel_e_tinta": "<g transform=\"translate(48.5 53.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"6\" y=\"52\" width=\"44\" height=\"37\" rx=\"8\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"5\" y=\"47\" width=\"46\" height=\"12\" rx=\"4\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M46 54L82 6Q88 1 93 8Q96 12 90 20L56 63Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M56 60Q66 77 43 84Q33 85 27 80Q39 77 38 67Q39 54 50 54Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_codigo_e_senha": "<g transform=\"translate(52.5 51) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M39 61A28 28 0 1 1 57 42L92 77L79 90L69 80L61 87L51 76L57 69L46 59Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"29\" cy=\"29\" r=\"8\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_comecar_do_zero": "<g transform=\"translate(48.5 52) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M39 15Q42 44 70 53Q42 60 39 91Q31 61 5 53Q31 46 39 15Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M78 4Q81 18 94 22Q81 26 78 42Q74 27 61 22Q74 18 78 4Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_convite": "<g transform=\"translate(48 46) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"20\" width=\"90\" height=\"62\" rx=\"8\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M9 25L50 57L91 25\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M50 67Q22 49 32 39Q41 31 50 43Q60 30 68 39Q79 49 50 67Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_crianca": "<g transform=\"translate(48 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 43Q7 23 30 16Q44 3 57 12Q70 6 82 21Q93 29 88 44Q102 46 92 60L85 62Q80 89 50 91Q19 89 15 62Q0 61 5 48Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M20 36Q39 38 47 23Q52 32 66 32 M31 49V53 M67 49V53 M39 68Q50 78 61 68\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "entrada_nuvem_conectada": "<g transform=\"translate(49.5 55) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 77C-3 76 -1 44 18 40C20 8 65 4 73 37C97 33 105 76 77 77Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M32 53L44 65L64 43\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "entrada_rede_de_apoio": "<g transform=\"translate(48 53) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M23 69L50 23L78 69Z\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><circle cx=\"50\" cy=\"20\" r=\"14\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"20\" cy=\"74\" r=\"14\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"80\" cy=\"74\" r=\"14\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_responsavel": "<g transform=\"translate(47 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 91Q7 51 39 51Q65 51 72 91Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"38\" cy=\"29\" r=\"21\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M49 91Q49 67 70 67Q91 67 94 91Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"71\" cy=\"53\" r=\"15\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "entrada_trazer_do_aparelho": "<g transform=\"translate(43 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"12\" y=\"5\" width=\"53\" height=\"90\" rx=\"10\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"18\" y=\"16\" width=\"41\" height=\"58\" rx=\"4\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M40 40H69V28L94 50L69 72V59H40Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "jogo_sequencia_de_dias": "<g transform=\"translate(46.5 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M52 3Q59 29 69 41L76 27Q99 55 85 78Q74 96 50 96Q16 96 12 67Q9 52 27 29L32 47Q48 30 52 3Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M49 55Q74 76 55 85Q31 89 40 69Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "jogo_sua_vez": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 43Q9 14 47 14H62V4L88 24L62 44V34H47Q25 33 18 48Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M94 57Q91 86 53 86H38V96L12 76L38 56V66H53Q75 67 82 52Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "loja_esperando_os_pais": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 10H80Q80 32 57 49Q80 66 80 90H20Q20 67 43 49Q20 32 20 10Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M27 88Q27 80 50 63Q72 79 74 88Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"15\" y=\"4\" width=\"70\" height=\"10\" rx=\"4\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"15\" y=\"86\" width=\"70\" height=\"10\" rx=\"4\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "loja_pedidos": "<g transform=\"translate(48 47.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 26L50 6L94 26V73L50 95L6 73Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 26L50 48L94 26 M50 48V94\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M26 17L40 11L83 31V51L68 58V38Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "loja_presente": "<g transform=\"translate(48 52) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"12\" y=\"44\" width=\"76\" height=\"46\" rx=\"5\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M42 40H58V90H42Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M47 29Q15 31 22 13Q32 -1 48 22Q58 -3 73 9Q89 27 52 29Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"5\" y=\"29\" width=\"90\" height=\"19\" rx=\"4\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M42 29H58V48H42Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "loja_recebido": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"7\" y=\"10\" width=\"86\" height=\"80\" rx=\"14\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M19 50L30 39L44 52L69 26L80 37L44 74Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_banheira": "<g transform=\"translate(48 49.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 43V23Q15 7 27 7Q38 7 38 19 M22 78L16 91 M77 78L83 91\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M8 46H92Q91 82 66 82H34Q10 82 8 46Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"3\" y=\"39\" width=\"94\" height=\"12\" rx=\"5\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_bichinho": "<g transform=\"translate(48 42.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14 51Q22 61 37 70Q49 79 62 69Q79 65 86 51V75Q53 106 16 77Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M8 50Q20 24 41 22L52 16L61 20Q82 22 92 50Q82 62 74 59Q68 83 50 83Q30 83 24 60Q15 64 8 50Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M37 47V50 M64 47V50\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M43 60H57Q50 73 43 60Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_brinquedos": "<g transform=\"translate(49 44) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"48\" width=\"45\" height=\"45\" rx=\"5\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M48 48L71 12L95 48Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"52\" y=\"49\" width=\"39\" height=\"42\" rx=\"4\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M18 62H33V77H18Z\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_caderno": "<g transform=\"translate(51 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"18\" y=\"6\" width=\"67\" height=\"88\" rx=\"6\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M29 6H36V94H29Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M11 25H28 M11 50H28 M11 75H28\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><rect x=\"45\" y=\"23\" width=\"28\" height=\"14\" rx=\"3\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_cama": "<g transform=\"translate(49.5 44.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 20H15V56H93V84H82V73H16V84H5Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"16\" y=\"33\" width=\"23\" height=\"22\" rx=\"8\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M39 36H74Q92 36 92 53V59H39Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_camiseta": "<g transform=\"translate(48.5 47.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M31 11Q50 22 69 11L94 34L80 50L69 42V90H30V42L19 51L5 35Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M32 12Q49 46 68 12\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_cesto_de_roupa": "<g transform=\"translate(48 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 40Q6 23 25 21Q27 6 43 12L53 24Q63 9 76 18Q88 18 84 40Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M5 36H95L80 89H20Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M28 51L32 72 M50 51V72 M72 51L68 72\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_escova_de_dentes": "<g transform=\"translate(50.5 56.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 71L57 34L77 19L94 36L71 56L60 50L18 86Q9 90 4 83Q1 78 7 71Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M56 33L47 20L72 2L85 20L63 39Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M56 15L64 27 M65 9L73 21\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_esponja": "<g transform=\"translate(48 44) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 37Q6 25 20 25H80Q94 25 94 38Q80 46 94 57V69Q94 77 81 77H19Q6 77 6 66V59Q19 49 6 40Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 63Q23 69 41 63Q58 58 76 64Q88 67 94 62V70Q94 80 79 80H20Q6 80 6 70Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M29 39H32 M60 47H64\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_lanche": "<g transform=\"translate(47 54) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 64L49 24L94 63L89 81H12Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M7 58L44 31L94 57L86 69L72 65L58 73L44 66L28 72L13 68Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 56L43 15Q49 8 56 16L95 56Q96 62 87 62H14Q5 62 6 56Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_lapis": "<g transform=\"translate(45 52) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 91L18 61L75 4L95 24L38 81Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M9 91L18 61L38 81Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M30 61L77 14\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_livro": "<g transform=\"translate(48 45.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 17Q28 9 50 25Q71 10 97 17V81Q73 75 50 91Q26 76 3 81Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 26V90\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M66 15L77 12V47L71 42L66 48Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_lixo": "<g transform=\"translate(48 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 24H83L77 91H23Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M38 40L40 73 M61 40L59 73\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><rect x=\"9\" y=\"17\" width=\"82\" height=\"13\" rx=\"4\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M36 16V8H64V16\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_mochila": "<g transform=\"translate(48 52) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M35 23V16Q35 0 50 0Q65 0 65 16V23\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><rect x=\"12\" y=\"16\" width=\"76\" height=\"78\" rx=\"20\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"23\" y=\"52\" width=\"54\" height=\"32\" rx=\"9\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M25 62H74 M59 63V70\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_planta": "<g transform=\"translate(49.5 51) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M51 65V29\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M49 46Q18 48 14 17Q46 16 49 46Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M52 35Q51 7 84 4Q85 32 52 35Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M17 58H83L73 92H28Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_prato_e_talheres": "<g transform=\"translate(51.5 46) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"51\" cy=\"51\" r=\"28\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"51\" cy=\"51\" r=\"19\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 15V35Q6 45 13 45Q20 45 20 35V15 M13 15V86 M90 87V16Q79 28 82 51H90\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_remedio": "<g transform=\"translate(48 47) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M30 7H70V24H30Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"18\" y=\"24\" width=\"64\" height=\"70\" rx=\"12\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M19 42H81V77H19Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M45 46H55V54H63V64H55V72H45V64H37V54H45Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "missao_varal": "<g transform=\"translate(48 54) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 19Q50 32 97 19\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M13 23L23 21Q28 32 35 23L45 28L51 41L42 48L38 44L36 72L13 69L16 41L11 43L5 35Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M58 27L88 23L94 67L63 74Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M67 21L68 31 M27 18L26 28\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "missao_vassoura": "<g transform=\"translate(57 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M45 54L75 4L85 10L54 61Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M30 44L61 63Q54 75 51 95Q25 94 4 76Q20 66 30 44Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M24 79L34 64 M37 86L44 72\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "navegacao_area_dos_pais": "<g transform=\"translate(48 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M25 48V32C25 -2 75 -2 75 32V48H64V31C64 12 36 12 36 31V48Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"10\" y=\"40\" width=\"80\" height=\"52\" rx=\"11\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"62\" r=\"6\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 67V77\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "navegacao_placar": "<g transform=\"translate(48 47) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 22H5Q5 47 27 47 M80 22H95Q95 47 73 47\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M45 60H55V78L72 82V91H28V82L45 78Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M20 10H80L76 42Q72 63 50 66Q28 63 24 42Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "navegacao_resultados": "<g transform=\"translate(48 49.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 88V49H30V88Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M38 88V10H62V88Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M70 88V32H94V88Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "painel_este_aparelho": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"22\" y=\"4\" width=\"56\" height=\"92\" rx=\"10\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"28\" y=\"16\" width=\"44\" height=\"59\" rx=\"3\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M44 85H56\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "painel_familia": "<g transform=\"translate(48 50.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 46L50 8L95 46V89H5Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"32\" cy=\"48\" r=\"10\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"66\" cy=\"48\" r=\"10\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M17 83Q16 62 32 62Q44 62 49 79Q52 62 66 62Q83 62 83 83Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "painel_menos_movimento": "<g transform=\"translate(52 47) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"82\" cy=\"48\" r=\"12\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M7 65L1 54L20 56H68L78 64L74 80H65L63 70H32L29 80H20L18 69Z\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M12 60Q16 16 49 22Q71 25 77 60Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M30 51L36 38H51L61 51\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "pausa_doente": "<g transform=\"translate(49.5 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M27 58L65 11Q77 -2 88 10Q96 19 88 30L48 76Q47 96 27 96Q6 96 6 76Q6 60 27 58Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"28\" cy=\"75\" r=\"11\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M33 68L65 29\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "pausa_feriado": "<g transform=\"translate(50 51.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6 93L25 36L63 74Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M25 36Q34 26 53 45Q75 64 63 74Q46 72 25 36Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M51 24L56 8 M70 38Q69 23 85 19 M75 53L92 49\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><circle cx=\"81\" cy=\"7\" r=\"4\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "pausa_ferias": "<g transform=\"translate(47 50.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M56 32L38 91 M22 91H64\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M5 50Q21 -6 62 10Q86 17 96 55Q82 47 70 53Q56 43 43 49Q22 40 5 50Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M43 49Q46 25 62 10Q69 24 70 53Q56 43 43 49Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "pausa_generica": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"15\" y=\"9\" width=\"25\" height=\"82\" rx=\"8\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"60\" y=\"9\" width=\"25\" height=\"82\" rx=\"8\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "pausa_sem_aula": "<g transform=\"translate(48 50) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 18Q27 11 50 23Q73 11 93 18V76Q68 70 50 83Q31 71 7 76Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 23V82\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M15 92L6 83L85 5L94 14Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "pausa_viagem": "<g transform=\"translate(51 47.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 52L43 42L70 9Q80 -1 87 7Q94 13 88 23L69 47L91 75L84 83L54 63L32 82L32 93L24 97L15 78L5 70L11 63L23 69L37 54Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "periodo_manha": "<g transform=\"translate(48 54.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 63A30 30 0 0 1 80 63Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 9V21 M15 27L23 35 M85 27L77 35\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M4 65H96L85 82H15Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "periodo_noite": "<g transform=\"translate(49 50.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M69 6C35 35 52 74 93 67C77 99 35 104 14 75C-8 43 17 2 51 3Q61 3 69 6Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "periodo_qualquer_hora": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"43\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"50\" r=\"32\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 27V51L66 62\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "periodo_tarde": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"25\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 3V14 M50 86V97 M3 50H14 M86 50H97 M16 16L24 24 M76 76L84 84 M16 84L24 76 M76 24L84 16\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "recompensa_claquete": "<g transform=\"translate(49 54.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"7\" y=\"37\" width=\"86\" height=\"49\" rx=\"6\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M6 25L89 6L93 23L10 43Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M23 22L36 34 M50 16L63 28 M77 10L89 22\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M39 49L63 62L39 75Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_dado": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"8\" y=\"8\" width=\"84\" height=\"84\" rx=\"14\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"30\" cy=\"29\" r=\"7\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"70\" cy=\"29\" r=\"7\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"50\" r=\"7\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"30\" cy=\"71\" r=\"7\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"70\" cy=\"71\" r=\"7\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_lua_com_estrelas": "<g transform=\"translate(47.5 52) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M47 15Q18 56 66 73Q53 94 29 86Q1 78 4 49Q7 26 30 17Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M72 6L78 19L92 22L81 32L82 47L69 39L56 45L59 30L49 20L64 18Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M83 63L87 71L97 74L88 79L85 89L80 81L71 78L79 72Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_parque": "<g transform=\"translate(48 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 91L38 8H63L94 91 M37 10H64 M42 15V63 M59 15V63\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><rect x=\"31\" y=\"60\" width=\"40\" height=\"12\" rx=\"5\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M2 91H24 M80 91H98\" fill=\"#A5DD37\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_pipoca": "<g transform=\"translate(46.5 51) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M13 42Q2 21 20 17Q22 5 37 10Q47 -3 59 9Q76 3 82 18Q99 20 89 42Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M10 37H90L78 93H22Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M28 38H39L43 92H34Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M60 38H72L65 92H56Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_pizza": "<g transform=\"translate(47 50.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 22Q48 -2 93 22L52 93Q50 96 47 92Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M7 22Q3 15 13 11Q50 -5 90 11Q99 16 93 25Q91 30 83 26Q48 12 16 28Q10 30 7 22Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"38\" cy=\"42\" r=\"8\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"62\" cy=\"51\" r=\"7\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "recompensa_saco_de_dormir": "<g transform=\"translate(48 49) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M23 27Q23 3 50 3Q77 3 77 27V83Q77 96 63 96H37Q23 96 23 83Z\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M31 29Q31 11 50 11Q69 11 69 29V39H31Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M24 36H76V82Q76 95 62 95H38Q24 95 24 82Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M63 39V78 M33 54H53 M33 71H53\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "recompensa_sorvete": "<g transform=\"translate(46 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17 43H83L54 93Q50 98 46 93Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M12 47Q8 37 19 32Q19 7 46 5Q75 0 81 30Q96 33 90 46Q86 57 76 53Q65 66 55 52Q38 65 30 51Q18 57 12 47Z\" fill=\"#B06CFF\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M39 65L57 79\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "recompensa_tela": "<g transform=\"translate(48 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"13\" width=\"90\" height=\"62\" rx=\"7\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/><rect x=\"12\" y=\"20\" width=\"76\" height=\"47\" rx=\"3\" fill=\"#29BCE5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M50 76V87 M31 88H69\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "repeticao_so_num_dia": "<g transform=\"translate(48 48.5) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 96Q11 54 15 35C17 -7 83 -7 85 35Q88 54 50 96Z\" fill=\"#FF6654\" stroke=\"#242034\" stroke-width=\"5\"/><circle cx=\"50\" cy=\"37\" r=\"14\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "repeticao_toda_semana": "<g transform=\"translate(48.5 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"12\" y=\"22\" width=\"75\" height=\"65\" rx=\"9\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M30 12V30 M69 12V30\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/><path d=\"M25 61Q32 39 58 42L61 32L78 53L56 64L57 55Q40 52 34 68Z\" fill=\"#7738EA\" stroke=\"#242034\" stroke-width=\"5\"/></g>", "som_desligado": "<g transform=\"translate(53 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 35H24L48 13V87L24 65H5Z\" fill=\"#FFFDF5\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M63 36L89 64 M89 36L63 64\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>", "som_ligado": "<g transform=\"translate(54 48) scale(1.6)\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 35H24L48 13V87L24 65H5Z\" fill=\"#FFD52A\" stroke=\"#242034\" stroke-width=\"5\"/><path d=\"M60 33Q77 50 60 67 M72 17Q104 50 72 83\" fill=\"none\" stroke=\"#242034\" stroke-width=\"3.75\"/></g>"}};
 // Só acessórios de cabeça e olhos: as roupas não assentaram bem nos personagens
 const CAMADAS = [ { id: "olhos", nome: "Óculos" }, { id: "cabelo", nome: "Cabelo" }, { id: "cabeca", nome: "Cabeça" } ];
 const CORES_AVATAR = ["#7738EA", "#B06CFF", "#FF6654", "#FFD52A", "#29BCE5", "#A5DD37"];
@@ -346,6 +372,15 @@ function avatarSVG(av, tam = 64){
   const camada = c => av[c] && MARCA.acessorios[av[c]] ? MARCA.acessorios[av[c]].svg : "";
   return `<svg class="avatar" viewBox="0 0 256 256" width="${tam}" height="${tam}" aria-hidden="true">${corpo}${camada("olhos")}${camada("cabelo")}${camada("cabeca")}</svg>`;
 }
+// Ícone da biblioteca pelo nome; se não for da biblioteca (emoji escolhido antes), mostra o próprio texto
+const ico = (v, tam = 28) => v && MARCA.icones[v] ? icone(v, tam) : `<span class="emo">${esc(v || "")}</span>`;
+const EMOJI_ICONE = { "🛏️": "missao_cama", "🎒": "missao_mochila", "📚": "missao_caderno", "✏️": "missao_lapis", "📖": "missao_livro",
+  "🍽️": "missao_prato_e_talheres", "🧽": "missao_esponja", "🗑️": "missao_lixo", "🧹": "missao_vassoura", "🧸": "missao_brinquedos",
+  "🧺": "missao_cesto_de_roupa", "👚": "missao_varal", "👕": "missao_camiseta", "🪥": "missao_escova_de_dentes", "🛁": "missao_banheira",
+  "💊": "missao_remedio", "🪴": "missao_planta", "🐶": "missao_bichinho", "🥪": "missao_lanche", "⭐": "tarefa",
+  "🎹": "atividade_piano", "🎨": "atividade_pincel_e_tinta", "🌳": "atividade_arvore", "⚽": "atividade_bola", "🏫": "agenda_escola", "🦷": "agenda_saude", "🩺": "agenda_saude",
+  "🍿": "recompensa_pipoca", "🍦": "recompensa_sorvete", "🍕": "recompensa_pizza", "📱": "recompensa_tela", "🌙": "recompensa_lua_com_estrelas",
+  "🎲": "recompensa_dado", "🎬": "recompensa_claquete" };
 const avatarDe = c => avatarSVG(c ? dados.avatares[c.id] : null);
 const avatarHTML = (c, tam) => c ? avatarSVG(dados.avatares[c.id], tam) : "";
 
@@ -357,25 +392,25 @@ const FDS = [0,6];
 const ORDEM_UI = [1,2,3,4,5,6,0];       // na tela a semana começa na segunda
 const NOME_DIA = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
 const PERIODOS = [
-  { id: "manha", nome: "Manhã", icone: "🌅" },
-  { id: "tarde", nome: "Tarde", icone: "☀️" },
-  { id: "noite", nome: "Noite", icone: "🌙" },
-  { id: "livre", nome: "Qualquer hora", icone: "⏰" }
+  { id: "manha", nome: "Manhã", icone: "periodo_manha" },
+  { id: "tarde", nome: "Tarde", icone: "periodo_tarde" },
+  { id: "noite", nome: "Noite", icone: "periodo_noite" },
+  { id: "livre", nome: "Qualquer hora", icone: "periodo_qualquer_hora" }
 ];
 const TIPOS_ATV = [
-  { id: "escola", nome: "Escola", icone: "🏫", cor: "#29BCE5" },
-  { id: "atividade", nome: "Aula / atividade", icone: "🎨", cor: "#7738EA" },
-  { id: "saude", nome: "Saúde", icone: "🩺", cor: "#FF6654" },
-  { id: "passeio", nome: "Passeio / festa", icone: "🎈", cor: "#FF6654" },
-  { id: "outro", nome: "Outro", icone: "📌", cor: "#777777" }
+  { id: "escola", nome: "Escola", icone: "agenda_escola", cor: "#29BCE5" },
+  { id: "atividade", nome: "Aula / atividade", icone: "agenda_aula_ou_atividade", cor: "#7738EA" },
+  { id: "saude", nome: "Saúde", icone: "agenda_saude", cor: "#FF6654" },
+  { id: "passeio", nome: "Passeio / festa", icone: "agenda_passeio_ou_festa", cor: "#FF6654" },
+  { id: "outro", nome: "Outro", icone: "agenda_outro_compromisso", cor: "#777777" }
 ];
 const MOTIVOS_PAUSA = [
-  { id: "ferias", nome: "Férias", icone: "🏖️" },
-  { id: "feriado", nome: "Feriado", icone: "🎉" },
-  { id: "doente", nome: "Doente", icone: "🤒" },
-  { id: "viagem", nome: "Viagem", icone: "✈️" },
-  { id: "semaula", nome: "Sem aula", icone: "📚" },
-  { id: "outro", nome: "Outro", icone: "⏸️" }
+  { id: "ferias", nome: "Férias", icone: "pausa_ferias" },
+  { id: "feriado", nome: "Feriado", icone: "pausa_feriado" },
+  { id: "doente", nome: "Doente", icone: "pausa_doente" },
+  { id: "viagem", nome: "Viagem", icone: "pausa_viagem" },
+  { id: "semaula", nome: "Sem aula", icone: "pausa_sem_aula" },
+  { id: "outro", nome: "Outro", icone: "pausa_generica" }
 ];
 // Sugestões de missões por idade
 const SUGESTOES = {
@@ -404,6 +439,7 @@ const SUGESTOES = {
     { nome: "Ajudar a preparar o lanche", icone: "🥪", pontos: 10, periodos: ["tarde"], dias: [6,0] }
   ]
 };
+Object.values(SUGESTOES).forEach(l => l.forEach(sg => { sg.icone = EMOJI_ICONE[sg.icone] || sg.icone; }));
 const NOME_DIA_LONGO = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
 
 const PADRAO = {
@@ -468,6 +504,19 @@ function normalizar(d){
   d.recompensas = d.recompensas.map((r, i) => typeof r === "string" ? { id: "r" + i + "_" + r.length, texto: r, custo: 50 } : r);
   if (d.premio?.texto && !d.recompensas.some(r => r.texto === d.premio.texto)) d.recompensas.unshift({ id: "rp", texto: d.premio.texto, custo: 50 });
   d.pausas = Array.isArray(d.pausas) ? d.pausas : [];
+  const premioAntes = d.premio?.texto;
+  // emojis escolhidos antes viram ícones da biblioteca da marca (quando há equivalente)
+  const paraIcone = v => EMOJI_ICONE[v] || EMOJI_ICONE[String(v || "").replace(/\uFE0F/g, "")] || v;
+  d.tarefas.forEach(t => t.icone = paraIcone(t.icone));
+  d.atividades.forEach(a => a.icone = paraIcone(a.icone));
+  d.recompensas.forEach(r => { if (r.icone) return;
+    const achado = Object.keys(EMOJI_ICONE).find(e => e !== "⭐" && r.texto.includes(e) && EMOJI_ICONE[e].startsWith("recompensa_"));
+    if (achado) { r.icone = EMOJI_ICONE[achado]; r.texto = r.texto.replace(achado, "").replace(/\uFE0F/g, "").trim(); }
+    else if (/parque/i.test(r.texto)) r.icone = "recompensa_parque";
+    else if (/pijama/i.test(r.texto)) r.icone = "recompensa_saco_de_dormir";
+    else r.icone = "loja_presente";
+    r.texto = r.texto.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/\s+/g, " ").trim(); });
+  if (premioAntes) d.premio.texto = premioAntes.replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, "").replace(/\s+/g, " ").trim();
   d.avatares = d.avatares && typeof d.avatares === "object" ? d.avatares : {};
   const bases = ["orbita", "faisca", "pingo", "zigue"];
   d.criancas.forEach((c, i) => { if (!d.avatares[c.id]) d.avatares[c.id] = { p: bases[i % 4] }; });
@@ -586,8 +635,8 @@ function renderCabecalho(){
   { const h = new Date().toLocaleDateString("pt-BR", { weekday:"long", day:"numeric", month:"long" }); $("#hoje").textContent = h[0].toUpperCase() + h.slice(1); }
   $("#kids").innerHTML = dados.criancas.map(c => `
     <div class="kid ${c.id===criancaAtiva?"on":""}" data-id="${c.id}">
-      <div class="av">${avatarHTML(c, 68)}${c.id === criancaAtiva && NUVEM.papel !== "apoio" ? `<span class="lapis" aria-hidden="true">✏️</span>` : ""}</div>${esc(c.nome)}
-      <small>${icone("moeda", 16)} ${saldo(c.id)} · 🔥 ${sequencia(c.id)}</small>
+      <div class="av">${avatarHTML(c, 68)}${c.id === criancaAtiva && NUVEM.papel !== "apoio" ? `<span class="lapis" aria-hidden="true">${icone("acao_editar_personagem", 18)}</span>` : ""}</div>${esc(c.nome)}
+      <small class="quem" style="justify-content:center;gap:4px">${icone("moeda", 16)} ${saldo(c.id)} · ${icone("jogo_sequencia_de_dias", 16)} ${sequencia(c.id)}</small>
     </div>`).join("");
   document.querySelectorAll(".kid").forEach(el => el.onclick = () => {
     if (el.dataset.id === criancaAtiva && NUVEM.papel !== "apoio") return abrirAvatar(el.dataset.id);
@@ -600,11 +649,11 @@ function renderSemana(){
   const mes2 = dias[6].toLocaleDateString("pt-BR", { month:"long" });
   $("#semana").innerHTML = `
     <div class="topo">
-      <button id="semAnt" aria-label="Semana anterior">‹</button>
+      <button id="semAnt" aria-label="Semana anterior">${icone("acao_semana_anterior", 24)}</button>
       <span>${mes === mes2 ? mes : mes + " / " + mes2}</span>
       <span style="display:flex;gap:6px">
         ${ehHoje(diaSel) ? "" : `<button class="hojeBtn" id="irHoje">Hoje</button>`}
-        <button id="semProx" aria-label="Próxima semana">›</button>
+        <button id="semProx" aria-label="Próxima semana">${icone("acao_proxima_semana", 24)}</button>
       </span>
     </div>
     <div class="diasNav">${dias.map(d => {
@@ -613,7 +662,7 @@ function renderSemana(){
       return `<div class="diaNav ${ehHoje(d)?"hoje":""} ${mesmoDia(d,diaSel)?"sel":""} ${FDS.includes(d.getDay())?"fds":""}" data-d="${isoDia(d)}">
         <div class="sem">${NOME_DIA[d.getDay()]}</div>
         <div class="num">${d.getDate()}</div>
-        <div class="pt">${completo ? "✓" : ts.length ? "•".repeat(Math.min(ts.length,4)) : ""}</div>
+        <div class="pt">${completo ? icone("acao_missao_concluida", 14) : ts.length ? "•".repeat(Math.min(ts.length,4)) : ""}</div>
       </div>`; }).join("")}
     </div>`;
   const mudaSemana = n => { const x = new Date(diaSel); x.setDate(x.getDate() + 7*n); diaSel = x; render(); };
@@ -632,26 +681,26 @@ function renderMissoes(){
   const atvs = atividadesDe(c.id, diaSel);
   const tipoDe = a => TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4];
   const pAg = pausaDe(c.id, diaSel, "agenda");
-  $("#agendaDia").innerHTML = `<div class="agenda"><b>📅 Agenda de ${r}</b>
-    ${pAg ? `<div class="pausaTag">${esc(iconeMotivo(pAg))} ${esc(nomeMotivo(pAg))}: agenda da semana pausada</div>` : ""}
+  $("#agendaDia").innerHTML = `<div class="agenda"><b class="quem">${icone("acao_calendario", 30)} Agenda de ${r}</b>
+    ${pAg ? `<div class="pausaTag quem">${icone(iconeMotivo(pAg), 24)} ${esc(nomeMotivo(pAg))}: agenda da semana pausada</div>` : ""}
     ${atvs.length ? atvs.map(a => `
     <div class="atv" data-falar="${esc(semEmoji(a.nome) + (a.hora ? ", às " + a.hora.replace(":", " e ") : ""))}" style="--t:${tipoDe(a).cor}">
-      <span class="hora">${esc(a.hora || "—")}</span><span class="ic">${esc(a.icone)}</span>
+      <span class="hora">${esc(a.hora || "—")}</span><span class="ic">${ico(a.icone, 34)}</span>
       <span class="nomeAtv">${esc(a.nome)}<small>${[tipoDe(a).nome.toLowerCase() === a.nome.toLowerCase() ? "" : tipoDe(a).nome, a.data ? "só nesse dia" : ""].filter(Boolean).map(esc).join(" · ")}</small></span></div>`).join("")
     : `<div style="color:var(--suave);font-weight:700">Nada marcado. Dia livre! 🌈</div>`}</div>`;
   document.querySelectorAll(".atv[data-falar]").forEach(el => el.onclick = () => falar(el.dataset.falar));
   const ts = tarefasDe(c.id, diaSel), feitas = feitosEm(isoDia(diaSel), c.id);
   const futuro = ehFuturo(diaSel), passado = !futuro && !ehHoje(diaSel);
   const pM = pausaDe(c.id, diaSel, "missoes");
-  const aviso = pM ? `<div class="aviso pausa">${esc(iconeMotivo(pM))} <b>${esc(nomeMotivo(pM))}</b>: missões pausadas até ${esc(dataCurta(pM.fim))} 💛</div>`
-              : futuro ? `<div class="aviso">🗓️ Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
+  const aviso = pM ? `<div class="aviso pausa quem">${icone(iconeMotivo(pM), 30)} <span><b>${esc(nomeMotivo(pM))}</b>: missões pausadas até ${esc(dataCurta(pM.fim))} 💛</span></div>`
+              : futuro ? `<div class="aviso quem">${icone("acao_calendario", 26)} Planejando: dá pra ver o que vem aí, e marcar quando o dia chegar.</div>`
               : passado ? `<div class="aviso">⏪ Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
   const card = t => `
     <div class="missao ${feitas.includes(t.key)?"feita":""} ${futuro?"futura":""}" style="--c:${esc(t.cor)}" data-id="${esc(t.key)}">
-      <div class="ic">${esc(t.icone)}</div>
-      <div class="tx">${esc(t.nome)}<small><span class="pill">${icone("moeda", 18)} +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">🔄 sua vez!</span>` : ""}</small></div>
-      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " moedas.")}">🔊</button>` : ""}
-      <div class="ok">${feitas.includes(t.key)?"✓":""}</div>
+      <div class="ic">${ico(t.icone, 44)}</div>
+      <div class="tx">${esc(t.nome)}<small><span class="pill">${icone("moeda", 18)} +${t.pontos}</span>${t.revezar && dados.criancas.length > 1 ? `<span class="pill vez">${icone("jogo_sua_vez", 18)} sua vez!</span>` : ""}</small></div>
+      ${temVoz ? `<button class="som" aria-label="Ouvir" data-falar="${esc(semEmoji(t.nome) + ". Vale " + t.pontos + " moedas.")}">${icone("acao_ouvir_em_voz_alta", 28)}</button>` : ""}
+      <div class="ok">${feitas.includes(t.key) ? icone("acao_missao_concluida", 34) : ""}</div>
     </div>`;
   const grupos = PERIODOS.map(p => ({ p, itens: ts.filter(t => t.periodo === p.id) })).filter(g => g.itens.length);
   const nFeitas = ts.filter(t => feitas.includes(t.key)).length, pctDia = ts.length ? Math.round(nFeitas / ts.length * 100) : 0;
@@ -660,7 +709,7 @@ function renderMissoes(){
     <div class="info"><b>${frase}</b> <span style="color:var(--suave)">${nFeitas} de ${ts.length}</span>
     <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
   $("#listaMissoes").innerHTML = progresso + aviso + (ts.length ? grupos.map(g => `
-    <div class="periodo">${g.p.icone} ${g.p.nome}<span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
+    <div class="periodo"><span class="quem tit">${icone(g.p.icone, 30)} ${g.p.nome}</span><span>${g.itens.filter(t => feitas.includes(t.key)).length}/${g.itens.length}</span></div>
     ${g.itens.map(card).join("")}`).join("") : pM ? "" : `<div class="vazio">Nenhuma missão ${r === "hoje" ? "hoje" : "nesse dia"}. Dia de folga! 🎉</div>`);
   document.querySelectorAll(".missao .som").forEach(b => b.onclick = e => { e.stopPropagation(); falar(b.dataset.falar); });
   document.querySelectorAll(".missao").forEach(el => el.onclick = () => {
@@ -701,12 +750,13 @@ function renderLoja(){
     <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
       const pode = s >= r.custo, conf = confirmaTroca === r.id;
       return `<div class="produto ${pode ? "" : "falta"}">
+        <div class="pic">${ico(r.icone, 52)}</div>
         <div class="ptx">${esc(r.texto)}</div>
         <div class="preco">${icone("moeda", 24)} ${r.custo}</div>
         ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "Confirmar?" : pode ? "Trocar" : `Faltam ${r.custo - s}`}</button>`}
       </div>`; }).join("")}</div>
-    ${pedidos.length ? `<h2>📦 Meus pedidos</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
-      <span class="st ${t.status}">${t.status === "entregue" ? "✅ Recebido" : "⏳ Esperando os pais"}</span></div>`).join("")}` : ""}`;
+    ${pedidos.length ? `<h2 class="quem">${icone("loja_pedidos", 32)} Meus pedidos</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
+      <span class="st ${t.status}">${t.status === "entregue" ? icone("loja_recebido", 20) + " Recebido" : icone("loja_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
     if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Trocar " + r.custo + " moedas por " + semEmoji(r.texto) + "?"); return renderLoja(); }
@@ -726,17 +776,19 @@ function renderPlacar(){
     $("#t-placar").appendChild(b);
   }
   const meta = Number(dados.premio.meta) || 100;
-  $("#premio").innerHTML = `🎁 Prêmio da semana<b>${esc(dados.premio.texto)}</b>Quem juntar ${meta} moedas na semana ganha!`;
+  const recPremio = dados.recompensas.find(x => x.texto === dados.premio.texto);
+  $("#titPlacar").innerHTML = `${icone("navegacao_placar", 34)} Placar da semana`;
+  $("#premio").innerHTML = `<div class="premioIc">${ico(recPremio?.icone || "loja_presente", 64)}</div><div><span class="quem">${icone("loja_presente", 22)} Prêmio da semana</span><b>${esc(dados.premio.texto)}</b>Quem juntar ${meta} moedas na semana ganha!</div>`;
   const dias = diasDaSemana();
   $("#listaPlacar").innerHTML = [...dados.criancas].sort((a,b) => pontosSemana(b.id) - pontosSemana(a.id)).map(c => {
     const p = pontosSemana(c.id), pct = Math.min(100, Math.round(p / meta * 100));
     return `<div class="placar">
       <div class="linha"><span class="quem">${avatarHTML(c, 40)} ${esc(c.nome)}</span><span class="quem">${p} ${icone("moeda", 26)}</span></div>
       <div class="barra"><i style="width:${pct}%"></i></div>
-      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} moedas`} · 🔥 ${sequencia(c.id)} dia(s) seguidos</small>
+      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} moedas`} · ${icone("jogo_sequencia_de_dias", 16)} ${sequencia(c.id)} dia(s) seguidos</small>
       <div class="dias">${dias.map(d => {
         const livre = tarefasDe(c.id, d).length === 0, ok = diaCompleto(isoDia(d), c.id, d);
-        return `<span><i class="${ok ? "sim" : livre ? "livre" : ""}">${ok ? "✓" : livre ? "–" : ""}</i>${NOME_DIA[d.getDay()][0]}</span>`; }).join("")}</div>
+        return `<span><i class="${ok ? "sim" : livre ? "livre" : ""}">${ok ? icone("acao_missao_concluida", 20) : livre ? "–" : ""}</i>${NOME_DIA[d.getDay()][0]}</span>`; }).join("")}</div>
     </div>`; }).join("");
 }
 
@@ -751,9 +803,27 @@ function chipsDias(grupo, arr){
 
 function pedirPin(el, depois){
   if (paisLiberado || NUVEM.papel === "pais") return false;
-  el.innerHTML = `<div class="pin"><div class="cadeado">🔐</div><h2>Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
+  el.innerHTML = `<div class="pin"><div class="cadeado">${icone("navegacao_area_dos_pais", 72)}</div><h2>Área dos pais</h2><input id="pinIn" type="password" inputmode="numeric" placeholder="Senha (padrão 1234)"><button class="btn" id="pinBtn">Entrar</button></div>`;
   $("#pinBtn").onclick = () => { if ($("#pinIn").value === dados.pin) { paisLiberado = true; depois(); } else toast("Senha errada 🙈"); };
   return true;
+}
+
+// Galeria de ícones da marca para escolher; dá pra digitar um emoji se faltar algum
+function seletorIcone(id, valor, prefixos){
+  const grupo = k => prefixos.findIndex(p => k === p || k.startsWith(p));
+  const opcoes = Object.keys(MARCA.icones).filter(k => grupo(k) >= 0).sort((a, b) => grupo(a) - grupo(b) || a.localeCompare(b));
+  const livre = valor && !MARCA.icones[valor] ? valor : "";
+  return `<div class="seletor" data-alvo="${id}"><input type="hidden" id="${id}" value="${esc(valor || "")}">
+    <div class="galeria">${opcoes.map(k => `<button type="button" class="gico ${k === valor ? "on" : ""}" data-ic="${k}" aria-label="${esc(k.split("_").slice(1).join(" "))}">${icone(k, 32)}</button>`).join("")}</div>
+    <input class="emojiLivre" placeholder="ou digite um emoji" maxlength="4" value="${esc(livre)}"></div>`;
+}
+function ligarSeletores(el){
+  el.querySelectorAll(".seletor").forEach(sel => {
+    const alvo = sel.querySelector("#" + sel.dataset.alvo);
+    sel.querySelectorAll(".gico").forEach(b => b.onclick = () => { alvo.value = b.dataset.ic;
+      sel.querySelectorAll(".gico").forEach(x => x.classList.toggle("on", x === b)); sel.querySelector(".emojiLivre").value = ""; });
+    sel.querySelector(".emojiLivre").oninput = e => { if (e.target.value.trim()) { alvo.value = e.target.value.trim(); sel.querySelectorAll(".gico").forEach(x => x.classList.remove("on")); } };
+  });
 }
 
 function renderPais(){
@@ -764,25 +834,26 @@ function renderPais(){
   const aEd = editando?.tipo === "a" ? dados.atividades.find(a => a.id === editando.id) : null;
   const opQuem = sel => [`<option value="todos">Todas as crianças</option>`, ...dados.criancas.map(c => `<option value="${c.id}">Só ${esc(c.nome)}</option>`)]
     .map(o => o.replace(`value="${sel}"`, `value="${sel}" selected`)).join("");
-  const paraTxt = t => t.para === "todos" ? (t.revezar ? "🔄 revezando" : "todas as crianças") : "só " + (crianca(t.para)?.nome || "?");
+  const paraTxt = t => t.para === "todos" ? (t.revezar ? "revezando" : "todas as crianças") : "só " + (crianca(t.para)?.nome || "?");
 
   el.innerHTML = `
-    <h2>👨‍👩‍👧‍👦 Painel dos pais</h2>
+    <h2 class="quem">${icone("painel_familia", 34)} Painel dos pais</h2>
 
-    <div class="bloco"><b>⭐ Missões</b>
-      ${dados.tarefas.map(t => `<div class="item">${esc(t.icone)} ${esc(t.nome)}
+    <div class="bloco"><b class="quem">${icone("tarefa", 26)} Missões</b>
+      ${dados.tarefas.map(t => `<div class="item">${ico(t.icone, 28)} ${esc(t.nome)}
           <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">excluir</button></span>
-          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.icone || "").join(" ")} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
+          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.nome.toLowerCase() || "").join(" e ")} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
       <div class="${tEd ? "editando" : ""}" id="formTarefa">
         ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
-        <div class="row"><input id="tIc" placeholder="Emoji" style="max-width:80px" value="${esc(tEd?.icone || "⭐")}"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
+        ${seletorIcone("tIc", tEd?.icone || "tarefa", ["missao_", "atividade_"])}
+        <div class="row"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
         <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
         ${chipsDias("t", diasForm)}
         <small style="color:var(--suave);font-weight:800">Em que hora do dia? <span style="font-weight:700">(dá pra marcar mais de uma, tipo remédio de manhã e à noite)</span></small>
-        <div class="chips">${PERIODOS.map(p => `<button class="chip ${periodosForm.includes(p.id)?"on":""}" data-per="${p.id}">${p.icone} ${p.nome}</button>`).join("")}</div>
+        <div class="chips">${PERIODOS.map(p => `<button class="chip ${periodosForm.includes(p.id)?"on":""}" data-per="${p.id}">${icone(p.icone, 20)} ${p.nome}</button>`).join("")}</div>
         <div class="row"><input id="tPts" type="number" min="0" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opQuem(tEd?.para || "todos")}</select></div>
         <div class="chips" id="revezBox" style="${(tEd?.para || "todos") === "todos" ? "" : "display:none"}">
-          <button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">🔄 Revezar entre as crianças</button>
+          <button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">${icone("jogo_sua_vez", 20)} Revezar entre as crianças</button>
         </div>
         <small id="revezDica" style="color:var(--suave);font-weight:700;display:block">${tEd?.revezar ? "Cada vez que a missão acontecer, ela vai pra uma criança diferente." : "Sem revezar, todas as crianças fazem a missão."}</small>
         <button class="btn" id="tSalvar">${tEd ? "Salvar alterações" : "Adicionar missão"}</button>
@@ -790,19 +861,19 @@ function renderPais(){
       </div>
     </div>
 
-    <div class="bloco"><b>✨ Sugestões de missões por idade</b>
+    <div class="bloco"><b class="quem">${icone("entrada_comecar_do_zero", 26)} Sugestões de missões por idade</b>
       <div class="chips">${Object.keys(SUGESTOES).map(f => `<button class="chip ${f === idadeSug ? "on" : ""}" data-idade="${f}">${f}</button>`).join("")}</div>
       ${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
-        return `<div class="item">${sg.icone} ${esc(sg.nome)}<span class="acoes">${ja ? `<span style="color:var(--verde-esc);font-weight:900">✓ já tem</span>` : `<button class="ed" data-sug="${i}">+ adicionar</button>`}</span>
-        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).icone).join(" ")} · ${sg.pontos} pts</small></div>`; }).join("")}
+        return `<div class="item">${ico(sg.icone, 28)} ${esc(sg.nome)}<span class="acoes">${ja ? `<span style="color:var(--verde-esc);font-weight:900">✓ já tem</span>` : `<button class="ed" data-sug="${i}">+ adicionar</button>`}</span>
+        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).nome.toLowerCase()).join(" e ")} · ${sg.pontos} pts</small></div>`; }).join("")}
     </div>
 
-    <div class="bloco"><b>⏸️ Pausas (férias, feriado, doença)</b>
-      ${dados.pausas.length ? dados.pausas.slice().sort((a, b) => a.inicio.localeCompare(b.inicio)).map(pz => `<div class="item">${esc(iconeMotivo(pz))} ${esc(nomeMotivo(pz))}
+    <div class="bloco"><b class="quem">${icone("pausa_generica", 26)} Pausas (férias, feriado, doença)</b>
+      ${dados.pausas.length ? dados.pausas.slice().sort((a, b) => a.inicio.localeCompare(b.inicio)).map(pz => `<div class="item">${icone(iconeMotivo(pz), 28)} ${esc(nomeMotivo(pz))}
           <span class="acoes"><button class="x" data-del-p="${pz.id}">excluir</button></span>
           <small>${esc(dataCurta(pz.inicio))}${pz.fim !== pz.inicio ? " a " + esc(dataCurta(pz.fim)) : ""} · pausa ${pz.oque === "tudo" ? "missões e agenda" : pz.oque === "agenda" ? "só a agenda" : "só as missões"} · ${pz.para === "todos" ? "todas as crianças" : "só " + esc(crianca(pz.para)?.nome || "?")}</small></div>`).join("")
-        : `<small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Nenhuma pausa marcada. Num dia pausado, a sequência 🔥 não quebra.</small>`}
-      <div class="chips">${MOTIVOS_PAUSA.map((m, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-motivo="${m.id}">${m.icone} ${m.nome}</button>`).join("")}</div>
+        : `<small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Nenhuma pausa marcada. Num dia pausado, a sequência de dias não quebra.</small>`}
+      <div class="chips">${MOTIVOS_PAUSA.map((m, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-motivo="${m.id}">${icone(m.icone, 20)} ${m.nome}</button>`).join("")}</div>
       <div class="row"><label style="flex:1"><small style="color:var(--suave);font-weight:800">De</small><input id="pIni" type="date" value="${hojeStr()}"></label>
         <label style="flex:1"><small style="color:var(--suave);font-weight:800">Até</small><input id="pFim" type="date" value="${hojeStr()}"></label></div>
       <div class="row"><select id="pOque"><option value="missoes">Pausar as missões</option><option value="tudo">Pausar missões e agenda</option><option value="agenda">Pausar só a agenda</option></select>
@@ -810,17 +881,18 @@ function renderPais(){
       <button class="btn" id="pAdd">Adicionar pausa</button>
     </div>
 
-    <div class="bloco"><b>📅 Agenda (escola, aulas, atividades)</b>
-      ${dados.atividades.map(a => `<div class="item">${esc(a.icone)} ${esc(a.nome)}
+    <div class="bloco"><b class="quem">${icone("acao_calendario", 26)} Agenda (escola, aulas, atividades)</b>
+      ${dados.atividades.map(a => `<div class="item">${ico(a.icone, 28)} ${esc(a.nome)}
           <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">excluir</button></span>
-          <small>${(TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4]).icone} ${a.data ? "dia " + esc(dataCurta(a.data)) + (a.data < hojeStr() ? " (já passou)" : "") : resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
+          <small>${(TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4]).nome} · ${a.data ? "dia " + esc(dataCurta(a.data)) + (a.data < hojeStr() ? " (já passou)" : "") : resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
       <div class="${aEd ? "editando" : ""}" id="formAtv">
         ${aEd ? `<b>✏️ Editando: ${esc(aEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova atividade</b>`}
-        <div class="row"><input id="aIc" placeholder="Emoji" style="max-width:80px" value="${esc(aEd?.icone || "🎹")}"><input id="aNome" placeholder="Ex.: Aula de piano, EMIA" value="${esc(aEd?.nome || "")}"></div>
-        <select id="aTipo">${TIPOS_ATV.map(x => `<option value="${x.id}" ${x.id === (aEd?.tipo || "atividade") ? "selected" : ""}>${x.icone} ${x.nome}</option>`).join("")}</select>
+        ${seletorIcone("aIc", aEd?.icone || "atividade_piano", ["atividade_", "agenda_"])}
+        <div class="row"><input id="aNome" placeholder="Ex.: Aula de piano, EMIA" value="${esc(aEd?.nome || "")}"></div>
+        <select id="aTipo">${TIPOS_ATV.map(x => `<option value="${x.id}" ${x.id === (aEd?.tipo || "atividade") ? "selected" : ""}>${x.nome}</option>`).join("")}</select>
         <div class="chips">
-          <button class="chip ${atvRepete ? "on" : ""}" data-rep="1">🔁 Toda semana</button>
-          <button class="chip ${atvRepete ? "" : "on"}" data-rep="0">📍 Só num dia</button>
+          <button class="chip ${atvRepete ? "on" : ""}" data-rep="1">${icone("repeticao_toda_semana", 20)} Toda semana</button>
+          <button class="chip ${atvRepete ? "" : "on"}" data-rep="0">${icone("repeticao_so_num_dia", 20)} Só num dia</button>
         </div>
         <div id="aSemanal" style="${atvRepete ? "" : "display:none"}">
           <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
@@ -833,7 +905,7 @@ function renderPais(){
       </div>
     </div>
 
-    <div class="bloco"><b>🧒 Crianças</b>
+    <div class="bloco"><b class="quem">${icone("entrada_crianca", 26)} Crianças</b>
       ${dados.criancas.map(c => `<div class="item">${avatarHTML(c, 32)} ${esc(c.nome)}
           <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">excluir</button></span></div>`).join("")}
       <div class="${cEd ? "editando" : ""}">
@@ -847,43 +919,45 @@ function renderPais(){
 
 
     ${(() => { const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
-      return `<div class="bloco"><b>📦 Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
+      return `<div class="bloco"><b class="quem">${icone("loja_pedidos", 26)} Pedidos da loja</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
         <span class="acoes"><button class="ed" data-entregar="${t.id}">entregue ✓</button><button class="x" data-cancelar="${t.id}">cancelar</button></span>
         <small>⭐ ${t.custo} · pedido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as estrelas.</small></div>`).join("")
         : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nenhum pedido esperando. Quando uma criança trocar estrelas na loja, aparece aqui.</small>`}</div>`; })()}
 
-    <div class="bloco"><b>🎁 Recompensas</b>
+    <div class="bloco"><b class="quem">${icone("loja_presente", 26)} Recompensas</b>
       <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na loja: a criança junta moedas e troca quando quiser.</small>
-      ${dados.recompensas.map(r => `<div class="item"><span style="flex:1">${esc(r.texto)}</span>
+      ${dados.recompensas.map(r => `<div class="item">${ico(r.icone, 28)}<span style="flex:1">${esc(r.texto)}</span>
         <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Custo em estrelas">⭐
         <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
-      <div class="row"><input id="prNova" placeholder="Nova recompensa. Ex.: Ir ao cinema 🎬"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
+      ${seletorIcone("prIc", "loja_presente", ["recompensa_", "loja_presente"])}
+      <div class="row"><input id="prNova" placeholder="Nova recompensa. Ex.: Ir ao cinema"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
       <button class="btn sec" id="prAdd">Incluir recompensa</button>
       <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece no Placar)</small>
       <select id="prTx">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
       <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Pontos na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
 
-    <div class="bloco"><b>📱 Neste aparelho</b>
+    <div class="bloco"><b class="quem">${icone("painel_este_aparelho", 26)} Neste aparelho</b>
       <div class="chips">
-        <button class="chip ${PREF.som ? "on" : ""}" id="prefSom">🔊 Som ${PREF.som ? "ligado" : "desligado"}</button>
-        <button class="chip ${PREF.calmo ? "on" : ""}" id="prefCalmo">🐢 Menos movimento ${PREF.calmo ? "ligado" : "desligado"}</button>
+        <button class="chip ${PREF.som ? "on" : ""}" id="prefSom">${icone(PREF.som ? "som_ligado" : "som_desligado", 20)} Som ${PREF.som ? "ligado" : "desligado"}</button>
+        <button class="chip ${PREF.calmo ? "on" : ""}" id="prefCalmo">${icone("painel_menos_movimento", 20)} Menos movimento ${PREF.calmo ? "ligado" : "desligado"}</button>
       </div></div>
 
     ${NUVEM.ativo ? `
-    <div class="bloco"><b>👨‍👩‍👧 Nossa família</b>
-      <small class="rot">🧒 Código das crianças: no celular ou tablet delas, em "Sou criança"</small>
+    <div class="bloco"><b class="quem">${icone("painel_familia", 26)} Nossa família</b>
+      <small class="rot quem">${icone("entrada_crianca", 20)} Código das crianças: no celular ou tablet delas, em "Sou criança"</small>
       <div class="codigoFam">${esc(NUVEM.codigo)}</div>
       ${NUVEM.convites ? `
-      <small class="rot">🧑‍🍼 Convite de responsável: pro pai, mãe ou outro responsável. Dá acesso total ao painel.</small>
+      <small class="rot quem">${icone("entrada_responsavel", 20)} Convite de responsável: pro pai, mãe ou outro responsável. Dá acesso total ao painel.</small>
       <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.resp)}</div>
-      <small class="rot">👵 Convite da rede de apoio: avós, babá, tios. Só acompanham a rotina, sem mudar nada.</small>
+      <small class="rot quem">${icone("entrada_rede_de_apoio", 20)} Convite da rede de apoio: avós, babá, tios. Só acompanham a rotina, sem mudar nada.</small>
       <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.apoio)}</div>
       <button class="x" id="novosConv" style="margin-top:6px">gerar convites novos (os antigos param de funcionar)</button>` : ""}
       <small style="color:var(--suave);font-weight:700;display:block;margin-top:10px">Conectado como ${esc(NUVEM.email || "responsável")} · ${NUVEM.nPais} responsável(is) · ${(NUVEM.aparelhos || 0)} aparelho(s) de criança · ${NUVEM.nApoio} da rede de apoio</small>
       <button class="btn sec" id="sairConta">Sair da conta</button></div>` : `
-    <div class="bloco"><b>🔑 Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
+    <div class="bloco"><b class="quem">${icone("entrada_codigo_e_senha", 26)} Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
     <button class="btn sec" id="sair">Sair do painel</button>`}`;
 
+  ligarSeletores(el);
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
   const setD = (g, v) => { if (g === "a") diasAtv = v; else diasForm = v; };
@@ -923,7 +997,7 @@ function renderPais(){
     const n = $("#aNome").value.trim(); if (!n) return toast("Dá um nome pra atividade ✍️");
     if (atvRepete && !diasAtv.length) return toast("Escolha pelo menos um dia 📅");
     if (!atvRepete && !$("#aData").value) return toast("Escolha a data 📍");
-    const campos = { nome: n, icone: $("#aIc").value || "📌", tipo: $("#aTipo").value, hora: $("#aHora").value, para: $("#aPara").value,
+    const campos = { nome: n, icone: $("#aIc").value || "agenda_outro_compromisso", tipo: $("#aTipo").value, hora: $("#aHora").value, para: $("#aPara").value,
       dias: atvRepete ? [...diasAtv] : [], data: atvRepete ? null : $("#aData").value };
     if (aEd) Object.assign(aEd, campos); else dados.atividades.push({ id: "a"+Date.now(), ...campos });
     toast(aEd ? "Agenda atualizada ✨" : "Na agenda! 📅");
@@ -960,7 +1034,7 @@ function renderPais(){
   $("#tSalvar").onclick = () => {
     const n = $("#tNome").value.trim(); if (!n) return toast("Dá um nome pra missão ✍️");
     if (!diasForm.length) return toast("Escolha pelo menos um dia 📅");
-    const campos = { nome: n, icone: $("#tIc").value || "⭐", pontos: Math.max(0, parseInt($("#tPts").value, 10) || 0), para: $("#tPara").value, dias: [...diasForm] };
+    const campos = { nome: n, icone: $("#tIc").value || "tarefa", pontos: Math.max(0, parseInt($("#tPts").value, 10) || 0), para: $("#tPara").value, dias: [...diasForm] };
     campos.periodos = periodosForm.length ? [...periodosForm] : ["livre"];
     campos.revezar = campos.para === "todos" && revezarForm;
     if (campos.revezar && !(tEd?.revezar)) campos.offset = dados.tarefas.filter(t => t.revezar).length;
@@ -1001,7 +1075,7 @@ function renderPais(){
   $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
   $("#prAdd").onclick = () => {
     const n = $("#prNova").value.trim(); if (!n) return toast("Escreve a recompensa ✍️");
-    dados.recompensas.push({ id: "r" + Date.now(), texto: n, custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) });
+    dados.recompensas.push({ id: "r" + Date.now(), texto: n, icone: $("#prIc").value || "loja_presente", custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) });
     salvar(); toast("Recompensa na loja 🎁"); render();
   };
   el.querySelectorAll("[data-custo]").forEach(inp => inp.onchange = () => {
@@ -1119,7 +1193,7 @@ function renderResultados(){
   const hoje = new Date(), ontem = new Date(); ontem.setDate(ontem.getDate()-1);
   const ini28 = new Date(); ini28.setDate(ini28.getDate()-28);
   const meta = Number(dados.premio.meta) || 100;
-  el.innerHTML = `<h2>📊 Resultados</h2>` + (dados.criancas.length ? dados.criancas.map(c => {
+  el.innerHTML = `<h2 class="quem">${icone("navegacao_resultados", 34)} Resultados</h2>` + (dados.criancas.length ? dados.criancas.map(c => {
     const semana = estatisticas(c.id, diasEntre(inicioSemana(hoje), hoje));
     const semanas = [3,2,1,0].map(n => { const ini = inicioSemana(hoje); ini.setDate(ini.getDate() - 7*n);
       const fim = new Date(ini); fim.setDate(fim.getDate()+6); const ate = n === 0 ? hoje : fim;
@@ -1137,12 +1211,12 @@ function renderResultados(){
       <div class="kpis">
         <div class="kpi"><b>${semana.pct ?? "–"}${semana.pct === null ? "" : "%"}</b><small>missões feitas na semana</small></div>
         <div class="kpi"><b>${pontosSemana(c.id)}</b><small>pontos na semana (meta ${meta})</small></div>
-        <div class="kpi"><b>${sequencia(c.id)}🔥</b><small>dias seguidos</small></div>
+        <div class="kpi"><b class="quem" style="justify-content:center">${sequencia(c.id)} ${icone("jogo_sequencia_de_dias", 24)}</b><small>dias seguidos</small></div>
       </div>
       <span class="sub">Últimas 4 semanas</span>
       <div class="colunas">${semanas.map(w => `<div class="${w.atual ? "atual" : ""}">${w.pct === null ? "–" : w.pct + "%"}<i style="height:${w.pct || 0}%"></i><span>${w.rot}</span></div>`).join("")}</div>
       <span class="sub">Missões mais esquecidas (últimos 28 dias, sem contar hoje)</span>
-      ${hist.previstas === 0 ? `<div style="color:var(--suave);font-weight:700">Ainda sem dados: aparece depois do primeiro dia de uso.</div>` : esquecidas.length ? `<ul class="lista-r">${esquecidas.map(x => `<li>${esc(x.t.icone)} ${esc(x.t.nome)}<span>${x.esquecidas} de ${x.vezes}</span></li>`).join("")}</ul>` : `<div style="color:var(--suave);font-weight:700">Nenhuma esquecida. 👏</div>`}
+      ${hist.previstas === 0 ? `<div style="color:var(--suave);font-weight:700">Ainda sem dados: aparece depois do primeiro dia de uso.</div>` : esquecidas.length ? `<ul class="lista-r">${esquecidas.map(x => `<li>${ico(x.t.icone, 22)} ${esc(x.t.nome)}<span>${x.esquecidas} de ${x.vezes}</span></li>`).join("")}</ul>` : `<div style="color:var(--suave);font-weight:700">Nenhuma esquecida. 👏</div>`}
       <span class="sub">Dia mais difícil</span>
       <div style="font-weight:800">${diasDif.length && diasDif[0].pct < 100 ? `${NOME_DIA_LONGO[diasDif[0].dia]} <span style="color:var(--suave)">(${diasDif[0].pct}% feitas)</span>` : `<span style="color:var(--suave)">Ainda sem dados suficientes</span>`}</div>
       <span class="sub">Prêmios conquistados</span>
@@ -1247,7 +1321,7 @@ async function conectarFamilia(codigo, papel){
   NUVEM.ativo = true; gravarSessao({ papel, familia: codigo });
   if (NUVEM.papel === "crianca") paisLiberado = false;
   $("#entrada").style.display = "none";
-  $("#statusNuvem").textContent = papel === "pais" ? "☁️ Família " + codigo : papel === "apoio" ? "☁️ Rede de apoio da família" : "☁️ Conectado à família";
+  $("#statusNuvem").innerHTML = icone("entrada_nuvem_conectada", 20) + " " + esc(papel === "pais" ? "Família " + codigo : papel === "apoio" ? "Rede de apoio da família" : "Conectado à família");
   montarNav();
   NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
     e => { console.warn(e); toast("Perdi o acesso a esta família"); });
@@ -1277,9 +1351,9 @@ function telaEntrada(qual = "inicio", erro = ""){
   const topo = `<div class="logo">${["orbita", "zigue", "pingo", "faisca"].map(k => avatarSVG({ p: k }, 64)).join("")}</div><h1>Missão Casa</h1>`;
   if (qual === "inicio") {
     el.innerHTML = `<div class="caixa">${topo}<p>As missões da família, do jeito divertido.</p>
-      <button class="grande" id="eResp"><span>🧑‍🍼</span><div>Sou responsável<small>Crio a família, as missões e vejo os resultados</small></div></button>
-      <button class="grande" id="eKid"><span>🧒</span><div>Sou criança<small>Entro com o código da família</small></div></button>
-      <button class="grande" id="eApoio"><span>👵</span><div>Sou da rede de apoio<small>Avós, babá, tios: acompanho a rotina com um convite</small></div></button>
+      <button class="grande" id="eResp"><span>${icone("entrada_responsavel", 52)}</span><div>Sou responsável<small>Crio a família, as missões e vejo os resultados</small></div></button>
+      <button class="grande" id="eKid"><span>${icone("entrada_crianca", 52)}</span><div>Sou criança<small>Entro com o código da família</small></div></button>
+      <button class="grande" id="eApoio"><span>${icone("entrada_rede_de_apoio", 52)}</span><div>Sou da rede de apoio<small>Avós, babá, tios: acompanho a rotina com um convite</small></div></button>
       <button class="link" id="eLocal">Usar sem conta, só neste aparelho</button></div>`;
     $("#eResp").onclick = () => telaEntrada("resp");
     $("#eKid").onclick = () => telaEntrada("kid");
@@ -1308,9 +1382,9 @@ function telaEntrada(qual = "inicio", erro = ""){
   if (qual === "criarFamilia") {
     const temLocal = !!localStorage.getItem(CHAVE);
     el.innerHTML = `<div class="caixa">${topo}<p>Agora vamos criar a sua família no Missão Casa.</p>
-      ${temLocal ? `<button class="grande" id="fLocal"><span>📲</span><div>Usar o que já cadastrei aqui<small>Leva crianças, missões, agenda e recompensas deste aparelho</small></div></button>` : ""}
-      <button class="grande" id="fNova"><span>✨</span><div>Começar do zero<small>Com algumas missões de exemplo</small></div></button>
-      <button class="grande" id="fConvite"><span>💌</span><div>Tenho um convite<small>Outro responsável já criou a família e me mandou o código</small></div></button>
+      ${temLocal ? `<button class="grande" id="fLocal"><span>${icone("entrada_trazer_do_aparelho", 52)}</span><div>Usar o que já cadastrei aqui<small>Leva crianças, missões, agenda e recompensas deste aparelho</small></div></button>` : ""}
+      <button class="grande" id="fNova"><span>${icone("entrada_comecar_do_zero", 52)}</span><div>Começar do zero<small>Com algumas missões de exemplo</small></div></button>
+      <button class="grande" id="fConvite"><span>${icone("entrada_convite", 52)}</span><div>Tenho um convite<small>Outro responsável já criou a família e me mandou o código</small></div></button>
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="link" id="eSair">Sair da conta</button></div>`;
     if ($("#fLocal")) $("#fLocal").onclick = () => criarFamilia(carregar());
