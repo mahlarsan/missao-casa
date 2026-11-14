@@ -1266,7 +1266,7 @@ function renderPais(){
     <div class="bloco"><b class="quem">${icone("tarefa", 26)} Missões</b>
       ${dados.tarefas.map(t => `<div class="item">${ico(t.icone, 28)} ${esc(t.nome)}
           <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">excluir</button></span>
-          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.nome.toLowerCase() || "").join(" e ")} · ${t.pontos} pts · ${paraTxt(t)}</small></div>`).join("")}
+          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.nome.toLowerCase() || "").join(" e ")} · ${t.pontos} estrelas · ${paraTxt(t)}</small></div>`).join("")}
       <div class="${tEd ? "editando" : ""}" id="formTarefa">
         ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
         ${seletorIcone("tIc", tEd?.icone || "tarefa", ["missao_", "atividade_"])}
@@ -1289,7 +1289,7 @@ function renderPais(){
       <div class="chips">${Object.keys(SUGESTOES).map(f => `<button class="chip ${f === idadeSug ? "on" : ""}" data-idade="${f}">${f}</button>`).join("")}</div>
       ${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
         return `<div class="item">${ico(sg.icone, 28)} ${esc(sg.nome)}<span class="acoes">${ja ? `<span style="color:var(--verde-esc);font-weight:900">✓ já tem</span>` : `<button class="ed" data-sug="${i}">+ adicionar</button>`}</span>
-        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).nome.toLowerCase()).join(" e ")} · ${sg.pontos} pts</small></div>`; }).join("")}
+        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).nome.toLowerCase()).join(" e ")} · ${sg.pontos} estrelas</small></div>`; }).join("")}
     </div>
 
     <div class="bloco"><b class="quem">${icone("pausa_generica", 26)} Pausas (férias, feriado, doença)</b>
@@ -1354,11 +1354,11 @@ function renderPais(){
         <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Estrelas necessárias">⭐
         <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
       ${seletorIcone("prIc", "premio_presente", ["recompensa_", "premio_presente"])}
-      <div class="row"><input id="prNova" placeholder="Nova recompensa. Ex.: Ir ao cinema"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
-      <button class="btn sec" id="prAdd">Incluir recompensa</button>
-      <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece no Placar)</small>
+      <div class="row"><input id="prNova" placeholder="Novo prêmio. Ex.: Ir ao cinema"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
+      <button class="btn sec" id="prAdd">Incluir prêmio</button>
+      <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece na aba Avatar)</small>
       <select id="prTx">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
-      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Pontos na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
+      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Estrelas na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
 
     <div class="bloco"><b class="quem">${icone("painel_este_aparelho", 26)} Neste aparelho</b>
       <div class="chips">
@@ -1383,7 +1383,7 @@ function renderPais(){
 
   ligarSeletores(el);
   // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
-  const abaDoBloco = t => /Pedidos|Recompensas/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
+  const abaDoBloco = t => /Pedidos|Recompensas|Prêmios/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
   const secaoDoBloco = t => /Sugestões/.test(t) ? "sugestoes" : /Pausas/.test(t) ? "pausas" : /Agenda/.test(t) ? "agenda" : "missoes";
   el.querySelectorAll(".bloco").forEach(b => { const t = b.querySelector("b")?.textContent || ""; b.dataset.aba = abaDoBloco(t); if (b.dataset.aba === "rotina") b.dataset.secao = secaoDoBloco(t); });
   if ($("#sair")) $("#sair").dataset.aba = "familia";
@@ -1726,7 +1726,7 @@ function renderResultados(){
       <b class="quem">${avatarHTML(c, 36)} ${esc(c.nome)}</b>
       <div class="kpis">
         <div class="kpi"><b>${semana.pct ?? "–"}${semana.pct === null ? "" : "%"}</b><small>missões feitas na semana</small></div>
-        <div class="kpi"><b>${pontosSemana(c.id)}</b><small>pontos na semana (meta ${meta})</small></div>
+        <div class="kpi"><b>${pontosSemana(c.id)}</b><small>estrelas na semana (meta ${meta})</small></div>
         <div class="kpi"><b class="quem" style="justify-content:center">${sequencia(c.id)} ${icone("jogo_sequencia_de_dias", 24)}</b><small>dias seguidos</small></div>
       </div>
       <span class="sub">Últimas 4 semanas</span>
@@ -1736,7 +1736,7 @@ function renderResultados(){
       <span class="sub">Dia mais difícil</span>
       <div style="font-weight:800">${diasDif.length && diasDif[0].pct < 100 ? `${NOME_DIA_LONGO[diasDif[0].dia]} <span style="color:var(--suave)">(${diasDif[0].pct}% feitas)</span>` : `<span style="color:var(--suave)">Ainda sem dados suficientes</span>`}</div>
       <span class="sub">Prêmios conquistados</span>
-      <div style="font-weight:800">${semanasPassadas.length ? `${premios} de ${semanasPassadas.length} semana(s) <span style="color:var(--suave)">(meta atual de ${meta} pontos)</span>` : `<span style="color:var(--suave)">A primeira semana ainda está rolando</span>`}</div>
+      <div style="font-weight:800">${semanasPassadas.length ? `${premios} de ${semanasPassadas.length} semana(s) <span style="color:var(--suave)">(meta atual de ${meta} estrelas)</span>` : `<span style="color:var(--suave)">A primeira semana ainda está rolando</span>`}</div>
     </div>`; }).join("") : `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`)
     + `<small style="color:var(--suave);font-weight:700;display:block;margin:0 4px 10px">Os números usam as missões como estão cadastradas hoje. O dia de hoje entra só na semana atual.</small>`;
 }
