@@ -1509,9 +1509,14 @@ function vinheta(tipo = "ok"){
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === "suspended") audioCtx.resume();
     if (tipo === "tudo") {            // tã... dãm!
-      [392, 494, 587].forEach(f => tom(f, 0, 0.16, 0.07, "square"));
-      [523, 659, 784, 1047].forEach(f => tom(f, 0.2, 0.9, 0.07, "square"));
-      [523, 1047].forEach(f => tom(f, 0.2, 1.1, 0.06, "triangle"));
+      // "tãn": acorde de sol segurado um pouquinho
+      [392, 494, 587].forEach(f => tom(f, 0, 0.45, 0.06, "square"));
+      [196].forEach(f => tom(f, 0, 0.45, 0.08, "triangle"));
+      // "dãããm": dó maior bem aberto, que fica soando e vai sumindo devagar
+      [523, 659, 784, 1047].forEach(f => tom(f, 0.55, 2.2, 0.06, "square"));
+      [262, 523, 1047].forEach(f => tom(f, 0.55, 2.6, 0.07, "triangle"));
+      // brilhinho subindo por cima do dãm
+      [1319, 1568, 2093].forEach((f, i) => tom(f, 0.65 + i * 0.08, 0.5, 0.03, "sine"));
     } else if (tipo === "loja") {     // moedinha
       tom(988, 0, 0.08, 0.1, "square"); tom(1319, 0.08, 0.3, 0.1, "square");
     } else {                          // check: tic + "plim" rápido subindo
