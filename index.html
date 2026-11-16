@@ -776,6 +776,12 @@
   .opc.trancado .cadeado{position:absolute;top:6px;right:6px;background:#FFFDF5;border:1.5px solid var(--tinta);border-radius:50%;width:28px;height:28px;display:grid;place-items:center}
   .opc.trancado small{color:#5A22C2}
   .catSug{display:block;margin:12px 0 2px}
+  .abasEntrada{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#F1ECDF;border-radius:16px;padding:4px;margin:6px 0 4px}
+  .abasEntrada button{border:0;background:none;font:900 15px "Nunito",sans-serif;color:var(--suave);padding:10px;border-radius:12px;cursor:pointer;margin:0}
+  .abasEntrada button.on{background:#fff;color:var(--tinta);box-shadow:0 1px 0 rgba(36,32,52,.12)}
+  .campoE{display:flex;flex-direction:column;gap:4px;text-align:left;margin:4px 0}
+  .campoE span{font-size:13px;font-weight:900;color:var(--suave)}
+  .campoE input{margin:0}
 </style>
 </head>
 <body>
@@ -2394,28 +2400,50 @@ function telaEntrada(qual = "inicio", erro = ""){
       <button class="grande" id="eKid"><span>${icone("entrada_crianca", 52)}</span><div>Sou criança<small>Entro com o código da família</small></div></button>
       <button class="grande" id="eApoio"><span>${icone("entrada_rede_de_apoio", 52)}</span><div>Sou da rede de apoio<small>Avós, babá, tios: acompanho a rotina com um convite</small></div></button>
       <button class="link" id="eLocal">Usar sem conta, só neste aparelho</button></div>`;
-    $("#eResp").onclick = () => telaEntrada("resp");
+    $("#eResp").onclick = () => telaEntrada("respCriar");
     $("#eKid").onclick = () => telaEntrada("kid");
     $("#eApoio").onclick = () => telaEntrada("apoio");
     $("#eLocal").onclick = () => { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); };
   }
-  if (qual === "resp") {
-    el.innerHTML = `<div class="caixa">${topo}<p>Entre ou crie sua conta de responsável.</p>
-      <input id="eEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">
-      <input id="eSenha" type="password" autocomplete="current-password" placeholder="Senha (mínimo 6 caracteres)">
+  if (qual === "resp" || qual === "respCriar") {
+    const criar = qual === "respCriar";
+    el.innerHTML = `<div class="caixa">${topo}
+      <div class="abasEntrada"><button id="aEntrar" class="${criar ? "" : "on"}">Já tenho conta</button><button id="aCriar" class="${criar ? "on" : ""}">Criar conta</button></div>
+      <p>${criar ? "Crie sua conta de responsável. É rapidinho!" : "Entre com o e-mail e a senha da sua conta."}</p>
+      ${criar ? `<label class="campoE"><span>Seu nome</span><input id="eNome" autocomplete="name" placeholder="Ex.: Maitê"></label>` : ""}
+      <label class="campoE"><span>E-mail</span><input id="eEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voce@email.com"></label>
+      <label class="campoE"><span>Senha${criar ? " (mínimo 6 caracteres)" : ""}</span><input id="eSenha" type="password" autocomplete="${criar ? "new-password" : "current-password"}" placeholder="••••••"></label>
+      ${criar ? `<label class="campoE"><span>Repita a senha</span><input id="eSenha2" type="password" autocomplete="new-password" placeholder="••••••"></label>` : ""}
       <div class="erro" id="eErro">${esc(erro)}</div>
-      <button class="btn" id="eEntrar">Entrar</button>
-      <button class="btn sec" id="eCriar">Criar conta</button>
-      <button class="link" id="eEsqueci">Esqueci a senha</button><br>
+      <button class="btn" id="eOk">${criar ? "Criar minha conta" : "Entrar"}</button>
+      ${criar ? "" : `<button class="link" id="eEsqueci">Esqueci a senha</button><br>`}
       <button class="link" id="eVoltar">Voltar</button></div>`;
-    const cred = () => [$("#eEmail").value.normalize("NFKC").replace(/[\s\u200B-\u200D\uFEFF]/g, "").replace(/[，、]/g, ",").toLowerCase(), $("#eSenha").value];
-    const tratar = e => { const m = { "auth/invalid-credential": "E-mail ou senha incorretos.", "auth/wrong-password": "Senha incorreta.", "auth/user-not-found": "Não achei essa conta. Que tal criar?",
-      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Entrar.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo. Confira se tem @, se termina com .com ou .com.br e se não tem vírgula ou acento." };
-      $("#eErro").textContent = m[e.code] || "Não deu certo: " + (e.code || e.message); };
-    $("#eEntrar").onclick = async () => { try { await firebase.auth().signInWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
-    $("#eCriar").onclick = async () => { try { await firebase.auth().createUserWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
-    $("#eEsqueci").onclick = async () => { const [em] = cred(); if (!em) return $("#eErro").textContent = "Escreve seu e-mail primeiro.";
-      try { await firebase.auth().sendPasswordResetEmail(em); $("#eErro").textContent = "Mandei um e-mail pra trocar a senha 📬"; } catch(e) { tratar(e); } };
+    $("#aEntrar").onclick = () => telaEntrada("resp");
+    $("#aCriar").onclick = () => telaEntrada("respCriar");
+    const cred = () => [$("#eEmail").value.normalize("NFKC").replace(/[\s\u200B-\u200D\uFEFF]/g, "").toLowerCase(), $("#eSenha").value];
+    const erroE = t => { $("#eErro").textContent = t; };
+    const tratar = e => { const m = { "auth/invalid-credential": "E-mail ou senha incorretos.", "auth/wrong-password": "Senha incorreta.", "auth/user-not-found": "Não achei essa conta. Toque em Criar conta.",
+      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Já tenho conta.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo. Confira se tem @ e se termina com .com ou .com.br.",
+      "auth/operation-not-allowed": "O login por e-mail ainda não está ligado no Firebase.", "auth/unauthorized-domain": "Este endereço ainda não está liberado no Firebase.", "auth/network-request-failed": "Sem internet agora. Tente de novo." };
+      erroE(m[e.code] || "Não deu certo: " + (e.code || e.message)); };
+    const valida = () => { const [em, se] = cred();
+      if (criar && !$("#eNome").value.trim()) return "Escreve seu nome 🙂";
+      if (!em) return "Escreve seu e-mail.";
+      if (!/^[^@]+@[^@]+\.[a-z]{2,}$/.test(em)) return "Esse e-mail não parece certo. Confira se tem @ e se termina com .com ou .com.br.";
+      if (!se) return "Escreve a senha.";
+      if (criar && se.length < 6) return "A senha precisa de pelo menos 6 caracteres.";
+      if (criar && se !== $("#eSenha2").value) return "As duas senhas não estão iguais.";
+      return ""; };
+    $("#eOk").onclick = async () => { const v = valida(); if (v) return erroE(v);
+      $("#eOk").disabled = true; erroE("");
+      try {
+        if (criar) { const r = await firebase.auth().createUserWithEmailAndPassword(...cred());
+          try { await r.user.updateProfile({ displayName: $("#eNome").value.trim() }); } catch(e) {} }
+        else await firebase.auth().signInWithEmailAndPassword(...cred());
+        await depoisDoLoginResp();
+      } catch(e) { tratar(e); } finally { if ($("#eOk")) $("#eOk").disabled = false; } };
+    if ($("#eEsqueci")) $("#eEsqueci").onclick = async () => { const [em] = cred(); if (!em) return erroE("Escreve seu e-mail primeiro.");
+      try { await firebase.auth().sendPasswordResetEmail(em); erroE("Mandei um e-mail pra trocar a senha 📬"); } catch(e) { tratar(e); } };
     $("#eVoltar").onclick = () => telaEntrada("inicio");
   }
   if (qual === "criarFamilia") {
