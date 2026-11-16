@@ -689,6 +689,28 @@
   #folhaAvatar .opcs{flex-wrap:wrap;overflow:visible}
   #folhaAvatar .opcs .opc{flex:0 0 calc(25% - 8px);min-width:0}
   #folhaAvatar .opcs.cores .opc{flex:0 0 auto}
+  /* ===== Conquistas e Mundos ===== */
+  .resumoConq{background:#FFF3BF;border-radius:24px;padding:16px;margin:8px 0 6px;display:flex;flex-direction:column;gap:10px}
+  .rcTopo{display:flex;align-items:center;gap:14px}
+  .rcTopo small{display:block;font-weight:800;color:var(--suave)}
+  .rcTopo b{display:block;font-family:var(--titulo);font-size:40px;line-height:1}
+  .rcTopo span{font-weight:800;font-size:14px}
+  .rcBarra{height:14px;border-radius:99px;background:#FFFDF5;border:1.5px solid var(--tinta);overflow:hidden}
+  .rcBarra i{display:block;height:100%;background:var(--sol);border-right:1.5px solid var(--tinta)}
+  .rcFalta{font-weight:800;color:var(--suave)}
+  .resumoConq .btn{margin:0}
+  .medalhas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:8px}
+  .med{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;background:#fff;border:1.5px solid var(--borda);border-radius:18px;padding:10px 6px}
+  .med small{font-size:12px;font-weight:800;line-height:1.2}
+  .med.prox{opacity:.8;border-style:dashed}
+  .mundosTopo{display:flex;align-items:baseline;justify-content:space-between;padding:14px 4px 8px}
+  .mundosTopo b{display:flex;align-items:center;gap:8px;font-family:var(--titulo);font-size:26px;font-weight:600}
+  .mundosTopo span{font-weight:800;color:var(--suave)}
+  .mapaMundos{position:relative;border-radius:24px;overflow:hidden;border:1.5px solid var(--tinta);background:#EAF7D2}
+  .mapaMundos svg{display:block}
+  .euAqui{position:absolute;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 0 rgba(36,32,52,.15))}
+  .euAqui svg{border-radius:50%;background:#FFFDF5;border:2.5px solid var(--tinta)}
+  .mundosRodape{display:flex;align-items:center;gap:8px;justify-content:center;font-weight:900;padding:14px 0 6px}
 </style>
 </head>
 <body>
@@ -712,6 +734,11 @@
   <!-- Tela: Loja -->
   <section class="tela" id="t-loja">
     <div id="lojaConteudo"></div>
+  </section>
+
+  <!-- Tela: Mundos (trilha que avança com as conquistas) -->
+  <section class="tela" id="t-mundos">
+    <div id="mundosConteudo"></div>
   </section>
 
   <!-- Tela 2: Placar -->
@@ -1019,6 +1046,28 @@ function pontosDoDia(dia, id){ return feitosEm(dia, id).reduce((s, k) => s + (ta
 function estrelasGanhas(id){ return Object.keys(dados.feitos).reduce((s, dia) => s + pontosDoDia(dia, id), 0); }
 function estrelasGastas(id){ return Object.values(dados.trocas).filter(t => t.kid === id && t.status !== "cancelado").reduce((s, t) => s + (Number(t.custo) || 0), 0); }
 const saldo = id => estrelasGanhas(id) - estrelasGastas(id);
+/* Conquistas: a cada N estrelas ganhas (no total, gastar em prêmio não tira) a criança ganha uma conquista,
+   e cada conquista é um passo na trilha dos Mundos. */
+const MUNDOS = [
+  { id: "quintal",  nome: "Quintal", masc: 1,  fundo: "#EAF7D2", pedra: "#A5DD37", texto: "#3F6A00" },
+  { id: "floresta", nome: "Floresta", fundo: "#D5F0DA", pedra: "#2FAE6B", texto: "#1E5A38" },
+  { id: "praia",    nome: "Praia",    fundo: "#DDF5FB", pedra: "#29BCE5", texto: "#0F5F75" },
+  { id: "montanha", nome: "Montanha", fundo: "#EFE6FF", pedra: "#B06CFF", texto: "#5A22C2" },
+  { id: "espaco",   nome: "Espaço", masc: 1,   fundo: "#2A2440", pedra: "#FFD52A", texto: "#FFFDF5" }
+];
+const PASSOS_MUNDO = 6;
+const passoConquista = () => Math.max(5, Number(dados.premio.passo) || 30);
+const conquistasDe = id => Math.floor(estrelasGanhas(id) / passoConquista());
+function infoConquista(n){   // n = número da conquista, começando em 1
+  const i = n - 1, volta = Math.floor(i / (MUNDOS.length * PASSOS_MUNDO)), m = MUNDOS[Math.floor(i / PASSOS_MUNDO) % MUNDOS.length], passo = i % PASSOS_MUNDO + 1;
+  return { mundo: m, passo, volta, ultima: passo === PASSOS_MUNDO, nome: passo === PASSOS_MUNDO ? `Explorou ${m.masc ? "o" : "a"} ${m.nome}!` : passo === 1 ? `Chegou ${m.masc ? "no" : "na"} ${m.nome}` : `${m.nome}, passo ${passo}` };
+}
+function medalha(n, tam = 64, trancada = false){
+  const inf = infoConquista(n), cor = trancada ? "#ECE6D6" : inf.mundo.pedra, tx = trancada ? "#615C74" : (inf.mundo.id === "espaco" ? "#242034" : "#242034");
+  return `<svg viewBox="0 0 64 64" width="${tam}" height="${tam}" aria-hidden="true"><path d="M20 4 L28 22 L36 22 L44 4" fill="none" stroke="${trancada ? "#D5CDBA" : "#7738EA"}" stroke-width="7" stroke-linejoin="round"/>
+    <circle cx="32" cy="38" r="20" fill="${cor}" stroke="#242034" stroke-width="3.5"/>${inf.ultima && !trancada ? `<path d="${"M32 25 L35.5 33 L44 33.5 L37.5 39 L39.5 47.5 L32 43 L24.5 47.5 L26.5 39 L20 33.5 L28.5 33Z"}" fill="#FFFDF5" stroke="#242034" stroke-width="2.5" stroke-linejoin="round"/>`
+    : `<text x="32" y="44" text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="18" fill="${tx}">${trancada ? "?" : n}</text>`}</svg>`;
+}
 function pontosSemana(id){ return diasDaSemana().reduce((s, d) => s + pontosDoDia(isoDia(d), id), 0); }
 function diaCompleto(dia, id, d){ const ts = tarefasDe(id, d); return ts.length > 0 && ts.every(t => feitosEm(dia, id).includes(t.key)); }
 // Sequência de dias completos. Dias sem missão (folga) não contam e não quebram.
@@ -1209,7 +1258,7 @@ function mostrarConquista(c, moedas){
     <h1>Dia completo, ${esc(c.nome)}!</h1>
     <p>Todas as missões de hoje feitas.</p>
     <div class="conqChips"><span>${icone("estrela", 30)} +<b id="conqMoedas">${menosMovimento() ? moedas : 0}</b></span><span>${icone("jogo_sequencia_de_dias", 30)} ${sequencia(c.id)} ${sequencia(c.id) === 1 ? "dia" : "dias"}</span></div>
-    <div class="conqBotoes"><button class="escuro" id="conqLoja">Ver os prêmios</button><button class="claro" id="conqFechar">Voltar para hoje</button></div>`;
+    <div class="conqBotoes"><button class="escuro" id="conqLoja">Ver conquistas</button><button class="claro" id="conqFechar">Voltar para hoje</button></div>`;
   el.style.display = "flex";
   el.classList.remove("anima"); void el.offsetWidth; el.classList.add("anima");
   confete(150, "canhoes");
@@ -1228,8 +1277,12 @@ function alternar(key){
   const i = lista.indexOf(key);
   if (i >= 0) { lista.splice(i, 1); }
   else {
+    const antes = conquistasDe(criancaAtiva);
     lista.push(key);
     const t = tarefaDaChave(key);
+    const depois = conquistasDe(criancaAtiva);
+    if (depois > antes) setTimeout(() => { const inf = infoConquista(depois); vinheta("loja"); confete(60);
+      toast(`Nova conquista! ${inf.nome} 🏅`); falar("Nova conquista! " + inf.nome); }, diaCompleto(dia, criancaAtiva, new Date()) ? 3200 : 700);
     if (diaCompleto(dia, criancaAtiva, new Date())) { vinheta("tudo");
       mostrarConquista(crianca(criancaAtiva), tarefasDe(criancaAtiva, new Date()).reduce((s, x) => s + x.pontos, 0)); }
     else { toast(`+${t.pontos} estrelas!`); vinheta("ok");
@@ -1249,11 +1302,22 @@ const dataCurta = iso => new Date(iso + "T12:00:00").toLocaleDateString("pt-BR",
 function renderLoja(){
   const el = $("#lojaConteudo"), c = crianca(criancaAtiva);
   if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
-  const s = saldo(c.id);
+  const s = saldo(c.id), ganhas = estrelasGanhas(c.id), passo = passoConquista(), nC = Math.floor(ganhas / passo), falta = passo - ganhas % passo;
   const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
+  const atual = nC ? infoConquista(nC) : null, prox = infoConquista(nC + 1);
+  const mostrar = []; for (let n = Math.max(1, nC - 7); n <= nC; n++) mostrar.push(n);
   el.innerHTML = `
-    <div class="cofre"><div class="moeda">${icone("estrela", 58)}</div><div style="flex:1"><small>Estrelas de ${esc(c.nome)}</small><b>${s}</b></div>${avatarHTML(c, 64)}</div>
-    <h2 class="quem">${icone("premio_presente", 34)} Prêmios para conquistar</h2>
+    <div class="resumoConq">
+      <div class="rcTopo">${medalha(Math.max(1, nC), 72, !nC)}<div><small>Conquistas de ${esc(c.nome)}</small><b>${nC}</b><span>${atual ? `${esc(atual.mundo.nome)}, passo ${atual.passo}` : "A primeira está chegando"}</span></div></div>
+      <div class="rcBarra"><i style="width:${Math.round((ganhas % passo) / passo * 100)}%"></i></div>
+      <small class="rcFalta">Faltam ${falta} estrelas para a próxima conquista: ${esc(prox.nome)}</small>
+      <button class="btn sec" id="irMundos">${icone("mundo", 24)} Ver no mapa dos Mundos</button>
+    </div>
+    ${nC ? `<h2 class="quem">${icone("trofeu", 32)} Minhas conquistas</h2>
+    <div class="medalhas">${mostrar.reverse().map(n => `<div class="med">${medalha(n, 60)}<small>${esc(infoConquista(n).nome)}</small></div>`).join("")}
+      <div class="med prox">${medalha(nC + 1, 60, true)}<small>Próxima</small></div></div>` : ""}
+    <div class="cofre"><div class="moeda">${icone("estrela", 58)}</div><div style="flex:1"><small>Estrelas para trocar por prêmios</small><b>${s}</b></div></div>
+    <h2 class="quem">${icone("premio_presente", 34)} Prêmios</h2>
     <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
       const pode = s >= r.custo, conf = confirmaTroca === r.id;
       return `<div class="produto ${pode ? "" : "falta"}">
@@ -1264,6 +1328,7 @@ function renderLoja(){
       </div>`; }).join("")}</div>
     ${pedidos.length ? `<h2 class="quem">${icone("premio_escolhidos", 32)} Meus prêmios</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
       <span class="st ${t.status}">${t.status === "entregue" ? icone("premio_recebido", 20) + " Ganhei!" : icone("premio_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
+  $("#irMundos").onclick = () => irPara("mundos");
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
     if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Escolher " + semEmoji(r.texto) + "? Usa " + r.custo + " estrelas."); return renderLoja(); }
@@ -1273,6 +1338,46 @@ function renderLoja(){
     dados.trocas[id] = { id, kid: c.id, rec: r.id, texto: r.texto, custo: r.custo, data: new Date().toISOString(), status: "pedido" };
     salvar(); confete(30); vinheta("loja"); toast("Prêmio escolhido! Agora é com os pais 🎁"); render();
   });
+}
+
+function renderMundos(){
+  const el = $("#mundosConteudo"), c = crianca(criancaAtiva);
+  if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
+  const nC = conquistasDe(c.id), total = MUNDOS.length * PASSOS_MUNDO, volta = Math.floor(nC / total), naVolta = nC % total;
+  const passo = passoConquista(), falta = passo - estrelasGanhas(c.id) % passo;
+  const W = 340, ALT = 92;
+  // de baixo (começo) para cima; a trilha zigue-zagueia
+  const pos = k => ({ x: W / 2 + Math.sin(k * 1.15) * 110, y: (total - k) * ALT + 40 });
+  const H = total * ALT + 110;
+  let faixas = "", caminho = "", pedras = "";
+  MUNDOS.forEach((m, mi) => {
+    const yTop = (total - (mi + 1) * PASSOS_MUNDO) * ALT + 40 - ALT / 2 + (mi === MUNDOS.length - 1 ? -60 : 0), alt = PASSOS_MUNDO * ALT + (mi === MUNDOS.length - 1 ? 60 : 0) + (mi === 0 ? 70 : 0);
+    faixas += `<rect x="0" y="${yTop}" width="${W}" height="${alt}" fill="${m.fundo}"/>`;
+    if (m.id === "espaco") for (let k = 0; k < 26; k++) faixas += `<circle cx="${(k * 73) % W}" cy="${yTop + 10 + (k * 47) % (alt - 20)}" r="${k % 3 ? 1.6 : 2.6}" fill="#FFFDF5" opacity=".8"/>`;
+    faixas += `<text x="16" y="${yTop + 34}" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="22" fill="${m.texto}">${mi + 1}. ${m.nome}</text>`;
+  });
+  for (let k = 0; k < total; k++) { const a = pos(k), b = pos(k + 1); if (k < total - 1) caminho += `M${a.x} ${a.y} Q${(a.x + b.x) / 2 + 30} ${(a.y + b.y) / 2} ${b.x} ${b.y} `; }
+  for (let k = 0; k < total; k++) {
+    const p = pos(k), feita = k < naVolta, m = MUNDOS[Math.floor(k / PASSOS_MUNDO)], ultima = k % PASSOS_MUNDO === PASSOS_MUNDO - 1;
+    pedras += `<g transform="translate(${p.x} ${p.y})"><ellipse cx="0" cy="6" rx="${ultima ? 30 : 24}" ry="${ultima ? 15 : 12}" fill="#242034" opacity=".12"/>
+      <ellipse cx="0" cy="0" rx="${ultima ? 30 : 24}" ry="${ultima ? 15 : 12}" fill="${feita ? m.pedra : "#FFFDF5"}" stroke="#242034" stroke-width="3"/>
+      ${feita ? `<path d="M-7 0 L-2 5 L8 -5" fill="none" stroke="#242034" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>` : `<text x="0" y="5" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="13" fill="#615C74">${k + 1}</text>`}</g>`;
+  }
+  const aqui = pos(Math.min(naVolta, total - 1)), aqX = aqui.x, aqY = aqui.y;
+  el.innerHTML = `
+    <div class="mundosTopo"><b>${icone("mundo", 30)} Mundos</b><span>${nC} conquista${nC === 1 ? "" : "s"}${volta ? ` · volta ${volta + 1}` : ""}</span></div>
+    <div class="mapaMundos" id="mapaMundos">
+      <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Trilha dos mundos: ${esc(c.nome)} está no passo ${naVolta + 1}">
+        ${faixas}
+        <path d="${caminho}" fill="none" stroke="#FFFDF5" stroke-width="16" stroke-linecap="round" opacity=".9"/>
+        <path d="${caminho}" fill="none" stroke="#242034" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" opacity=".45"/>
+        ${pedras}
+      </svg>
+      <div class="euAqui" style="left:${aqX / W * 100}%;top:${(aqY - 40) / H * 100}%">${avatarHTML(c, 64)}</div>
+    </div>
+    <div class="mundosRodape">${icone("estrela", 22)} Faltam ${falta} estrelas para o próximo passo</div>`;
+  const mapa = $("#mapaMundos"); const alvo = el.querySelector(".euAqui");
+  if (alvo && alvo.scrollIntoView) setTimeout(() => { try { alvo.scrollIntoView({ block: "center" }); } catch(e){} }, 30);
 }
 
 function renderPlacar(){
@@ -1449,12 +1554,13 @@ function renderPais(){
       <div class="listaItens">${dados.recompensas.map(r => linha(`data-ed-r="${r.id}"`, ico(r.icone, 30), esc(r.texto), "", `<em class="valor">${r.custo}★</em>`)).join("")}</div>
     </div>
 
-    <div class="bloco">${cab("trofeu", "Desafio da semana")}
+    <div class="bloco">${cab("trofeu", "Desafio e conquistas")}
       ${formAberto === "desafio" ? `<div class="formBox">
         <select id="prTx" aria-label="Prêmio do desafio">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
         <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Meta de estrelas na semana"><span class="rot" style="align-self:center">estrelas na semana</span></div>
+        <div class="row"><input id="prPasso" type="number" min="5" value="${passoConquista()}" style="max-width:120px" aria-label="Estrelas por conquista"><span class="rot" style="align-self:center">estrelas = 1 conquista (1 passo nos Mundos)</span></div>
         <div class="botoesForm"><button class="btn" id="prSalvar">Salvar</button><button class="btn sec" data-fecha="1">Cancelar</button></div>
-      </div>` : `<div class="listaItens">${linha(`data-novo="desafio"`, icone("premio_presente", 30), esc(dados.premio.texto), `Meta: ${dados.premio.meta} estrelas`)}</div>`}
+      </div>` : `<div class="listaItens">${linha(`data-novo="desafio"`, icone("premio_presente", 30), esc(dados.premio.texto), `Meta: ${dados.premio.meta} estrelas · conquista a cada ${passoConquista()}`)}</div>`}
     </div>
 
     <div class="bloco">${cab("painel_este_aparelho", "Neste aparelho")}
@@ -1609,7 +1715,7 @@ function renderPais(){
 
 
   // prêmio, senha, sair
-  $$("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; formAberto = null; salvar(); toast("Prêmio salvo 🎁"); render(); };
+  $$("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100, passo: Math.max(5, Number($("#prPasso").value) || 30) }; formAberto = null; salvar(); toast("Prêmio salvo 🎁"); render(); };
   $$("#prAdd").onclick = () => {
     const n = $("#prNova").value.trim(); if (!n) return toast("Escreve o prêmio ✍️");
     const campos = { texto: n, icone: $("#prIc").value || "premio_presente", custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) };
@@ -1848,7 +1954,7 @@ function renderResultados(){
 const ABAS = {
   missoes: { icone: "tarefa", nome: "Hoje" },
   avatar: { icone: "avatar", nome: "Avatar" },
-  loja: { icone: "premio_presente", nome: "Prêmios" },
+  loja: { icone: "trofeu", nome: "Conquistas" },
   mundos: { icone: "mundo", nome: "Mundos" }
 };
 const ABAS_PAINEL = [ { id: "rotina", nome: "Rotina" }, { id: "loja", nome: "Prêmios" }, { id: "resultados", nome: "Resultados" }, { id: "familia", nome: "Família" } ];
@@ -1860,7 +1966,6 @@ function montarNav(){
   irPara(telaAtual);
 }
 function irPara(t){
-  if (t === "mundos") return toast("Os Mundos estão chegando 🌍");
   telaAtual = t;
   const painel = t === "painel";
   document.body.classList.toggle("modoPainel", painel);
@@ -1895,6 +2000,7 @@ function render(deFora){
   if (telaAtual === "painel") renderPainelTopo();
   if ($("#t-avatar").classList.contains("on")) renderAbaAvatar();
   if ($("#t-loja").classList.contains("on")) renderLoja();
+  if ($("#t-mundos").classList.contains("on")) renderMundos();
   if ($("#t-resultados").classList.contains("on")) renderResultados();
   // mudança vinda de outro aparelho não apaga o que os pais estão digitando no painel
   if ($("#t-pais").classList.contains("on") && !deFora) renderPais();
