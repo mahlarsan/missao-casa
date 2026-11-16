@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#7738EA">
+<meta name="theme-color" content="#FFD52A">
+<meta name="description" content="A rotina da família vira jogo: missões, estrelas e prêmios.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Missão Casa">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" type="image/png" sizes="192x192" href="icones-app/icone-192.png">
+<link rel="apple-touch-icon" href="icones-app/apple-touch-icon.png">
 <title>Missão Casa</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -612,6 +619,72 @@
   #t-avatar .desafio b{font-size:15px;font-weight:800}
   #t-avatar .desafio small{font-size:12px}
   .cofre .moeda{width:76px;height:76px;border-radius:50%;background:var(--creme);border:1.5px solid var(--tinta);display:grid;place-items:center;flex-shrink:0}
+  /* ===== Painel dos pais enxuto: listas tocáveis, formulários só quando abertos ===== */
+  #paisConteudo .bloco{padding:16px 16px 6px}
+  .cabBloco{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  .cabBloco .quem{font-family:var(--titulo);font-size:20px;font-weight:600}
+  .novoBtn{flex-shrink:0;border:1.5px solid var(--tinta);background:#fff;color:var(--pri-esc);border-radius:14px;padding:8px 14px;
+    font:900 14px "Nunito",system-ui,sans-serif;cursor:pointer;min-height:40px}
+  .listaItens{display:flex;flex-direction:column}
+  .linhaItem{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 2px;margin:0;border:0;border-top:1.5px solid var(--borda);
+    background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;border-radius:0;box-shadow:none}
+  .listaItens .linhaItem:first-child{border-top:0}
+  .linhaItem.fixa{cursor:default}
+  .linhaItem > span:not(.av):not([class*="avatar"]){flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .linhaItem b{font-size:16px;font-weight:900;line-height:1.25}
+  .linhaItem small{font-size:13px;color:var(--suave);font-weight:700;line-height:1.3}
+  .linhaItem > i{font-style:normal;color:var(--suave);font-size:22px;font-weight:900;flex-shrink:0}
+  .linhaItem > i.ok{color:var(--verde-esc);font-size:18px}
+  .linhaItem .valor{font-style:normal;font-size:15px;font-weight:900;color:var(--tinta);background:#FFF3BF;border-radius:12px;padding:4px 10px}
+  .xItem{flex-shrink:0;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--borda);background:#fff;color:var(--suave);
+    font:900 20px/1 "Nunito",sans-serif;cursor:pointer;padding:0;margin:0}
+  .okItem{flex-shrink:0;height:40px;border-radius:12px;border:1.5px solid var(--tinta);background:var(--lima);color:var(--tinta);
+    font:900 14px "Nunito",sans-serif;padding:0 12px;cursor:pointer;margin:0}
+  .vazioP{color:var(--suave);font-weight:700;font-size:14px;padding:6px 0 12px}
+  .formBox{display:flex;flex-direction:column;gap:10px;margin:8px 0 12px;padding:14px;border-radius:18px;background:var(--creme);border:1.5px solid var(--tinta)}
+  .formBox .tituloForm{font-family:var(--titulo);font-weight:600;font-size:18px}
+  .formBox input,.formBox select{margin:0}
+  .formBox .row{margin:0}
+  .formBox .chips{margin:0}
+  .rot{font-size:12px;font-weight:900;color:var(--suave);text-transform:uppercase;letter-spacing:.05em}
+  .botoesForm{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .botoesForm .btn{margin:0}
+  .btnExcluir{background:none;border:0;color:#B3261E;font:900 14px "Nunito",sans-serif;padding:8px;cursor:pointer;align-self:center}
+  .interruptor{width:46px;height:28px;border-radius:99px;background:var(--borda);position:relative;flex-shrink:0;border:1.5px solid var(--tinta)}
+  .interruptor::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;background:#fff;border:1.5px solid var(--tinta);transition:left .2s}
+  .interruptor.on{background:var(--pri)}
+  .interruptor.on::after{left:20px}
+  .destaqueP{background:#FFF3BF!important;border-color:var(--tinta)!important}
+  .destaqueP .linhaItem{border-top-color:#EFD98A}
+  #paisConteudo .resumoRotina{gap:12px}
+
+  /* ===== Tablet e computador ===== */
+  @media (min-width: 720px){
+    main{max-width:760px;padding:0 28px}
+    #hero{padding-left:max(28px, calc((100% - 704px) / 2))!important;padding-right:max(28px, calc((100% - 704px) / 2))!important}
+    body.modoPainel main,body.modoPainel .painelTopo{max-width:940px}
+    body.modoPainel .painelTopo{padding-left:28px;padding-right:28px}
+    #nav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100% - 40px));bottom:calc(14px + env(safe-area-inset-bottom));border-radius:26px;
+      border:1.5px solid #E2DBCB!important;box-shadow:0 6px 24px rgba(36,32,52,.10)}
+    #paisConteudo[data-aba="rotina"][data-secao=""] .resumoRotina{display:grid!important;grid-template-columns:1.2fr 1fr;align-items:start}
+    #paisConteudo[data-aba="familia"],#paisConteudo[data-aba="loja"]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;align-items:start}
+    #paisConteudo[data-aba="familia"] > #sair{grid-column:1/-1}
+    #resultadosConteudo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;align-items:start}
+    #resultadosConteudo > :not(.bloco){grid-column:1/-1}
+    .folha{align-items:center}
+    .folhaCaixa{border-radius:28px;max-height:86vh}
+  }
+  /* Paisagem / computador: na tela Hoje o topo vira uma coluna fixa à esquerda */
+  @media (min-width: 1000px){
+    body.telaHoje #hero{position:fixed;left:0;top:0;bottom:0;width:340px;border-radius:0 34px 34px 0;
+      padding:calc(28px + env(safe-area-inset-top)) 28px 28px!important;overflow:hidden}
+    body.telaHoje #hero .heroLinha{flex-direction:column;align-items:flex-start}
+    body.telaHoje main{margin-left:340px;max-width:none;padding:24px 40px 120px}
+    body.telaHoje main > *{max-width:720px;margin-left:auto;margin-right:auto}
+    body.telaHoje #nav{left:calc(50% + 170px)}
+    body.telaHoje #progressoDia{margin-top:0!important}
+    body.telaHoje #hero .avHero, body.telaHoje #hero .heroAv{transform:scale(1.25);transform-origin:left bottom}
+  }
 </style>
 </head>
 <body>
@@ -786,6 +859,7 @@ let dados = carregar();
 let criancaAtiva = dados.criancas[0]?.id;
 let diaSel = new Date();          // dia que a criança está olhando
 let paisLiberado = false;
+let formAberto = null;           // qual formulário do painel está aberto
 let editando = null;              // { tipo: "c" | "t", id }
 let diasForm = [];           // dias marcados no formulário de missão
 let periodosForm = [];    // períodos marcados no formulário de missão
@@ -1248,150 +1322,157 @@ function renderPais(){
   const semanaKid = k => estatisticas(k.id, diasEntre(inicioSemana(new Date()), new Date())).pct;
   const pausaAtual = dados.pausas.filter(pz => pz.fim >= hojeStr()).sort((a, b) => a.inicio.localeCompare(b.inicio))[0];
   const linhaResumo = (secao, ic, titulo, sub) => `<button class="linhaRes" data-secao-abre="${secao}">${icone(ic, 34)}<span><b>${titulo}</b><small>${esc(sub)}</small></span><i aria-hidden="true">›</i></button>`;
+  const linha = (attr, icHTML, titulo, sub, dir = "›") => `<button class="linhaItem" ${attr}>${icHTML}<span><b>${titulo}</b>${sub ? `<small>${sub}</small>` : ""}</span><i aria-hidden="true">${dir}</i></button>`;
+  const cab = (ic, titulo, novo) => `<div class="cabBloco"><b class="quem">${icone(ic, 26)} ${titulo}</b>${novo ? `<button class="novoBtn" data-novo="${novo}">+ Novo</button>` : ""}</div>`;
+  const perCurto = t => t.periodos.includes("livre") ? "qualquer hora" : t.periodos.map(p => PERIODOS.find(x => x.id === p)?.nome.toLowerCase() || "").join(" e ");
+  const quemCurto = t => t.para === "todos" ? (t.revezar ? " · reveza" : "") : " · só " + esc(crianca(t.para)?.nome || "?");
+  const abreT = tEd || formAberto === "t", abreA = aEd || formAberto === "a", abreC = cEd || formAberto === "c";
+  const rEd = editando?.tipo === "r" ? dados.recompensas.find(r => r.id === editando.id) : null, abreR = rEd || formAberto === "r";
+  const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
   el.innerHTML = `
     <div class="resumoRotina" data-aba="rotina" data-resumo="1">
       <div class="listaRes">
-        ${linhaResumo("missoes", "tarefa", "Missões", `${dados.tarefas.length} missões · ${dados.tarefas.filter(t => t.revezar).length} revezando entre os irmãos`)}
-        ${linhaResumo("agenda", "acao_calendario", "Agenda", dados.atividades.map(a => a.nome).slice(0, 4).join(", ") || "Nada cadastrado")}
-        ${linhaResumo("pausas", "pausa_ferias", "Pausas", pausaAtual ? `${nomeMotivo(pausaAtual)} de ${dataCurta(pausaAtual.inicio)} a ${dataCurta(pausaAtual.fim)}` : "Nenhuma pausa marcada")}
-        ${linhaResumo("sugestoes", "entrada_comecar_do_zero", "Sugestões por idade", "Ideias de missões para cada faixa")}
+        ${linhaResumo("missoes", "tarefa", "Missões", `${dados.tarefas.length} missões`)}
+        ${linhaResumo("agenda", "acao_calendario", "Agenda", dados.atividades.map(a => a.nome).slice(0, 3).join(", ") || "Vazia")}
+        ${linhaResumo("pausas", "pausa_ferias", "Pausas", pausaAtual ? `${nomeMotivo(pausaAtual)}, ${dataCurta(pausaAtual.inicio)} a ${dataCurta(pausaAtual.fim)}` : "Nenhuma")}
+        ${linhaResumo("sugestoes", "entrada_comecar_do_zero", "Sugestões", "Ideias por idade")}
       </div>
       <div class="cartaoSemana"><b>Esta semana</b>${dados.criancas.map(k => { const pc = semanaKid(k) ?? 0;
         return `<div class="linhaKid">${avatarHTML(k, 36)}<span class="nk">${esc(k.nome)}</span><div class="trilhoK"><i style="width:${pc}%"></i></div><span class="pk">${pc}%</span></div>`; }).join("")}</div>
-      <button class="btn" data-secao-abre="missoes" data-nova="1">+ Nova missão</button>
     </div>
     <button class="voltaSecao" data-aba="rotina" id="voltaRotina">‹ Rotina</button>
-    <h2 class="quem">${icone("painel_familia", 34)} Painel dos pais</h2>
 
-    <div class="bloco"><b class="quem">${icone("tarefa", 26)} Missões</b>
-      ${dados.tarefas.map(t => `<div class="item">${ico(t.icone, 28)} ${esc(t.nome)}
-          <span class="acoes"><button class="ed" data-ed-t="${t.id}">editar</button><button class="x" data-del-t="${t.id}">excluir</button></span>
-          <small>${resumoDias(t.dias)} · ${t.periodos.map(p => PERIODOS.find(x => x.id === p)?.nome.toLowerCase() || "").join(" e ")} · ${t.pontos} estrelas · ${paraTxt(t)}</small></div>`).join("")}
-      <div class="${tEd ? "editando" : ""}" id="formTarefa">
-        ${tEd ? `<b>✏️ Editando: ${esc(tEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova missão</b>`}
+    <div class="bloco">${cab("tarefa", "Missões", abreT ? "" : "t")}
+      ${abreT ? `<div class="formBox" id="formTarefa">
+        <b class="tituloForm">${tEd ? "Editar missão" : "Nova missão"}</b>
         ${seletorIcone("tIc", tEd?.icone || "tarefa", ["missao_", "atividade_"])}
-        <div class="row"><input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}"></div>
-        <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
-        ${chipsDias("t", diasForm)}
-        <small style="color:var(--suave);font-weight:800">Em que hora do dia? <span style="font-weight:700">(dá pra marcar mais de uma, tipo remédio de manhã e à noite)</span></small>
+        <input id="tNome" placeholder="Nome da missão" value="${esc(tEd?.nome || "")}">
+        <span class="rot">Dias</span>${chipsDias("t", diasForm)}
+        <span class="rot">Período</span>
         <div class="chips">${PERIODOS.map(p => `<button class="chip ${periodosForm.includes(p.id)?"on":""}" data-per="${p.id}">${icone(p.icone, 20)} ${p.nome}</button>`).join("")}</div>
-        <div class="row"><input id="tPts" type="number" min="0" value="${tEd?.pontos ?? 5}" style="max-width:90px"><select id="tPara">${opQuem(tEd?.para || "todos")}</select></div>
-        <div class="chips" id="revezBox" style="${(tEd?.para || "todos") === "todos" ? "" : "display:none"}">
-          <button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">${icone("jogo_sua_vez", 20)} Revezar entre as crianças</button>
-        </div>
-        <small id="revezDica" style="color:var(--suave);font-weight:700;display:block">${tEd?.revezar ? "Cada vez que a missão acontecer, ela vai pra uma criança diferente." : "Sem revezar, todas as crianças fazem a missão."}</small>
-        <button class="btn" id="tSalvar">${tEd ? "Salvar alterações" : "Adicionar missão"}</button>
-        ${tEd ? `<button class="btn sec" id="tCancelar">Cancelar</button>` : ""}
-      </div>
+        <span class="rot">Estrelas e quem faz</span>
+        <div class="row"><input id="tPts" type="number" min="0" value="${tEd?.pontos ?? 5}" style="max-width:90px" aria-label="Estrelas"><select id="tPara" aria-label="Quem faz">${opQuem(tEd?.para || "todos")}</select></div>
+        <div class="chips" id="revezBox"><button class="chip ${tEd?.revezar ? "on" : ""}" id="tRevezar">${icone("jogo_sua_vez", 20)} Revezar entre as crianças</button></div>
+        <div class="botoesForm"><button class="btn" id="tSalvar">${tEd ? "Salvar" : "Adicionar"}</button><button class="btn sec" id="tCancelar">Cancelar</button></div>
+        ${tEd ? `<button class="btnExcluir" data-del-t="${tEd.id}">Excluir missão</button>` : ""}
+      </div>` : ""}
+      <div class="listaItens">${dados.tarefas.map(t => linha(`data-ed-t="${t.id}"`, ico(t.icone, 30), esc(t.nome), `${resumoDias(t.dias)} · ${perCurto(t)} · ${t.pontos}★${quemCurto(t)}`)).join("")}</div>
     </div>
 
-    <div class="bloco"><b class="quem">${icone("entrada_comecar_do_zero", 26)} Sugestões de missões por idade</b>
+    <div class="bloco">${cab("entrada_comecar_do_zero", "Sugestões")}
       <div class="chips">${Object.keys(SUGESTOES).map(f => `<button class="chip ${f === idadeSug ? "on" : ""}" data-idade="${f}">${f}</button>`).join("")}</div>
-      ${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
-        return `<div class="item">${ico(sg.icone, 28)} ${esc(sg.nome)}<span class="acoes">${ja ? `<span style="color:var(--verde-esc);font-weight:900">✓ já tem</span>` : `<button class="ed" data-sug="${i}">+ adicionar</button>`}</span>
-        <small>${resumoDias(sg.dias)} · ${sg.periodos.map(p => PERIODOS.find(x => x.id === p).nome.toLowerCase()).join(" e ")} · ${sg.pontos} estrelas</small></div>`; }).join("")}
+      <div class="listaItens">${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
+        return ja ? `<div class="linhaItem fixa">${ico(sg.icone, 30)}<span><b>${esc(sg.nome)}</b></span><i class="ok" aria-label="já tem">✓</i></div>`
+          : linha(`data-sug="${i}"`, ico(sg.icone, 30), esc(sg.nome), "", "+"); }).join("")}</div>
     </div>
 
-    <div class="bloco"><b class="quem">${icone("pausa_generica", 26)} Pausas (férias, feriado, doença)</b>
-      ${dados.pausas.length ? dados.pausas.slice().sort((a, b) => a.inicio.localeCompare(b.inicio)).map(pz => `<div class="item">${icone(iconeMotivo(pz), 28)} ${esc(nomeMotivo(pz))}
-          <span class="acoes"><button class="x" data-del-p="${pz.id}">excluir</button></span>
-          <small>${esc(dataCurta(pz.inicio))}${pz.fim !== pz.inicio ? " a " + esc(dataCurta(pz.fim)) : ""} · pausa ${pz.oque === "tudo" ? "missões e agenda" : pz.oque === "agenda" ? "só a agenda" : "só as missões"} · ${pz.para === "todos" ? "todas as crianças" : "só " + esc(crianca(pz.para)?.nome || "?")}</small></div>`).join("")
-        : `<small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Nenhuma pausa marcada. Num dia pausado, a sequência de dias não quebra.</small>`}
-      <div class="chips">${MOTIVOS_PAUSA.map((m, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-motivo="${m.id}">${icone(m.icone, 20)} ${m.nome}</button>`).join("")}</div>
-      <div class="row"><label style="flex:1"><small style="color:var(--suave);font-weight:800">De</small><input id="pIni" type="date" value="${hojeStr()}"></label>
-        <label style="flex:1"><small style="color:var(--suave);font-weight:800">Até</small><input id="pFim" type="date" value="${hojeStr()}"></label></div>
-      <div class="row"><select id="pOque"><option value="missoes">Pausar as missões</option><option value="tudo">Pausar missões e agenda</option><option value="agenda">Pausar só a agenda</option></select>
-        <select id="pPara">${opQuem("todos")}</select></div>
-      <button class="btn" id="pAdd">Adicionar pausa</button>
+    <div class="bloco">${cab("pausa_generica", "Pausas", formAberto === "p" ? "" : "p")}
+      ${formAberto === "p" ? `<div class="formBox">
+        <b class="tituloForm">Nova pausa</b>
+        <div class="chips">${MOTIVOS_PAUSA.map((m, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-motivo="${m.id}">${icone(m.icone, 20)} ${m.nome}</button>`).join("")}</div>
+        <div class="row"><label style="flex:1"><span class="rot">De</span><input id="pIni" type="date" value="${hojeStr()}"></label>
+          <label style="flex:1"><span class="rot">Até</span><input id="pFim" type="date" value="${hojeStr()}"></label></div>
+        <div class="row"><select id="pOque" aria-label="O que pausar"><option value="missoes">Só missões</option><option value="tudo">Missões e agenda</option><option value="agenda">Só agenda</option></select>
+          <select id="pPara" aria-label="Para quem">${opQuem("todos")}</select></div>
+        <div class="botoesForm"><button class="btn" id="pAdd">Adicionar</button><button class="btn sec" data-fecha="1">Cancelar</button></div>
+      </div>` : ""}
+      <div class="listaItens">${dados.pausas.length ? dados.pausas.slice().sort((a, b) => a.inicio.localeCompare(b.inicio)).map(pz => `<div class="linhaItem fixa">${icone(iconeMotivo(pz), 30)}<span><b>${esc(nomeMotivo(pz))}</b><small>${esc(dataCurta(pz.inicio))}${pz.fim !== pz.inicio ? " a " + esc(dataCurta(pz.fim)) : ""}${pz.para === "todos" ? "" : " · só " + esc(crianca(pz.para)?.nome || "?")}</small></span><button class="xItem" data-del-p="${pz.id}" aria-label="Excluir pausa">×</button></div>`).join("")
+        : `<div class="vazioP">Nenhuma pausa</div>`}</div>
     </div>
 
-    <div class="bloco"><b class="quem">${icone("acao_calendario", 26)} Agenda (escola, aulas, atividades)</b>
-      ${dados.atividades.map(a => `<div class="item">${ico(a.icone, 28)} ${esc(a.nome)}
-          <span class="acoes"><button class="ed" data-ed-a="${a.id}">editar</button><button class="x" data-del-a="${a.id}">excluir</button></span>
-          <small>${(TIPOS_ATV.find(x => x.id === a.tipo) || TIPOS_ATV[4]).nome} · ${a.data ? "dia " + esc(dataCurta(a.data)) + (a.data < hojeStr() ? " (já passou)" : "") : resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""} · ${a.para === "todos" ? "todas as crianças" : "só " + esc(crianca(a.para)?.nome || "?")}</small></div>`).join("")}
-      <div class="${aEd ? "editando" : ""}" id="formAtv">
-        ${aEd ? `<b>✏️ Editando: ${esc(aEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova atividade</b>`}
+    <div class="bloco">${cab("acao_calendario", "Agenda", abreA ? "" : "a")}
+      ${abreA ? `<div class="formBox" id="formAtv">
+        <b class="tituloForm">${aEd ? "Editar atividade" : "Nova atividade"}</b>
         ${seletorIcone("aIc", aEd?.icone || "atividade_piano", ["atividade_", "agenda_"])}
-        <div class="row"><input id="aNome" placeholder="Ex.: Aula de piano, EMIA" value="${esc(aEd?.nome || "")}"></div>
-        <select id="aTipo">${TIPOS_ATV.map(x => `<option value="${x.id}" ${x.id === (aEd?.tipo || "atividade") ? "selected" : ""}>${x.nome}</option>`).join("")}</select>
+        <input id="aNome" placeholder="Ex.: Aula de piano" value="${esc(aEd?.nome || "")}">
+        <select id="aTipo" aria-label="Tipo">${TIPOS_ATV.map(x => `<option value="${x.id}" ${x.id === (aEd?.tipo || "atividade") ? "selected" : ""}>${x.nome}</option>`).join("")}</select>
         <div class="chips">
           <button class="chip ${atvRepete ? "on" : ""}" data-rep="1">${icone("repeticao_toda_semana", 20)} Toda semana</button>
           <button class="chip ${atvRepete ? "" : "on"}" data-rep="0">${icone("repeticao_so_num_dia", 20)} Só num dia</button>
         </div>
-        <div id="aSemanal" style="${atvRepete ? "" : "display:none"}">
-          <small style="color:var(--suave);font-weight:800">Em quais dias?</small>
-          ${chipsDias("a", diasAtv)}
-        </div>
-        <div id="aUnico" style="${atvRepete ? "display:none" : ""}"><input id="aData" type="date" value="${esc(aEd?.data || "")}"></div>
-        <div class="row"><input id="aHora" type="time" value="${esc(aEd?.hora || "")}" style="max-width:130px"><select id="aPara">${opQuem(aEd?.para || "todos")}</select></div>
-        <button class="btn" id="aSalvar">${aEd ? "Salvar alterações" : "Adicionar na agenda"}</button>
-        ${aEd ? `<button class="btn sec" id="aCancelar">Cancelar</button>` : ""}
-      </div>
+        <div id="aSemanal" style="${atvRepete ? "" : "display:none"}">${chipsDias("a", diasAtv)}</div>
+        <div id="aUnico" style="${atvRepete ? "display:none" : ""}"><input id="aData" type="date" value="${esc(aEd?.data || "")}" aria-label="Data"></div>
+        <div class="row"><input id="aHora" type="time" value="${esc(aEd?.hora || "")}" style="max-width:130px" aria-label="Horário"><select id="aPara" aria-label="Para quem">${opQuem(aEd?.para || "todos")}</select></div>
+        <div class="botoesForm"><button class="btn" id="aSalvar">${aEd ? "Salvar" : "Adicionar"}</button><button class="btn sec" id="aCancelar">Cancelar</button></div>
+        ${aEd ? `<button class="btnExcluir" data-del-a="${aEd.id}">Excluir atividade</button>` : ""}
+      </div>` : ""}
+      <div class="listaItens">${dados.atividades.length ? dados.atividades.map(a => linha(`data-ed-a="${a.id}"`, ico(a.icone, 30), esc(a.nome),
+        `${a.data ? esc(dataCurta(a.data)) : resumoDias(a.dias)}${a.hora ? " · " + esc(a.hora) : ""}${a.para === "todos" ? "" : " · só " + esc(crianca(a.para)?.nome || "?")}`)).join("") : `<div class="vazioP">Agenda vazia</div>`}</div>
     </div>
 
-    <div class="bloco"><b class="quem">${icone("entrada_crianca", 26)} Crianças</b>
-      ${dados.criancas.map(c => `<div class="item">${avatarHTML(c, 32)} ${esc(c.nome)}
-          <span class="acoes"><button class="ed" data-ed-c="${c.id}">editar</button><button class="x" data-del-c="${c.id}">excluir</button></span></div>`).join("")}
-      <div class="${cEd ? "editando" : ""}">
-        ${cEd ? `<b>✏️ Editando: ${esc(cEd.nome)}</b>` : `<b style="display:block;margin-top:8px">Nova criança</b>`}
-        <div class="row"><input id="cAv" type="hidden" value="${esc(cEd?.avatar || "🙂")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}"></div>
-        <small style="color:var(--suave);font-weight:700;display:block">O personagem, a cor e os acessórios a própria criança escolhe, tocando no cartão dela.</small>
-        <button class="btn" id="cSalvar">${cEd ? "Salvar alterações" : "Adicionar criança"}</button>
-        ${cEd ? `<button class="btn sec" id="cCancelar">Cancelar</button>` : ""}
-      </div>
+    <div class="bloco">${cab("entrada_crianca", "Crianças", abreC ? "" : "c")}
+      ${abreC ? `<div class="formBox">
+        <b class="tituloForm">${cEd ? "Editar criança" : "Nova criança"}</b>
+        <input id="cAv" type="hidden" value="${esc(cEd?.avatar || "🙂")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}">
+        <div class="botoesForm"><button class="btn" id="cSalvar">${cEd ? "Salvar" : "Adicionar"}</button><button class="btn sec" id="cCancelar">Cancelar</button></div>
+        ${cEd ? `<button class="btnExcluir" data-del-c="${cEd.id}">Excluir ${esc(cEd.nome)}</button>` : ""}
+      </div>` : ""}
+      <div class="listaItens">${dados.criancas.map(c => linha(`data-ed-c="${c.id}"`, avatarHTML(c, 34), esc(c.nome), "")).join("")}</div>
     </div>
 
+    ${pend.length ? `<div class="bloco destaqueP">${cab("premio_escolhidos", "Prêmios escolhidos")}
+      <div class="listaItens">${pend.map(t => `<div class="linhaItem fixa">${avatarHTML(crianca(t.kid), 32)}<span><b>${esc(t.texto)}</b><small>${esc(crianca(t.kid)?.nome || "?")} · ${t.custo}★</small></span>
+        <button class="okItem" data-entregar="${t.id}">Entregue</button><button class="xItem" data-cancelar="${t.id}" aria-label="Cancelar e devolver as estrelas">×</button></div>`).join("")}</div></div>` : ""}
 
-    ${(() => { const pend = Object.values(dados.trocas).filter(t => t.status === "pedido").sort((a, b) => a.data.localeCompare(b.data));
-      return `<div class="bloco"><b class="quem">${icone("premio_escolhidos", 26)} Prêmios escolhidos</b>${pend.length ? pend.map(t => `<div class="item">${avatarHTML(crianca(t.kid), 28)} ${esc(crianca(t.kid)?.nome || "?")}: ${esc(t.texto)}
-        <span class="acoes"><button class="ed" data-entregar="${t.id}">entregue ✓</button><button class="x" data-cancelar="${t.id}">cancelar</button></span>
-        <small>⭐ ${t.custo} · escolhido em ${esc(new Date(t.data).toLocaleDateString("pt-BR"))}. Cancelar devolve as estrelas.</small></div>`).join("")
-        : `<small style="color:var(--suave);font-weight:700;display:block;margin-top:6px">Nada esperando. Quando uma criança escolher um prêmio, aparece aqui.</small>`}</div>`; })()}
+    <div class="bloco">${cab("premio_presente", "Prêmios", abreR ? "" : "r")}
+      ${abreR ? `<div class="formBox">
+        <b class="tituloForm">${rEd ? "Editar prêmio" : "Novo prêmio"}</b>
+        ${seletorIcone("prIc", rEd?.icone || "premio_presente", ["recompensa_", "premio_presente"])}
+        <div class="row"><input id="prNova" placeholder="Ex.: Ir ao cinema" value="${esc(rEd?.texto || "")}"><input id="prCusto" type="number" min="1" value="${rEd?.custo ?? 50}" style="max-width:90px" aria-label="Estrelas"></div>
+        <div class="botoesForm"><button class="btn" id="prAdd">${rEd ? "Salvar" : "Adicionar"}</button><button class="btn sec" data-fecha="1">Cancelar</button></div>
+        ${rEd ? `<button class="btnExcluir" data-del-r="${rEd.id}">Excluir prêmio</button>` : ""}
+      </div>` : ""}
+      <div class="listaItens">${dados.recompensas.map(r => linha(`data-ed-r="${r.id}"`, ico(r.icone, 30), esc(r.texto), "", `<em class="valor">${r.custo}★</em>`)).join("")}</div>
+    </div>
 
-    <div class="bloco"><b class="quem">${icone("premio_presente", 26)} Prêmios</b>
-      <small style="color:var(--suave);font-weight:700;display:block;margin:6px 0">Ficam na aba Prêmios: a criança junta estrelas e escolhe quando quiser.</small>
-      ${dados.recompensas.map(r => `<div class="item">${ico(r.icone, 28)}<span style="flex:1">${esc(r.texto)}</span>
-        <input type="number" min="1" value="${r.custo}" data-custo="${r.id}" style="max-width:80px;margin:0" aria-label="Estrelas necessárias">⭐
-        <span class="acoes"><button class="x" data-del-r="${r.id}">excluir</button></span></div>`).join("")}
-      ${seletorIcone("prIc", "premio_presente", ["recompensa_", "premio_presente"])}
-      <div class="row"><input id="prNova" placeholder="Novo prêmio. Ex.: Ir ao cinema"><input id="prCusto" type="number" min="1" value="50" style="max-width:80px"></div>
-      <button class="btn sec" id="prAdd">Incluir prêmio</button>
-      <small style="color:var(--suave);font-weight:800;display:block;margin-top:14px">🏆 Desafio da semana (aparece na aba Avatar)</small>
-      <select id="prTx">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
-      <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Estrelas na semana"><button class="btn" id="prSalvar" style="margin-top:4px">Salvar desafio</button></div></div>
+    <div class="bloco">${cab("trofeu", "Desafio da semana")}
+      ${formAberto === "desafio" ? `<div class="formBox">
+        <select id="prTx" aria-label="Prêmio do desafio">${dados.recompensas.map(r => `<option ${r.texto === dados.premio.texto ? "selected" : ""}>${esc(r.texto)}</option>`).join("")}</select>
+        <div class="row"><input id="prMeta" type="number" min="1" value="${dados.premio.meta}" style="max-width:120px" aria-label="Meta de estrelas na semana"><span class="rot" style="align-self:center">estrelas na semana</span></div>
+        <div class="botoesForm"><button class="btn" id="prSalvar">Salvar</button><button class="btn sec" data-fecha="1">Cancelar</button></div>
+      </div>` : `<div class="listaItens">${linha(`data-novo="desafio"`, icone("premio_presente", 30), esc(dados.premio.texto), `Meta: ${dados.premio.meta} estrelas`)}</div>`}
+    </div>
 
-    <div class="bloco"><b class="quem">${icone("painel_este_aparelho", 26)} Neste aparelho</b>
-      <div class="chips">
-        <button class="chip ${PREF.som ? "on" : ""}" id="prefSom">${icone(PREF.som ? "som_ligado" : "som_desligado", 20)} Som ${PREF.som ? "ligado" : "desligado"}</button>
-        <button class="chip ${PREF.calmo ? "on" : ""}" id="prefCalmo">${icone("painel_menos_movimento", 20)} Menos movimento ${PREF.calmo ? "ligado" : "desligado"}</button>
+    <div class="bloco">${cab("painel_este_aparelho", "Neste aparelho")}
+      <div class="listaItens">
+        <button class="linhaItem" id="prefSom">${icone(PREF.som ? "som_ligado" : "som_desligado", 30)}<span><b>Som</b></span><i class="interruptor ${PREF.som ? "on" : ""}" aria-hidden="true"></i></button>
+        <button class="linhaItem" id="prefCalmo">${icone("painel_menos_movimento", 30)}<span><b>Menos movimento</b></span><i class="interruptor ${PREF.calmo ? "on" : ""}" aria-hidden="true"></i></button>
       </div></div>
 
     ${NUVEM.ativo ? `
-    <div class="bloco"><b class="quem">${icone("painel_familia", 26)} Nossa família</b>
-      <small class="rot quem">${icone("entrada_crianca", 20)} Código das crianças: no celular ou tablet delas, em "Sou criança"</small>
+    <div class="bloco">${cab("painel_familia", "Nossa família")}
+      <span class="rot">Código das crianças</span>
       <div class="codigoFam">${esc(NUVEM.codigo)}</div>
       ${NUVEM.convites ? `
-      <small class="rot quem">${icone("entrada_responsavel", 20)} Convite de responsável: pro pai, mãe ou outro responsável. Dá acesso total ao painel.</small>
+      <span class="rot">Convite de responsável</span>
       <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.resp)}</div>
-      <small class="rot quem">${icone("entrada_rede_de_apoio", 20)} Convite da rede de apoio: avós, babá, tios. Só acompanham a rotina, sem mudar nada.</small>
+      <span class="rot">Convite da rede de apoio (só acompanha)</span>
       <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.apoio)}</div>
-      <button class="x" id="novosConv" style="margin-top:6px">gerar convites novos (os antigos param de funcionar)</button>` : ""}
-      <small style="color:var(--suave);font-weight:700;display:block;margin-top:10px">Conectado como ${esc(NUVEM.email || "responsável")} · ${NUVEM.nPais} responsável(is) · ${(NUVEM.aparelhos || 0)} aparelho(s) de criança · ${NUVEM.nApoio} da rede de apoio</small>
+      <button class="btnExcluir" id="novosConv" style="color:var(--suave)">Gerar convites novos</button>` : ""}
+      <small style="color:var(--suave);font-weight:700;display:block;margin-top:10px">${esc(NUVEM.email || "responsável")}</small>
       <button class="btn sec" id="sairConta">Sair da conta</button></div>` : `
-    <div class="bloco"><b class="quem">${icone("entrada_codigo_e_senha", 26)} Senha dos pais</b><div class="row"><input id="novoPin" type="password" placeholder="Nova senha"><button class="btn" id="pinSalvar">Trocar</button></div></div>
+    <div class="bloco">${cab("entrada_codigo_e_senha", "Senha dos pais")}
+      ${formAberto === "pin" ? `<div class="formBox"><input id="novoPin" type="password" inputmode="numeric" placeholder="Nova senha"><div class="botoesForm"><button class="btn" id="pinSalvar">Trocar</button><button class="btn sec" data-fecha="1">Cancelar</button></div></div>`
+        : `<div class="listaItens">${linha(`data-novo="pin"`, icone("entrada_codigo_e_senha", 30), "Trocar senha", "")}</div>`}</div>
     <button class="btn sec" id="sair">Sair do painel</button>`}`;
 
   ligarSeletores(el);
   // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
-  const abaDoBloco = t => /Pedidos|Recompensas|Prêmios/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
+  const abaDoBloco = t => /Prêmios|Desafio/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
   const secaoDoBloco = t => /Sugestões/.test(t) ? "sugestoes" : /Pausas/.test(t) ? "pausas" : /Agenda/.test(t) ? "agenda" : "missoes";
   el.querySelectorAll(".bloco").forEach(b => { const t = b.querySelector("b")?.textContent || ""; b.dataset.aba = abaDoBloco(t); if (b.dataset.aba === "rotina") b.dataset.secao = secaoDoBloco(t); });
   if ($("#sair")) $("#sair").dataset.aba = "familia";
   el.dataset.aba = painelAba;
   el.dataset.secao = painelSecao;
   el.querySelectorAll("[data-secao-abre]").forEach(b => b.onclick = () => { painelSecao = b.dataset.secaoAbre; renderPais(); window.scrollTo(0, 0);
-    if (b.dataset.nova) setTimeout(() => { $("#formTarefa")?.scrollIntoView({ block: "center" }); $("#tNome")?.focus(); }, 50); });
-  $("#voltaRotina").onclick = () => { painelSecao = ""; editando = null; renderPais(); window.scrollTo(0, 0); };
+    if (b.dataset.nova) { formAberto = "t"; renderPais(); } });
+  const $$ = q => $(q) || {};
+  const fechar = () => { formAberto = null; editando = null; diasForm = []; diasAtv = []; periodosForm = []; atvRepete = true; };
+  el.querySelectorAll("[data-novo]").forEach(b => b.onclick = () => { fechar(); formAberto = b.dataset.novo;
+    if (formAberto === "a") { diasAtv = []; atvRepete = true; } renderPais(); el.querySelector(".formBox input:not([type=hidden])")?.focus?.(); });
+  el.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => { fechar(); renderPais(); });
+  el.querySelectorAll("[data-ed-r]").forEach(b => b.onclick = () => { fechar(); editando = { tipo: "r", id: b.dataset.edR }; renderPais(); el.querySelector(".formBox")?.scrollIntoView?.({ block: "center" }); });
+  $$("#voltaRotina").onclick = () => { painelSecao = ""; fechar(); renderPais(); window.scrollTo(0, 0); };
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
   const setD = (g, v) => { if (g === "a") diasAtv = v; else diasForm = v; };
@@ -1410,24 +1491,24 @@ function renderPais(){
   el.querySelectorAll("[data-sug]").forEach(b => b.onclick = () => {
     const sg = SUGESTOES[idadeSug][Number(b.dataset.sug)], cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
     dados.tarefas.push({ id: "t" + Date.now(), para: "todos", cor: cores[dados.tarefas.length % cores.length], ...JSON.parse(JSON.stringify(sg)) });
-    salvar(); toast("Missão adicionada ⭐ Dá pra editar lá em cima"); render();
+    salvar(); toast("Missão adicionada ⭐"); render();
   });
 
   // pausas
   let motivoSel = MOTIVOS_PAUSA[0].id;
   el.querySelectorAll("[data-motivo]").forEach(b => b.onclick = () => { motivoSel = b.dataset.motivo;
     el.querySelectorAll("[data-motivo]").forEach(x => x.classList.toggle("on", x === b)); });
-  $("#pAdd").onclick = () => {
+  $$("#pAdd").onclick = () => {
     const ini = $("#pIni").value, fim = $("#pFim").value || ini;
     if (!ini) return toast("Escolha a data de início 📅");
     if (fim < ini) return toast("A data final vem antes da inicial 🤔");
     dados.pausas.push({ id: "p" + Date.now(), motivo: motivoSel, inicio: ini, fim, oque: $("#pOque").value, para: $("#pPara").value });
-    salvar(); toast("Pausa marcada ⏸️"); render();
+    formAberto = null; salvar(); toast("Pausa marcada ⏸️"); render();
   };
   el.querySelectorAll("[data-del-p]").forEach(b => b.onclick = () => { dados.pausas = dados.pausas.filter(x => x.id !== b.dataset.delP); salvar(); render(); });
 
   // agenda
-  $("#aSalvar").onclick = () => {
+  $$("#aSalvar").onclick = () => {
     const n = $("#aNome").value.trim(); if (!n) return toast("Dá um nome pra atividade ✍️");
     if (atvRepete && !diasAtv.length) return toast("Escolha pelo menos um dia 📅");
     if (!atvRepete && !$("#aData").value) return toast("Escolha a data 📍");
@@ -1435,19 +1516,19 @@ function renderPais(){
       dias: atvRepete ? [...diasAtv] : [], data: atvRepete ? null : $("#aData").value };
     if (aEd) Object.assign(aEd, campos); else dados.atividades.push({ id: "a"+Date.now(), ...campos });
     toast(aEd ? "Agenda atualizada ✨" : "Na agenda! 📅");
-    editando = null; diasAtv = []; atvRepete = true; salvar(); render();
+    formAberto = null; editando = null; diasAtv = []; atvRepete = true; salvar(); render();
   };
   el.querySelectorAll("[data-rep]").forEach(b => b.onclick = () => { atvRepete = b.dataset.rep === "1";
     el.querySelectorAll("[data-rep]").forEach(x => x.classList.toggle("on", x === b));
     $("#aSemanal").style.display = atvRepete ? "" : "none"; $("#aUnico").style.display = atvRepete ? "none" : ""; });
-  if ($("#aCancelar")) $("#aCancelar").onclick = () => { editando = null; diasAtv = []; atvRepete = true; renderPais(); };
+  if ($("#aCancelar")) $$("#aCancelar").onclick = () => { formAberto = null; editando = null; diasAtv = []; atvRepete = true; renderPais(); };
   el.querySelectorAll("[data-ed-a]").forEach(b => b.onclick = () => {
     const a = dados.atividades.find(a => a.id === b.dataset.edA);
-    editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; atvRepete = !a.data; renderPais();
-    $("#formAtv").scrollIntoView({ behavior: "smooth", block: "center" });
+    fechar(); editando = { tipo: "a", id: a.id }; diasAtv = [...a.dias]; atvRepete = !a.data; renderPais();
+    $("#formAtv")?.scrollIntoView?.({ block: "center" });
   });
   el.querySelectorAll("[data-del-a]").forEach(b => b.onclick = () => {
-    dados.atividades = dados.atividades.filter(a => a.id !== b.dataset.delA);
+    dados.atividades = dados.atividades.filter(a => a.id !== b.dataset.delA); formAberto = null;
     if (editando?.id === b.dataset.delA) editando = null; salvar(); render(); });
 
   // períodos
@@ -1460,12 +1541,10 @@ function renderPais(){
 
   // missões
   let revezarForm = !!tEd?.revezar;
-  $("#tPara").onchange = () => { $("#revezBox").style.display = $("#tPara").value === "todos" ? "" : "none";
-    $("#revezDica").style.display = $("#tPara").value === "todos" ? "block" : "none"; };
-  $("#tPara").onchange();
-  $("#tRevezar").onclick = () => { revezarForm = !revezarForm; $("#tRevezar").classList.toggle("on", revezarForm);
-    $("#revezDica").textContent = revezarForm ? "Cada vez que a missão acontecer, ela vai pra uma criança diferente." : "Sem revezar, todas as crianças fazem a missão."; };
-  $("#tSalvar").onclick = () => {
+  if ($("#tPara")) { $("#tPara").onchange = () => { $("#revezBox").style.display = $("#tPara").value === "todos" ? "" : "none"; };
+    $("#tPara").onchange(); }
+  $$("#tRevezar").onclick = () => { revezarForm = !revezarForm; $("#tRevezar").classList.toggle("on", revezarForm); };
+  $$("#tSalvar").onclick = () => {
     const n = $("#tNome").value.trim(); if (!n) return toast("Dá um nome pra missão ✍️");
     if (!diasForm.length) return toast("Escolha pelo menos um dia 📅");
     const campos = { nome: n, icone: $("#tIc").value || "tarefa", pontos: Math.max(0, parseInt($("#tPts").value, 10) || 0), para: $("#tPara").value, dias: [...diasForm] };
@@ -1476,41 +1555,43 @@ function renderPais(){
     else { const cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
       dados.tarefas.push({ id: "t"+Date.now(), cor: cores[dados.tarefas.length % cores.length], ...campos }); }
     toast(tEd ? "Missão atualizada ✨" : "Missão criada ⭐");
-    editando = null; diasForm = []; periodosForm = []; salvar(); render();
+    formAberto = null; editando = null; diasForm = []; periodosForm = []; salvar(); render();
   };
-  if ($("#tCancelar")) $("#tCancelar").onclick = () => { editando = null; diasForm = []; periodosForm = []; renderPais(); };
+  if ($("#tCancelar")) $$("#tCancelar").onclick = () => { formAberto = null; editando = null; diasForm = []; periodosForm = []; renderPais(); };
   el.querySelectorAll("[data-ed-t]").forEach(b => b.onclick = () => {
     const t = dados.tarefas.find(t => t.id === b.dataset.edT);
-    editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; periodosForm = t.periodos.includes("livre") ? [] : [...t.periodos]; renderPais();
-    $("#formTarefa").scrollIntoView({ behavior: "smooth", block: "center" });
+    fechar(); editando = { tipo: "t", id: t.id }; diasForm = [...t.dias]; periodosForm = t.periodos.includes("livre") ? [] : [...t.periodos]; renderPais();
+    $("#formTarefa")?.scrollIntoView?.({ block: "center" });
   });
   el.querySelectorAll("[data-del-t]").forEach(b => b.onclick = () => {
-    dados.tarefas = dados.tarefas.filter(t => t.id !== b.dataset.delT);
+    dados.tarefas = dados.tarefas.filter(t => t.id !== b.dataset.delT); formAberto = null;
     if (editando?.id === b.dataset.delT) editando = null; salvar(); render(); });
 
   // crianças
-  $("#cSalvar").onclick = () => {
+  $$("#cSalvar").onclick = () => {
     const n = $("#cNome").value.trim(); if (!n) return toast("Escreve o nome 🙂");
     if (cEd) { cEd.nome = n; cEd.avatar = $("#cAv").value || cEd.avatar; toast("Criança atualizada ✨"); }
     else { const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂" });
       if (!criancaAtiva) criancaAtiva = id; toast("Bem-vinda(o)! 🎉"); }
-    editando = null; salvar(); render();
+    formAberto = null; editando = null; salvar(); render();
   };
-  if ($("#cCancelar")) $("#cCancelar").onclick = () => { editando = null; renderPais(); };
-  el.querySelectorAll("[data-ed-c]").forEach(b => b.onclick = () => { editando = { tipo: "c", id: b.dataset.edC }; renderPais(); });
+  if ($("#cCancelar")) $$("#cCancelar").onclick = () => { formAberto = null; editando = null; renderPais(); };
+  el.querySelectorAll("[data-ed-c]").forEach(b => b.onclick = () => { fechar(); editando = { tipo: "c", id: b.dataset.edC }; renderPais(); });
   el.querySelectorAll("[data-del-c]").forEach(b => b.onclick = () => { const id = b.dataset.delC;
     dados.criancas = dados.criancas.filter(c => c.id !== id);
     dados.tarefas.forEach(t => { if (t.para === id) t.para = "todos"; });
     dados.atividades.forEach(a => { if (a.para === id) a.para = "todos"; });
-    if (criancaAtiva === id) criancaAtiva = dados.criancas[0]?.id; editando = null; salvar(); render(); });
+    if (criancaAtiva === id) criancaAtiva = dados.criancas[0]?.id; formAberto = null; editando = null; salvar(); render(); });
 
 
   // prêmio, senha, sair
-  $("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; salvar(); toast("Prêmio salvo 🎁"); render(); };
-  $("#prAdd").onclick = () => {
-    const n = $("#prNova").value.trim(); if (!n) return toast("Escreve a recompensa ✍️");
-    dados.recompensas.push({ id: "r" + Date.now(), texto: n, icone: $("#prIc").value || "premio_presente", custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) });
-    salvar(); toast("Prêmio adicionado 🎁"); render();
+  $$("#prSalvar").onclick = () => { dados.premio = { texto: $("#prTx").value || "Prêmio surpresa", meta: Number($("#prMeta").value) || 100 }; formAberto = null; salvar(); toast("Prêmio salvo 🎁"); render(); };
+  $$("#prAdd").onclick = () => {
+    const n = $("#prNova").value.trim(); if (!n) return toast("Escreve o prêmio ✍️");
+    const campos = { texto: n, icone: $("#prIc").value || "premio_presente", custo: Math.max(1, parseInt($("#prCusto").value, 10) || 50) };
+    const rE = editando?.tipo === "r" ? dados.recompensas.find(r => r.id === editando.id) : null;
+    if (rE) { if (dados.premio.texto === rE.texto) dados.premio.texto = n; Object.assign(rE, campos); } else dados.recompensas.push({ id: "r" + Date.now(), ...campos });
+    formAberto = null; editando = null; salvar(); toast(rE ? "Prêmio atualizado ✨" : "Prêmio adicionado 🎁"); render();
   };
   el.querySelectorAll("[data-custo]").forEach(inp => inp.onchange = () => {
     const r = dados.recompensas.find(x => x.id === inp.dataset.custo); if (!r) return;
@@ -1520,18 +1601,18 @@ function renderPais(){
     const r = dados.recompensas.find(x => x.id === b.dataset.delR);
     dados.recompensas = dados.recompensas.filter(x => x.id !== b.dataset.delR);
     if (r && dados.premio.texto === r.texto) dados.premio.texto = dados.recompensas[0].texto;
-    salvar(); render(); });
+    formAberto = null; editando = null; salvar(); render(); });
   el.querySelectorAll("[data-entregar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.entregar]; if (t) { t.status = "entregue"; salvar(); toast("Entregue! 🎉"); render(); } });
   el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Cancelado, estrelas devolvidas"); render(); } });
-  if ($("#sairConta")) $("#sairConta").onclick = sairDaConta;
-  $("#prefSom").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); renderPais(); };
-  $("#prefCalmo").onclick = () => { PREF.calmo = !PREF.calmo; gravarPref(); aplicarMovimento(); renderPais(); };
-  if ($("#novosConv")) $("#novosConv").onclick = async () => {
+  if ($("#sairConta")) $$("#sairConta").onclick = sairDaConta;
+  $$("#prefSom").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); renderPais(); };
+  $$("#prefCalmo").onclick = () => { PREF.calmo = !PREF.calmo; gravarPref(); aplicarMovimento(); renderPais(); };
+  if ($("#novosConv")) $$("#novosConv").onclick = async () => {
     NUVEM.convites = novosConvites();
     try { await NUVEM.ref.update({ convites: NUVEM.convites }); toast("Convites novos gerados 🔑"); } catch(e) { toast("Não consegui gerar agora"); }
     renderPais(); };
-  if ($("#pinSalvar")) $("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; salvar(); toast("Senha trocada 🔑"); };
-  if ($("#sair")) $("#sair").onclick = () => { paisLiberado = false; editando = null; diasForm = []; diasAtv = []; renderPais(); };
+  if ($("#pinSalvar")) $$("#pinSalvar").onclick = () => { const p = $("#novoPin").value.trim(); if (p.length < 4) return toast("Use pelo menos 4 dígitos"); dados.pin = p; formAberto = null; salvar(); toast("Senha trocada 🔑"); renderPais(); };
+  if ($("#sair")) $$("#sair").onclick = () => { paisLiberado = false; formAberto = null; editando = null; diasForm = []; diasAtv = []; renderPais(); };
 }
 
 /* ===== Áudio: lê em voz alta para quem ainda não lê ===== */
@@ -1762,6 +1843,7 @@ function irPara(t){
   const painel = t === "painel";
   document.body.classList.toggle("modoPainel", painel);
   document.body.classList.toggle("telaAvatar", t === "avatar");
+  document.body.classList.toggle("telaHoje", t === "missoes");
   const alvo = painel ? (painelAba === "resultados" ? "resultados" : "pais") : t;
   document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x.dataset.t === t));
   document.querySelectorAll(".tela").forEach(s => s.classList.toggle("on", s.id === "t-" + alvo));
@@ -2014,6 +2096,12 @@ async function iniciar(){
 }
 aplicarMovimento();
 iniciar();
+</script>
+<script>
+/* Web app instalável: guarda o app para funcionar sem internet (quando servido por https, ex. GitHub Pages) */
+if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude/.test(location.hostname)) {
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
 </script>
 </body>
 </html>
