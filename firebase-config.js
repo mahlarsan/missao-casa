@@ -1,16 +1,7 @@
-// Configuração do Firebase do Missão Casa.
-// Enquanto estiver null, o app funciona só no aparelho (sem contas).
-// Para ligar a nuvem, troque o null pelo objeto que o Firebase mostra em
-// Configurações do projeto > Seus apps > App da Web (veja o README).
-window.FIREBASE_CONFIG = null;
-
-/* Exemplo de como fica:
+// Configuração do Firebase do Missão Casa (projeto missao-casa-app).
+// Esses dados não são secretos: quem protege os dados da família são as regras do Firestore (firestore.rules).
 window.FIREBASE_CONFIG = {
-  apiKey: "AIza...",
-  authDomain: "missao-casa.firebaseapp.com",
-  projectId: "missao-casa",
-  storageBucket: "missao-casa.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123"
+  apiKey: "AIzaSyCTWPko-JN_yk8FkUtYuolUF-LnJ8PWNRM",
+  authDomain: "missao-casa-app.firebaseapp.com",
+  projectId: "missao-casa-app"
 };
-*/
