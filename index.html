@@ -1311,7 +1311,7 @@ function renderMissoes(){
       ${ico(a.icone, 28)}<span><b>${esc(a.hora || "")}</b> ${esc(a.nome)}</span></button>`).join("");
   $("#agendaDia").innerHTML = `<div class="agendaFaixa" aria-label="Agenda de ${esc(r)}">
     ${pAg ? `<span class="agChip pausa">${icone(iconeMotivo(pAg), 26)}<span>${esc(nomeMotivo(pAg))}: agenda pausada</span></span>` : ""}
-    ${chipsAg || (pAg ? "" : `<span class="agChip vazio">${icone("acao_calendario", 26)}<span>Nada na agenda ${r === "hoje" ? "hoje" : "nesse dia"}</span></span>`)}</div>`;
+    ${chipsAg || (pAg ? "" : `<span class="agChip vazio">${icone("acao_calendario", 26)}<span>Dia livre na agenda ${r === "hoje" ? "hoje" : "nesse dia"}</span></span>`)}</div>`;
   document.querySelectorAll(".agChip[data-falar]").forEach(el => el.onclick = () => falar(el.dataset.falar));
 
   const ts = tarefasDe(c.id, diaSel), feitas = feitosEm(isoDia(diaSel), c.id);
@@ -1325,7 +1325,7 @@ function renderMissoes(){
       <div class="trilho"><i style="width:${pctDia}%"></i></div></div></div>` : "";
 
   const aviso = futuro ? `<div class="aviso quem">${icone("acao_calendario", 26)} Planejando: dá pra ver o que vem aí e marcar quando o dia chegar.</div>`
-              : passado ? `<div class="aviso quem">${icone("acao_calendario", 26)} Esse dia já passou. Só dá pra marcar as missões de hoje.</div>` : "";
+              : passado ? `<div class="aviso quem">${icone("acao_calendario", 26)} Esse dia já foi! Bora brilhar nas missões de hoje.</div>` : "";
   const card = t => `
     <div class="missao ${feitas.includes(t.key) ? "feita" : ""} ${futuro ? "futura" : ""}" data-id="${esc(t.key)}">
       <div class="ic">${ico(t.icone, 50)}</div>
@@ -1481,7 +1481,7 @@ function renderLoja(){
       <div class="rcTopo">${medalha(Math.max(1, nC), 72, !nC)}<div><small>Conquistas de ${esc(c.nome)}</small><b>${nC}</b><span>${atual ? esc(atual.nome) : "A primeira está chegando!"}</span></div></div>
       ${atual ? `<p class="rcFrase">${esc(atual.frase)}</p>` : `<p class="rcFrase">Faça suas missões para dar o primeiro passo nos Mundos.</p>`}
       <div class="rcBarra"><i style="width:${Math.round((ganhas % passo) / passo * 100)}%"></i></div>
-      <small class="rcFalta">Faltam ${falta} estrelas para o próximo passo: ${esc(prox.nome)}</small>
+      <small class="rcFalta">Só mais ${falta} estrelas e você chega em: ${esc(prox.nome)}!</small>
       <button class="btn sec" id="irMundos">${icone("mundo", 24)} Ver no mapa dos Mundos</button>
     </div>
     <h2 class="quem">${icone("trofeu", 32)} Coleção de medalhas</h2>
@@ -1493,9 +1493,9 @@ function renderLoja(){
       return `<button class="medCard ${nivel < 0 ? "trancada" : "n" + nivel}" data-fam="${f.id}">
         <span class="medSelo">${selo(f, Math.max(0, nivel), 58, nivel < 0)}</span>
         <b>${esc(f.nome)}</b>
-        <span class="medNivel">${nivel < 0 ? "Ainda não" : NIVEIS[nivel].nome}</span>
+        <span class="medNivel">${nivel < 0 ? "Quase lá!" : NIVEIS[nivel].nome}</span>
         <span class="medTrilho"><i style="width:${Math.max(4, pct)}%"></i></span>
-        <small>${prox ? `Faltam ${falta} ${un} para ${NIVEIS[nivel + 1].nome}` : "Coleção completa! 🏆"}</small>
+        <small>${prox ? `Mais ${falta} ${un} e vem o ${NIVEIS[nivel + 1].nome}!` : "Coleção completa! 🏆"}</small>
         ${acessorioDoOuro(f.id) ? `<span class="medPresente ${nivel === 2 ? "ok" : ""}">${icone("premio_presente", 16)} ${nivel === 2 ? "Ganhou: " : "Ouro dá: "}${esc(ACESS[acessorioDoOuro(f.id)].nome)}</span>` : ""}
       </button>`; }).join(""); })()}</div>
     ${nC ? `<h2 class="quem">${icone("mundo", 30)} Últimos passos</h2>
@@ -1508,20 +1508,20 @@ function renderLoja(){
         <div class="pic">${ico(r.icone, 52)}</div>
         <div class="ptx">${esc(r.texto)}</div>
         <div class="preco">${icone("estrela", 24)} ${r.custo}</div>
-        ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "É esse?" : pode ? "Escolher" : `Faltam ${r.custo - s}`}</button>`}
+        ${NUVEM.papel === "apoio" ? "" : `<button class="trocar ${conf ? "conf" : ""}" data-rec="${r.id}" ${pode ? "" : "disabled"}>${conf ? "É esse?" : pode ? "Escolher" : `Mais ${r.custo - s} ⭐`}</button>`}
       </div>`; }).join("")}</div>
     ${pedidos.length ? `<h2 class="quem">${icone("premio_escolhidos", 32)} Meus prêmios</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
       <span class="st ${t.status}">${t.status === "entregue" ? icone("premio_recebido", 20) + " Ganhei!" : icone("premio_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
   $("#irMundos").onclick = () => irPara("mundos");
   el.querySelectorAll(".medCard").forEach(b => b.onclick = () => {
     const f = FAMILIAS.find(x => x.id === b.dataset.fam), v = historicoDe(c.id)[f.campo] || 0, nivel = f.metas.filter(m => v >= m).length - 1;
-    if (nivel < 0) { const un = f.metas[0] === 1 ? f.unid[0] : f.unid[1]; toast(`${f.nome}: consiga ${f.metas[0]} ${un} para ganhar o Bronze!`); falar(`${f.nome}. Consiga ${f.metas[0]} ${un} para ganhar o bronze.`); return; }
+    if (nivel < 0) { const un = f.metas[0] === 1 ? f.unid[0] : f.unid[1]; toast(`${f.nome}: quase lá! Com ${f.metas[0]} ${un} o Bronze é seu!`); falar(`${f.nome}. Você está quase lá! Com ${f.metas[0]} ${un}, o bronze é seu!`); return; }
     revelarMedalha(c, f, nivel, false); });
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
     if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Escolher " + semEmoji(r.texto) + "? Usa " + r.custo + " estrelas."); return renderLoja(); }
     confirmaTroca = null;
-    if (saldo(c.id) < r.custo) return toast("Ainda faltam estrelas");
+    if (saldo(c.id) < r.custo) return toast("Quase lá! Mais umas missões e é seu ⭐");
     const id = "x" + Date.now();
     dados.trocas[id] = { id, kid: c.id, rec: r.id, texto: r.texto, custo: r.custo, data: new Date().toISOString(), status: "pedido" };
     salvar(); confete(30); vinheta("loja"); toast("Prêmio escolhido! Agora é com os pais 🎁"); render();
@@ -1611,7 +1611,7 @@ function renderMundos(){
   const aqui = pos(Math.min(naVolta, total - 1)), prox = infoConquista(nC + 1);
   el.innerHTML = `
     <div class="mundosTopo"><b>${icone("mundo", 30)} Mundos</b><span>${nC} passo${nC === 1 ? "" : "s"}${volta ? ` · volta ${volta + 1}` : ""}</span></div>
-    <div class="mundosProx">${medalha(nC + 1, 44, true)}<div><b>Próximo: ${esc(prox.nome)}</b><small>Faltam ${falta} estrelas, ou ganhe uma medalha de responsa.</small></div></div>
+    <div class="mundosProx">${medalha(nC + 1, 44, true)}<div><b>Próximo: ${esc(prox.nome)}</b><small>Só mais ${falta} estrelas, ou uma medalha de responsa, e você avança!</small></div></div>
     <div class="mapaMundos" id="mapaMundos">
       <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Trilha dos mundos: ${esc(c.nome)} está no passo ${naVolta + 1}">
         ${cenas}
@@ -1643,7 +1643,7 @@ function renderPlacar(){
     return `<div class="placar">
       <div class="linha"><span class="quem">${avatarHTML(c, 40)} ${esc(c.nome)}</span><span class="quem">${p} ${icone("estrela", 26)}</span></div>
       <div class="barra"><i style="width:${pct}%"></i></div>
-      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Faltam ${meta - p} estrelas`} · ${icone("jogo_sequencia_de_dias", 16)} ${sequencia(c.id)} dia(s) seguidos</small>
+      <small>${pct >= 100 ? "🎉 Ganhou o prêmio!" : `Mais ${meta - p} estrelas e o prêmio é seu!`} · ${icone("jogo_sequencia_de_dias", 16)} ${sequencia(c.id)} dia(s) seguidos</small>
       <div class="dias">${dias.map(d => {
         const livre = tarefasDe(c.id, d).length === 0, ok = diaCompleto(isoDia(d), c.id, d);
         return `<span><i class="${ok ? "sim" : livre ? "livre" : ""}">${ok ? icone("acao_missao_concluida", 20) : livre ? "–" : ""}</i>${NOME_DIA[d.getDay()][0]}</span>`; }).join("")}</div>
@@ -2129,11 +2129,11 @@ function renderAvatar(){
     <div class="secao"><b>Personagem</b><div class="opcs">${Object.entries(PERS).map(([k, v]) => opc("p", k, avatarSVG({ ...a, p: k }, 64) + `<small>${v.nome}</small>`, v.nome)).join("")}</div></div>
     <div class="secao"><b>Cor do fundo</b><div class="opcs cores">${opc("fundo", null, `<i style="background:${corTopo({ id: "_" })}"></i><small>Automática</small>`, "Cor automática")}${CORES_TOPO.map(cor => opc("fundo", cor, `<i style="background:${cor}"></i>`, "Cor do fundo")).join("")}</div></div>
     ${CAMADAS.map(cm => `<div class="secao"><b>${cm.nome}</b><div class="opcs">${opc(cm.id, null, `<span class="nada">Nada</span>`, "Nada")}${Object.entries(ACESS).filter(([, v]) => v.camada === cm.id).map(([k, v]) => liberado(c.id, k) ? opc(cm.id, k, comMudanca(cm.id, k) + `<small>${v.nome}</small>`, v.nome)
-      : `<button class="opc trancado" data-trava="${v.trava}" aria-label="${esc(v.nome)}, trancado">${comMudanca(cm.id, k)}<span class="cadeado">${icone("cadeado", 18)}</span><small>Ouro em ${esc(FAMILIAS.find(f => f.id === v.trava).nome)}</small></button>`).join("")}</div></div>`).join("")}
+      : `<button class="opc trancado" data-trava="${v.trava}" aria-label="${esc(v.nome)}, trancado">${comMudanca(cm.id, k)}<span class="cadeado">${icone("cadeado", 18)}</span><small>Vem com o Ouro em ${esc(FAMILIAS.find(f => f.id === v.trava).nome)}</small></button>`).join("")}</div></div>`).join("")}
     <div class="row acoesFolha"><button class="btn sec" id="avCancelar">Cancelar</button><button class="btn" id="avPronto">Pronto!</button></div>
   </div>`;
   document.querySelectorAll("#folhaAvatar .opc.trancado").forEach(b => b.onclick = () => {
-    const f = FAMILIAS.find(x => x.id === b.dataset.trava); toast(`Ganhe a medalha de Ouro ${f.nome} para liberar! 🔒`); falar(`Ganhe a medalha de ouro ${f.nome} para liberar.`); });
+    const f = FAMILIAS.find(x => x.id === b.dataset.trava); toast(`Esse vem com o Ouro em ${f.nome}. Você consegue! ✨`); falar(`Esse presente vem com o ouro em ${f.nome}. Você consegue!`); });
   document.querySelectorAll("#folhaAvatar .opc:not(.trancado)").forEach(b => b.onclick = () => {
     const v = b.dataset.valor || null; a[b.dataset.campo] = v;
     const rolar = $("#folhaAvatar .folhaCaixa").scrollTop; renderAvatar(); $("#folhaAvatar .folhaCaixa").scrollTop = rolar; vinheta("ok");
