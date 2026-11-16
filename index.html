@@ -782,6 +782,33 @@
   .campoE{display:flex;flex-direction:column;gap:4px;text-align:left;margin:4px 0}
   .campoE span{font-size:13px;font-weight:900;color:var(--suave)}
   .campoE input{margin:0}
+  /* ===== Primeiro uso ===== */
+  .caixa.onb{text-align:left;max-width:560px}
+  .onb h2{font-family:var(--titulo);font-weight:700;font-size:1.8rem;line-height:1.1;margin:6px 0 4px}
+  .onb p{margin:0 0 12px;color:var(--suave);font-weight:700}
+  .onbPassos{display:flex;gap:6px;margin:4px 0 14px}
+  .onbPassos i{flex:1;height:8px;border-radius:99px;background:#ECE6D6}
+  .onbPassos i.on{background:var(--pri)}
+  .onbLista{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+  .onbKid{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--tinta);border-radius:18px;padding:6px 10px}
+  .onbKid > div{flex:1}
+  .onbKid b{display:block;font-size:17px}
+  .onbKid small{color:var(--suave);font-weight:800}
+  .onbForm{display:flex;flex-direction:column;gap:8px;background:#FFF3BF;border-radius:20px;padding:14px;margin-bottom:10px}
+  .onbForm .btn{margin:0}
+  .onbContador{position:sticky;top:0;z-index:2;background:var(--creme);padding:8px 0;font-weight:800;color:var(--suave)}
+  .onbContador b{color:var(--pri);font-size:20px}
+  .onbGrade{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+  .onbChip{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:8px 12px;
+    font:800 15px "Nunito",sans-serif;color:var(--tinta);cursor:pointer;margin:0;min-height:52px}
+  .onbChip > span{flex:1}
+  .onbChip em{font-style:normal;font-weight:900;background:#FFF3BF;border-radius:10px;padding:2px 8px}
+  .onbChip i{font-style:normal;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--borda);color:var(--suave);font-weight:900;flex-shrink:0}
+  .onbChip.on{border-color:var(--tinta);background:#F3EDFF}
+  .onbChip.on i{background:var(--pri);border-color:var(--tinta);color:#fff}
+  .onbChip .emo{flex:0 0 26px;font-size:22px;text-align:center}
+  .onbRodape{position:sticky;bottom:0;background:linear-gradient(transparent,var(--creme) 30%);padding:18px 0 6px;text-align:center}
+  .onbRodape .btn{width:100%;margin:0 0 4px}
 </style>
 </head>
 <body>
@@ -1874,7 +1901,8 @@ function renderPais(){
     <div class="bloco">${cab("entrada_codigo_e_senha", "Senha dos pais")}
       ${formAberto === "pin" ? `<div class="formBox"><input id="novoPin" type="password" inputmode="numeric" placeholder="Nova senha"><div class="botoesForm"><button class="btn" id="pinSalvar">Trocar</button><button class="btn sec" data-fecha="1">Cancelar</button></div></div>`
         : `<div class="listaItens">${linha(`data-novo="pin"`, icone("entrada_codigo_e_senha", 30), "Trocar senha", "")}</div>`}</div>
-    <button class="btn sec" id="sair">Sair do painel</button>`}`;
+    <button class="btn sec" id="sair">Sair do painel</button>`}
+    <button class="btnExcluir" id="recomecar" data-aba="familia">Recomeçar do zero neste aparelho</button>`;
 
   ligarSeletores(el);
   // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
@@ -1892,6 +1920,7 @@ function renderPais(){
     if (formAberto === "a") { diasAtv = []; atvRepete = true; } renderPais(); el.querySelector(".formBox input:not([type=hidden])")?.focus?.(); });
   el.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => { fechar(); renderPais(); });
   el.querySelectorAll("[data-ed-r]").forEach(b => b.onclick = () => { fechar(); editando = { tipo: "r", id: b.dataset.edR }; renderPais(); el.querySelector(".formBox")?.scrollIntoView?.({ block: "center" }); });
+  $$("#recomecar").onclick = () => { if (confirm("Apagar tudo deste aparelho e abrir o app como na primeira vez?" + (NUVEM.ativo ? " (Os dados da família continuam guardados na nuvem.)" : " (Missões, estrelas e personagens deste aparelho serão apagados.)"))) location.href = location.pathname + "?novo"; };
   $$("#voltaRotina").onclick = () => { painelSecao = ""; fechar(); renderPais(); window.scrollTo(0, 0); };
   // dias da missão
   const getD = g => g === "a" ? diasAtv : diasForm;
@@ -2403,7 +2432,9 @@ function telaEntrada(qual = "inicio", erro = ""){
     $("#eResp").onclick = () => telaEntrada("respCriar");
     $("#eKid").onclick = () => telaEntrada("kid");
     $("#eApoio").onclick = () => telaEntrada("apoio");
-    $("#eLocal").onclick = () => { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); };
+    $("#eLocal").onclick = () => {
+      if (localStorage.getItem(CHAVE)) { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); return; }
+      comecarOnb("inicio", d => { dados = d; gravarSessao({ papel: "local" }); salvar(); el.style.display = "none"; modoLocal(); render(); }); };
   }
   if (qual === "resp" || qual === "respCriar") {
     const criar = qual === "respCriar";
@@ -2450,14 +2481,63 @@ function telaEntrada(qual = "inicio", erro = ""){
     const temLocal = !!localStorage.getItem(CHAVE);
     el.innerHTML = `<div class="caixa">${topo}<p>Agora vamos criar a sua família no Missão Casa.</p>
       ${temLocal ? `<button class="grande" id="fLocal"><span>${icone("entrada_trazer_do_aparelho", 52)}</span><div>Usar o que já cadastrei aqui<small>Leva crianças, missões, agenda e recompensas deste aparelho</small></div></button>` : ""}
-      <button class="grande" id="fNova"><span>${icone("entrada_comecar_do_zero", 52)}</span><div>Começar do zero<small>Com algumas missões de exemplo</small></div></button>
+      <button class="grande" id="fNova"><span>${icone("entrada_comecar_do_zero", 52)}</span><div>Criar a família agora<small>Crianças, missões e prêmios em 3 passos</small></div></button>
       <button class="grande" id="fConvite"><span>${icone("entrada_convite", 52)}</span><div>Tenho um convite<small>Outro responsável já criou a família e me mandou o código</small></div></button>
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="link" id="eSair">Sair da conta</button></div>`;
     if ($("#fLocal")) $("#fLocal").onclick = () => criarFamilia(carregar());
-    $("#fNova").onclick = () => criarFamilia(normalizar(JSON.parse(JSON.stringify(PADRAO))));
+    $("#fNova").onclick = () => comecarOnb("criarFamilia", d => criarFamilia(d));
     $("#fConvite").onclick = () => telaEntrada("conviteResp");
     $("#eSair").onclick = sairDaConta;
+  }
+  if (qual === "onbCriancas") {
+    const lista = ONB.criancas;
+    el.innerHTML = `<div class="caixa onb">${passosOnb(1)}
+      <h2>Quem vai jogar?</h2><p>Coloque as crianças da casa. O aniversário ajuda o app a sugerir missões da idade.</p>
+      <div class="onbLista">${lista.map((k, i) => `<div class="onbKid">${avatarSVG({ p: k.p }, 48)}<div><b>${esc(k.nome)}</b><small>${k.nasc ? idadeDe(k) + " anos" : "sem aniversário"}</small></div><button class="xItem" data-tira="${i}" aria-label="Tirar ${esc(k.nome)}">×</button></div>`).join("")}</div>
+      <div class="onbForm">
+        <label class="campoE"><span>Nome da criança</span><input id="oNome" placeholder="Ex.: Ana" autocomplete="off"></label>
+        <label class="campoE"><span>Aniversário</span><input id="oNasc" type="date"></label>
+        <button class="btn sec" id="oAdd">+ Adicionar criança</button>
+      </div>
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <button class="btn" id="oSeguir">Continuar</button>
+      <button class="link" id="eVoltar">Voltar</button></div>`;
+    const add = () => { const n = $("#oNome").value.trim(); if (!n) { $("#eErro").textContent = "Escreve o nome 🙂"; return false; }
+      const ps = Object.keys(PERS); lista.push({ id: "c" + Date.now() + lista.length, nome: n, avatar: "🙂", p: ps[lista.length % ps.length], ...($("#oNasc").value ? { nasc: $("#oNasc").value } : {}) });
+      telaEntrada("onbCriancas"); return true; };
+    $("#oAdd").onclick = add;
+    el.querySelectorAll("[data-tira]").forEach(b => b.onclick = () => { lista.splice(Number(b.dataset.tira), 1); telaEntrada("onbCriancas"); });
+    $("#oSeguir").onclick = () => { if ($("#oNome").value.trim()) add(); if (!ONB.criancas.length) return telaEntrada("onbCriancas", "Coloque pelo menos uma criança.");
+      ONB.missoes = null; telaEntrada("onbMissoes"); };
+    $("#eVoltar").onclick = () => telaEntrada(ONB.volta);
+  }
+  if (qual === "onbMissoes") {
+    const idades = ONB.criancas.map(idadeDe), conhecidas = idades.filter(a => a != null);
+    const serve = sg => !conhecidas.length || conhecidas.some(a => sugereParaIdade(sg, a));
+    const lista = SUGESTOES.map((sg, i) => ({ sg, i })).filter(x => serve(x.sg));
+    if (!ONB.missoes) ONB.missoes = new Set(lista.filter(x => INICIAIS.includes(x.sg.nome)).map(x => x.i));
+    el.innerHTML = `<div class="caixa onb">${passosOnb(2)}
+      <h2>Quais missões a casa vai ter?</h2><p>Já marquei algumas para começar. Toque para tirar ou pôr. Dá para mudar tudo depois.</p>
+      <div class="onbContador"><b>${ONB.missoes.size}</b> missões escolhidas</div>
+      ${CATS_SUG.map(cat => { const it = lista.filter(x => x.sg.cat === cat); if (!it.length) return "";
+        return `<span class="rot catSug">${cat}</span><div class="onbGrade">${it.map(({ sg, i }) => `<button class="onbChip ${ONB.missoes.has(i) ? "on" : ""}" data-m="${i}">${ico(sg.icone, 26)}<span>${esc(sg.nome)}</span><i aria-hidden="true">${ONB.missoes.has(i) ? "✓" : "+"}</i></button>`).join("")}</div>`; }).join("")}
+      <div class="onbRodape"><button class="btn" id="oSeguir">Continuar</button><button class="link" id="eVoltar">Voltar</button></div></div>`;
+    el.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { const i = Number(b.dataset.m); ONB.missoes.has(i) ? ONB.missoes.delete(i) : ONB.missoes.add(i);
+      const y = el.scrollTop; telaEntrada("onbMissoes"); el.scrollTop = y; });
+    $("#oSeguir").onclick = () => { if (!ONB.missoes.size) return alert("Escolha pelo menos uma missão."); ONB.premios = ONB.premios || new Set(PADRAO.recompensas.slice(0, 5).map(r => r.id)); telaEntrada("onbPremios"); };
+    $("#eVoltar").onclick = () => telaEntrada("onbCriancas");
+  }
+  if (qual === "onbPremios") {
+    el.innerHTML = `<div class="caixa onb">${passosOnb(3)}
+      <h2>Que prêmios dá para conquistar?</h2><p>As crianças juntam estrelas fazendo as missões e escolhem um prêmio. Os responsáveis confirmam.</p>
+      <div class="onbGrade">${PADRAO.recompensas.map(r => `<button class="onbChip ${ONB.premios.has(r.id) ? "on" : ""}" data-r="${r.id}"><span>${esc(r.texto)}</span><em>${r.custo}★</em><i aria-hidden="true">${ONB.premios.has(r.id) ? "✓" : "+"}</i></button>`).join("")}</div>
+      <div class="erro" id="eErro">${esc(erro)}</div>
+      <div class="onbRodape"><button class="btn" id="oFim">Pronto, vamos jogar!</button><button class="link" id="eVoltar">Voltar</button></div></div>`;
+    el.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { const id = b.dataset.r; ONB.premios.has(id) ? ONB.premios.delete(id) : ONB.premios.add(id);
+      const y = el.scrollTop; telaEntrada("onbPremios"); el.scrollTop = y; });
+    $("#oFim").onclick = () => { $("#oFim").disabled = true; ONB.fim(familiaDoOnb()); };
+    $("#eVoltar").onclick = () => telaEntrada("onbMissoes");
   }
   if (qual === "conviteResp" || qual === "apoio") {
     const resp = qual === "conviteResp";
@@ -2485,6 +2565,25 @@ async function depoisDoLoginResp(){
   const q = await db().collection("familias").where("pais", "array-contains", uid).limit(1).get();
   if (!q.empty) return conectarFamilia(q.docs[0].id, "pais");
   telaEntrada("criarFamilia");
+}
+/* ===== Primeiro uso: crianças → missões → prêmios ===== */
+const INICIAIS = ["Escovar os dentes", "Arrumar a cama", "Guardar os brinquedos", "Colocar a roupa suja no cesto", "Pôr a mesa do jantar", "Fazer a lição de casa", "Arrumar a mochila", "Tomar banho"];
+const ONB = { criancas: [], missoes: null, premios: null, volta: "inicio", fim: () => {} };
+const passosOnb = n => `<div class="onbPassos" aria-label="Passo ${n} de 3">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}"></i>`).join("")}</div>`;
+function comecarOnb(volta, fim){ Object.assign(ONB, { criancas: [], missoes: null, premios: null, volta, fim }); telaEntrada("onbCriancas"); }
+function familiaDoOnb(){
+  const d = normalizar(JSON.parse(JSON.stringify(PADRAO))), cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
+  d.criancas = ONB.criancas.map(({ p, ...k }) => k);
+  d.avatares = {}; ONB.criancas.forEach(k => d.avatares[k.id] = { p: k.p, v2: 1 });
+  d.tarefas = [...ONB.missoes].map((i, n) => { const { cat, min, max, ...sg } = SUGESTOES[i];
+    const cabem = d.criancas.filter(k => sugereParaIdade({ min, max }, idadeDe(k)));
+    return { id: "t" + Date.now() + n, para: cabem.length === 1 && d.criancas.length > 1 ? cabem[0].id : "todos", cor: cores[n % cores.length], ...JSON.parse(JSON.stringify(sg)) }; });
+  d.atividades = []; d.feitos = {}; d.trocas = {}; d.pausas = [];
+  d.recompensas = PADRAO.recompensas.filter(r => ONB.premios.has(r.id)).map(r => ({ ...r }));
+  if (!d.recompensas.length) d.recompensas = [{ ...PADRAO.recompensas[0] }];
+  d.premio = { texto: d.recompensas[0].texto, meta: 150 };
+  d.inicio = hojeStr();
+  return d;
 }
 async function criarFamilia(base){
   const uid = firebase.auth().currentUser.uid;
@@ -2526,12 +2625,19 @@ async function entrarComoCrianca(codigo){
 function modoLocal(){ NUVEM.ativo = false; NUVEM.papel = "local"; NUVEM.statusHTML = ""; montarNav(); }
 
 async function iniciar(){
+  // ?novo no endereço: apaga tudo deste aparelho e abre como na primeira vez
+  if (/[?&]novo\b/.test(location.search)) {
+    try { Object.keys(localStorage).filter(k => k.startsWith(CHAVE)).forEach(k => localStorage.removeItem(k)); } catch(e){}
+    try { if (window.FIREBASE_CONFIG) { await carregaFirebase(window.FIREBASE_CONFIG); await firebase.auth().signOut(); } } catch(e){}
+    history.replaceState(null, "", location.pathname); location.reload(); return;
+  }
   const cfg = window.FIREBASE_CONFIG;
   const sessao = lerSessao();
+  if (cfg && !sessao) telaEntrada("inicio");     // primeira vez: abre direto na entrada, sem mostrar dados de exemplo
   if (!cfg || sessao?.papel === "local") return modoLocal();
   modoLocal(); // mostra o app enquanto a nuvem carrega
   try { await carregaFirebase(cfg); }
-  catch(e) { toast("Sem internet: usando os dados deste aparelho"); return; }
+  catch(e) { if (!sessao) telaEntrada("inicio", ""); toast("Sem internet agora"); return; }
   const parar = firebase.auth().onAuthStateChanged(async user => {
     parar();
     try {
