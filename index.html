@@ -701,7 +701,7 @@
   .resumoConq .btn{margin:0}
   .medalhas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:8px}
   .med{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;background:#fff;border:1.5px solid var(--borda);border-radius:18px;padding:10px 6px}
-  .med small{font-size:12px;font-weight:800;line-height:1.2}
+  .med small{font-size:11.5px;font-weight:700;line-height:1.25;color:var(--suave)}
   .med.prox{opacity:.8;border-style:dashed}
   .mundosTopo{display:flex;align-items:baseline;justify-content:space-between;padding:14px 4px 8px}
   .mundosTopo b{display:flex;align-items:center;gap:8px;font-family:var(--titulo);font-size:26px;font-weight:600}
@@ -711,6 +711,20 @@
   .euAqui{position:absolute;transform:translate(-50%,-50%);filter:drop-shadow(0 4px 0 rgba(36,32,52,.15))}
   .euAqui svg{border-radius:50%;background:#FFFDF5;border:2.5px solid var(--tinta)}
   .mundosRodape{display:flex;align-items:center;gap:8px;justify-content:center;font-weight:900;padding:14px 0 6px}
+  .rcFrase{margin:0;font-weight:800;font-size:15px}
+  .dicaMed{margin:-6px 0 10px;color:var(--suave);font-weight:700;font-size:14px}
+  .medalhas .med{gap:6px}
+  .med .medIc{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#FFF3BF;border:2px solid var(--tinta)}
+  .med b{font-size:13px;line-height:1.2}
+  .med.trancada{opacity:.55}
+  .med.trancada .medIc{background:#F4F1EA;filter:grayscale(1)}
+  .passos{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+  .passo{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--borda);border-radius:18px;padding:8px 12px}
+  .passo b{display:block;font-size:15px}
+  .passo small{color:var(--suave);font-weight:700;font-size:13px}
+  .mundosProx{display:flex;align-items:center;gap:12px;background:#FFF3BF;border-radius:20px;padding:10px 14px;margin-bottom:12px}
+  .mundosProx b{display:block}
+  .mundosProx small{color:var(--suave);font-weight:700}
 </style>
 </head>
 <body>
@@ -1056,11 +1070,56 @@ const MUNDOS = [
   { id: "espaco",   nome: "Espaço", masc: 1,   fundo: "#2A2440", pedra: "#FFD52A", texto: "#FFFDF5" }
 ];
 const PASSOS_MUNDO = 6;
+// Cada passo da trilha tem nome e frase de incentivo (sem gênero, para servir para qualquer criança)
+const PASSOS_NOMES = {
+  quintal:  [["Primeiro passo!", "Começou! Cada missão feita conta."], ["Mão na massa", "Você não espera ninguém pedir. Que orgulho!"], ["Ajuda de ouro", "A casa fica melhor quando você ajuda."],
+             ["Palavra cumprida", "Combinou, fez. Isso é ter responsa!"], ["Turbo nas tarefas", "Rapidinho e bem feito!"], ["Quintal conquistado!", "Primeiro mundo explorado. Rumo à Floresta!"]],
+  floresta: [["Trilha aberta", "Bem-vinda(o) à Floresta! Bora explorar."], ["Raiz forte", "Dia após dia, você fica mais firme."], ["Nada esquecido", "Lembrou de tudo sozinha(o)!"],
+             ["Time da casa", "Quem ajuda a família joga junto."], ["Força da floresta", "Nem as tarefas difíceis te param."], ["Floresta explorada!", "Mais um mundo! Agora é a Praia."]],
+  praia:    [["Onda de capricho", "Tarefa bem feita é outra coisa!"], ["Mergulho na rotina", "Você já sabe o que fazer e faz."], ["Sol de responsa", "Brilhou cuidando das suas coisas."],
+             ["Castelo caprichado", "Passo a passo, você constrói coisas grandes."], ["Surfando nas tarefas", "Nem parece trabalho, né?"], ["Praia dominada!", "Agora é subir a Montanha!"]],
+  montanha: [["Escalada corajosa", "Começar é a parte mais difícil. E você começou!"], ["Passo firme", "Devagar e sempre, sem desistir."], ["Mochila em dia", "Organização de quem sabe o que quer."],
+             ["Vista lá de cima", "Olha quanta coisa você já fez!"], ["Quase no topo!", "Falta pouquinho. Vai!"], ["Topo da montanha!", "Lá de cima dá pra ver o Espaço..."]],
+  espaco:   [["Decolagem!", "3, 2, 1... rumo às estrelas!"], ["Em órbita", "Sua rotina já gira sozinha."], ["Estrela da casa", "A família inteira percebe o seu capricho."],
+             ["Responsa espacial", "Cuidar das suas coisas virou superpoder."], ["Missão cumprida", "Você é demais!"], ["Galáxia conquistada!", "Explorou todos os mundos! Bora dar outra volta?"]]
+};
 const passoConquista = () => Math.max(5, Number(dados.premio.passo) || 30);
-const conquistasDe = id => Math.floor(estrelasGanhas(id) / passoConquista());
-function infoConquista(n){   // n = número da conquista, começando em 1
+// Medalhas de responsabilidade: premiam completar o dia, manter a sequência e cumprir a sua vez. Cada uma vale +1 passo nos Mundos.
+const MEDALHAS = [
+  { id: "dia1",   nome: "Dia completo!",        frase: "Fez todas as missões de um dia.",           icone: "acao_missao_concluida", ok: e => e.dias >= 1 },
+  { id: "seq3",   nome: "Três dias seguidos",   frase: "Três dias completos em sequência.",         icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 3 },
+  { id: "dia5",   nome: "Cinco dias de capricho", frase: "Cinco dias completos.",                   icone: "trofeu", ok: e => e.dias >= 5 },
+  { id: "manha5", nome: "Manhã em dia",         frase: "Fez tudo da manhã em 5 dias.",              icone: "periodo_manha", ok: e => e.manhas >= 5 },
+  { id: "noite5", nome: "Noite tranquila",      frase: "Fez tudo da noite em 5 dias.",              icone: "periodo_noite", ok: e => e.noites >= 5 },
+  { id: "vez10",  nome: "Vez cumprida",         frase: "Fez a sua vez 10 vezes, sem reclamar!",     icone: "jogo_sua_vez", ok: e => e.vez >= 10 },
+  { id: "seq7",   nome: "Semana de responsa",   frase: "Sete dias completos seguidos.",             icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 7 },
+  { id: "dia10",  nome: "Dez dias completos",   frase: "Dez dias com tudo feito.",                  icone: "trofeu", ok: e => e.dias >= 10 },
+  { id: "vez30",  nome: "Parceria de ouro",     frase: "Fez a sua vez 30 vezes.",                   icone: "jogo_sua_vez", ok: e => e.vez >= 30 },
+  { id: "seq14",  nome: "Duas semanas firmes",  frase: "Catorze dias completos seguidos.",          icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 14 },
+  { id: "dia25",  nome: "Vinte e cinco dias!",  frase: "Vinte e cinco dias com tudo feito.",        icone: "trofeu", ok: e => e.dias >= 25 }
+];
+// Olha o histórico da criança (com as missões como estão cadastradas hoje)
+function historicoDe(id){
+  const e = { dias: 0, seqMax: 0, manhas: 0, noites: 0, vez: 0 }; let seq = 0;
+  const ini = new Date((dados.inicio || hojeStr()) + "T12:00:00"), hoje = new Date(); hoje.setHours(12, 0, 0, 0);
+  for (let d = new Date(ini), n = 0; d <= hoje && n < 800; d.setDate(d.getDate() + 1), n++) {
+    const ts = tarefasDe(id, d); if (!ts.length) continue;
+    const dia = isoDia(d), fe = feitosEm(dia, id), ok = t => fe.includes(t.key);
+    const tudo = ts.every(ok);
+    if (tudo) { e.dias++; seq++; e.seqMax = Math.max(e.seqMax, seq); } else if (dia !== hojeStr()) seq = 0;
+    const m = ts.filter(t => t.periodo === "manha"), no = ts.filter(t => t.periodo === "noite");
+    if (m.length && m.every(ok)) e.manhas++; if (no.length && no.every(ok)) e.noites++;
+    e.vez += ts.filter(t => t.revezar && ok(t)).length;
+  }
+  return e;
+}
+const medalhasDe = id => { const e = historicoDe(id); return MEDALHAS.filter(m => m.ok(e)); };
+// passos na trilha = conquistas por estrelas + medalhas de responsabilidade
+const conquistasDe = id => Math.floor(estrelasGanhas(id) / passoConquista()) + medalhasDe(id).length;
+function infoConquista(n){   // n = número do passo, começando em 1
   const i = n - 1, volta = Math.floor(i / (MUNDOS.length * PASSOS_MUNDO)), m = MUNDOS[Math.floor(i / PASSOS_MUNDO) % MUNDOS.length], passo = i % PASSOS_MUNDO + 1;
-  return { mundo: m, passo, volta, ultima: passo === PASSOS_MUNDO, nome: passo === PASSOS_MUNDO ? `Explorou ${m.masc ? "o" : "a"} ${m.nome}!` : passo === 1 ? `Chegou ${m.masc ? "no" : "na"} ${m.nome}` : `${m.nome}, passo ${passo}` };
+  const [nome, frase] = PASSOS_NOMES[m.id][passo - 1];
+  return { mundo: m, passo, volta, ultima: passo === PASSOS_MUNDO, nome, frase };
 }
 function medalha(n, tam = 64, trancada = false){
   const inf = infoConquista(n), cor = trancada ? "#ECE6D6" : inf.mundo.pedra, tx = trancada ? "#615C74" : (inf.mundo.id === "espaco" ? "#242034" : "#242034");
@@ -1277,12 +1336,16 @@ function alternar(key){
   const i = lista.indexOf(key);
   if (i >= 0) { lista.splice(i, 1); }
   else {
-    const antes = conquistasDe(criancaAtiva);
+    const antes = conquistasDe(criancaAtiva), medAntes = medalhasDe(criancaAtiva).map(m => m.id);
     lista.push(key);
     const t = tarefaDaChave(key);
     const depois = conquistasDe(criancaAtiva);
-    if (depois > antes) setTimeout(() => { const inf = infoConquista(depois); vinheta("loja"); confete(60);
-      toast(`Nova conquista! ${inf.nome} 🏅`); falar("Nova conquista! " + inf.nome); }, diaCompleto(dia, criancaAtiva, new Date()) ? 3200 : 700);
+    if (depois > antes) setTimeout(() => {
+      const nova = medalhasDe(criancaAtiva).find(m => !medAntes.includes(m.id)), inf = infoConquista(depois);
+      vinheta("loja"); confete(60);
+      if (nova) { toast(`Medalha: ${nova.nome} 🏅 +1 passo nos Mundos`); falar("Medalha nova! " + nova.nome + ". " + nova.frase); }
+      else { toast(`${inf.nome} 🏅`); falar(inf.nome + " " + inf.frase); }
+    }, diaCompleto(dia, criancaAtiva, new Date()) ? 3200 : 700);
     if (diaCompleto(dia, criancaAtiva, new Date())) { vinheta("tudo");
       mostrarConquista(crianca(criancaAtiva), tarefasDe(criancaAtiva, new Date()).reduce((s, x) => s + x.pontos, 0)); }
     else { toast(`+${t.pontos} estrelas!`); vinheta("ok");
@@ -1302,20 +1365,24 @@ const dataCurta = iso => new Date(iso + "T12:00:00").toLocaleDateString("pt-BR",
 function renderLoja(){
   const el = $("#lojaConteudo"), c = crianca(criancaAtiva);
   if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
-  const s = saldo(c.id), ganhas = estrelasGanhas(c.id), passo = passoConquista(), nC = Math.floor(ganhas / passo), falta = passo - ganhas % passo;
+  const s = saldo(c.id), ganhas = estrelasGanhas(c.id), passo = passoConquista(), meds = medalhasDe(c.id), nC = conquistasDe(c.id), falta = passo - ganhas % passo;
   const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
-  const atual = nC ? infoConquista(nC) : null, prox = infoConquista(nC + 1);
-  const mostrar = []; for (let n = Math.max(1, nC - 7); n <= nC; n++) mostrar.push(n);
+  const atual = nC ? infoConquista(nC) : null, prox = infoConquista(nC + 1), proxMed = MEDALHAS.find(m => !meds.includes(m));
+  const mostrar = []; for (let n = Math.max(1, nC - 5); n <= nC; n++) mostrar.push(n);
   el.innerHTML = `
     <div class="resumoConq">
-      <div class="rcTopo">${medalha(Math.max(1, nC), 72, !nC)}<div><small>Conquistas de ${esc(c.nome)}</small><b>${nC}</b><span>${atual ? `${esc(atual.mundo.nome)}, passo ${atual.passo}` : "A primeira está chegando"}</span></div></div>
+      <div class="rcTopo">${medalha(Math.max(1, nC), 72, !nC)}<div><small>Conquistas de ${esc(c.nome)}</small><b>${nC}</b><span>${atual ? esc(atual.nome) : "A primeira está chegando!"}</span></div></div>
+      ${atual ? `<p class="rcFrase">${esc(atual.frase)}</p>` : `<p class="rcFrase">Faça suas missões para dar o primeiro passo nos Mundos.</p>`}
       <div class="rcBarra"><i style="width:${Math.round((ganhas % passo) / passo * 100)}%"></i></div>
-      <small class="rcFalta">Faltam ${falta} estrelas para a próxima conquista: ${esc(prox.nome)}</small>
+      <small class="rcFalta">Faltam ${falta} estrelas para o próximo passo: ${esc(prox.nome)}</small>
       <button class="btn sec" id="irMundos">${icone("mundo", 24)} Ver no mapa dos Mundos</button>
     </div>
-    ${nC ? `<h2 class="quem">${icone("trofeu", 32)} Minhas conquistas</h2>
-    <div class="medalhas">${mostrar.reverse().map(n => `<div class="med">${medalha(n, 60)}<small>${esc(infoConquista(n).nome)}</small></div>`).join("")}
-      <div class="med prox">${medalha(nC + 1, 60, true)}<small>Próxima</small></div></div>` : ""}
+    <h2 class="quem">${icone("trofeu", 32)} Medalhas de responsa</h2>
+    <p class="dicaMed">Cada medalha vale +1 passo nos Mundos.</p>
+    <div class="medalhas">${MEDALHAS.map(m => { const tem = meds.includes(m);
+      return `<div class="med ${tem ? "" : "trancada"}"><span class="medIc">${icone(m.icone, 36)}</span><b>${esc(m.nome)}</b><small>${esc(tem ? m.frase : m === proxMed ? "Próxima: " + m.frase : m.frase)}</small></div>`; }).join("")}</div>
+    ${nC ? `<h2 class="quem">${icone("mundo", 30)} Últimos passos</h2>
+    <div class="passos">${mostrar.reverse().map(n => { const inf = infoConquista(n); return `<div class="passo">${medalha(n, 48)}<div><b>${esc(inf.nome)}</b><small>${esc(inf.mundo.nome)} · ${esc(inf.frase)}</small></div></div>`; }).join("")}</div>` : ""}
     <div class="cofre"><div class="moeda">${icone("estrela", 58)}</div><div style="flex:1"><small>Estrelas para trocar por prêmios</small><b>${s}</b></div></div>
     <h2 class="quem">${icone("premio_presente", 34)} Prêmios</h2>
     <div class="vitrine">${[...dados.recompensas].sort((a, b) => a.custo - b.custo).map(r => {
@@ -1340,43 +1407,101 @@ function renderLoja(){
   });
 }
 
+/* ===== Desenhos dos Mundos (traço tinta, cores da marca) ===== */
+const T_ = 'stroke="#242034" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+const DESENHO = {
+  arvore: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-6" y="-26" width="12" height="28" rx="3" fill="#9B6B43" ${T_}/><circle cx="0" cy="-44" r="26" fill="#6BCB5A" ${T_}/><circle cx="-9" cy="-52" r="7" fill="#A5DD37"/><circle cx="10" cy="-40" r="3" fill="#FF6654"/><circle cx="-12" cy="-36" r="3" fill="#FF6654"/></g>`,
+  pinheiro: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-5" y="-14" width="10" height="16" fill="#9B6B43" ${T_}/><path d="M0 -78 L22 -42 H12 L28 -14 H-28 L-12 -42 H-22Z" fill="#2FAE6B" ${T_}/></g>`,
+  flor: (x, y, cor = "#FF6654", s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 V-16" ${T_} fill="none"/><g fill="${cor}" ${T_}><circle cx="0" cy="-24" r="5"/><circle cx="-7" cy="-18" r="5"/><circle cx="7" cy="-18" r="5"/><circle cx="-4" cy="-11" r="5"/><circle cx="4" cy="-11" r="5"/></g><circle cx="0" cy="-17" r="4" fill="#FFD52A" ${T_}/></g>`,
+  arbusto: (x, y, s = 1, cor = "#7FD05F") => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-24 0 Q-30 -18 -14 -20 Q-10 -34 4 -28 Q18 -36 22 -20 Q34 -16 26 0Z" fill="${cor}" ${T_}/></g>`,
+  cerca: (x, y, n = 5) => { let g = `<g transform="translate(${x} ${y})"><rect x="0" y="-22" width="${n * 18}" height="6" fill="#FFFDF5" ${T_}/>`; for (let k = 0; k < n; k++) g += `<path d="M${k * 18 + 3} 0 V-30 L${k * 18 + 9} -36 L${k * 18 + 15} -30 V0Z" fill="#FFFDF5" ${T_}/>`; return g + "</g>"; },
+  casinha: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-22" y="-28" width="44" height="28" fill="#FFD52A" ${T_}/><path d="M-28 -26 L0 -48 L28 -26Z" fill="#FF6654" ${T_}/><path d="M-9 0 V-14 Q0 -24 9 -14 V0Z" fill="#242034"/></g>`,
+  sol: (x, y) => `<g transform="translate(${x} ${y})">${[0,45,90,135,180,225,270,315].map(a => `<path d="M0 -30 V-40" transform="rotate(${a})" stroke="#FFB800" stroke-width="4" stroke-linecap="round"/>`).join("")}<circle r="22" fill="#FFD52A" ${T_}/></g>`,
+  cogumelo: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-6 0 V-12 H6 V0Z" fill="#FFFDF5" ${T_}/><path d="M-18 -12 Q-18 -32 0 -32 Q18 -32 18 -12Z" fill="#FF6654" ${T_}/><circle cx="-7" cy="-22" r="3" fill="#FFFDF5"/><circle cx="6" cy="-25" r="3.5" fill="#FFFDF5"/></g>`,
+  riacho: (y, w) => `<path d="M0 ${y} Q${w * .25} ${y - 18} ${w * .5} ${y} T${w} ${y} V${y + 22} Q${w * .75} ${y + 6} ${w * .5} ${y + 22} T0 ${y + 22}Z" fill="#7FD8F0" ${T_}/>`,
+  coqueiro: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-4 0 Q-10 -40 4 -78 L12 -76 Q2 -40 8 0Z" fill="#C88A55" ${T_}/><g fill="#2FAE6B" ${T_}><path d="M8 -78 Q-20 -96 -40 -78 Q-14 -84 8 -74Z"/><path d="M8 -78 Q36 -98 54 -76 Q28 -84 8 -72Z"/><path d="M8 -78 Q-6 -104 22 -110 Q6 -96 10 -76Z"/></g><circle cx="4" cy="-72" r="5" fill="#9B6B43" ${T_}/></g>`,
+  guardasol: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 V-50" ${T_} fill="none"/><path d="M-34 -48 Q0 -84 34 -48Z" fill="#FF6654" ${T_}/><path d="M-12 -50 Q0 -80 12 -50Z" fill="#FFFDF5" ${T_}/></g>`,
+  castelo: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-26 0 V-22 H-20 V-28 H-14 V-22 H-6 V-36 H0 V-42 H6 V-36 H12 V-22 H20 V-28 H26 V0Z" fill="#F2C76B" ${T_}/><path d="M3 -42 V-56 L14 -51 L3 -47" fill="#FF6654" ${T_}/></g>`,
+  estrelamar: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 -14 L4 -4 L14 -3 L6 4 L9 14 L0 8 L-9 14 L-6 4 L-14 -3 L-4 -4Z" fill="#FF8A5C" ${T_}/></g>`,
+  onda: (x, y, w = 80) => `<path d="M${x} ${y} q${w / 8} -10 ${w / 4} 0 t${w / 4} 0 t${w / 4} 0 t${w / 4} 0" fill="none" stroke="#FFFDF5" stroke-width="3.5" stroke-linecap="round"/>`,
+  montanha: (x, y, w, h, cor = "#B6A3F0") => `<g><path d="M${x - w / 2} ${y} L${x} ${y - h} L${x + w / 2} ${y}Z" fill="${cor}" ${T_}/><path d="M${x - w * .14} ${y - h * .72} L${x} ${y - h} L${x + w * .14} ${y - h * .72} L${x + w * .06} ${y - h * .66} L${x} ${y - h * .74} L${x - w * .07} ${y - h * .65}Z" fill="#FFFDF5" ${T_}/></g>`,
+  nuvem: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-30 0 Q-36 -16 -20 -18 Q-16 -32 0 -28 Q14 -38 24 -22 Q38 -20 32 0Z" fill="#FFFDF5" ${T_}/></g>`,
+  bandeira: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 V-46" ${T_} fill="none"/><path d="M0 -46 L26 -38 L0 -30Z" fill="#FF6654" ${T_}/></g>`,
+  planeta: (x, y, r, cor, anel) => `<g transform="translate(${x} ${y})">${anel ? `<ellipse rx="${r * 1.7}" ry="${r * .45}" fill="none" stroke="#242034" stroke-width="7"/><ellipse rx="${r * 1.7}" ry="${r * .45}" fill="none" stroke="${anel}" stroke-width="3.5"/>` : ""}<circle r="${r}" fill="${cor}" ${T_}/><circle cx="${-r * .35}" cy="${-r * .3}" r="${r * .22}" fill="#FFFDF5" opacity=".45"/>${anel ? `<path d="M${-r * 1.7} 0 A${r * 1.7} ${r * .45} 0 0 0 ${r * 1.7} 0" fill="none" stroke="${anel}" stroke-width="3.5"/>` : ""}</g>`,
+  foguete: (x, y, s = 1) => `<g transform="translate(${x} ${y}) scale(${s}) rotate(20)"><path d="M-8 6 L0 26 L8 6Z" fill="#FFD52A" ${T_}/><path d="M-12 0 Q-14 -40 0 -58 Q14 -40 12 0Z" fill="#FFFDF5" ${T_}/><path d="M-12 -6 L-22 6 L-12 4Z M12 -6 L22 6 L12 4Z" fill="#FF6654" ${T_}/><circle cx="0" cy="-30" r="6" fill="#29BCE5" ${T_}/></g>`,
+  brilho: (x, y, s = 1) => `<path d="M${x} ${y - 8 * s} Q${x + 1.5 * s} ${y - 1.5 * s} ${x + 8 * s} ${y} Q${x + 1.5 * s} ${y + 1.5 * s} ${x} ${y + 8 * s} Q${x - 1.5 * s} ${y + 1.5 * s} ${x - 8 * s} ${y} Q${x - 1.5 * s} ${y - 1.5 * s} ${x} ${y - 8 * s}Z" fill="#FFD52A"/>`
+};
+// Cenário de cada mundo: fundo + desenhos nas laterais (longe das pedras da trilha)
+function cenarioMundo(m, y0, alt, W, pedrasY, lados){
+  const D = DESENHO; let g = "";
+  const lado = (k, margem = 52) => lados[k] > W / 2 ? margem : W - margem;   // do lado oposto da pedra
+  if (m.id === "quintal") {
+    g += `<rect x="0" y="${y0}" width="${W}" height="${alt}" fill="#DDF3C4"/>`;
+    for (let k = 0; k < 18; k++) g += `<path d="M${(k * 61) % W} ${y0 + 40 + (k * 97) % (alt - 60)} l4 -8 l4 8" fill="none" stroke="#8CCB4A" stroke-width="2.5" stroke-linecap="round"/>`;
+    g += D.cerca(14, y0 + alt - 18, 4) + D.cerca(W - 86, y0 + alt - 18, 4);
+    const itens = [x => D.arvore(x, 0, .9), x => D.casinha(x, 0, .95), x => D.flor(x - 10, 0, "#FF6654") + D.flor(x + 12, 4, "#B06CFF"), x => D.arbusto(x, 0, 1), x => D.arvore(x, 0, .8), x => D.sol(x, -30)];
+    pedrasY.forEach((py, k) => g += `<g transform="translate(0 ${py + 20})">${itens[k](lado(k))}</g>`);
+  } else if (m.id === "floresta") {
+    g += `<rect x="0" y="${y0}" width="${W}" height="${alt}" fill="#C9EBCB"/>` + D.riacho(y0 + alt * .55, W);
+    const itens = [x => D.pinheiro(x - 16, 0, .9) + D.pinheiro(x + 16, 6, .75), x => D.cogumelo(x - 10, 0) + D.cogumelo(x + 14, 4, .7), x => D.pinheiro(x, 0, 1.05), x => D.arbusto(x, 0, 1, "#2FAE6B") + D.cogumelo(x + 22, 2, .6), x => D.pinheiro(x - 14, 0, .8) + D.pinheiro(x + 18, 4, .95), x => D.arvore(x, 0, .9)];
+    pedrasY.forEach((py, k) => g += `<g transform="translate(0 ${py + 22})">${itens[k](lado(k))}</g>`);
+  } else if (m.id === "praia") {
+    g += `<rect x="0" y="${y0}" width="${W}" height="${alt}" fill="#FFF0C2"/><path d="M0 ${y0} H${W} V${y0 + alt * .42} Q${W * .75} ${y0 + alt * .48} ${W * .5} ${y0 + alt * .42} T0 ${y0 + alt * .44}Z" fill="#7FD8F0" ${T_}/>`;
+    for (let k = 0; k < 6; k++) g += D.onda(20 + (k * 113) % (W - 100), y0 + 40 + k * 32, 70);
+    const itens = [x => D.coqueiro(x, 0, .9), x => D.guardasol(x, 0, 1), x => D.castelo(x, 0, 1), x => D.estrelamar(x - 14, 0) + D.estrelamar(x + 14, -10, .7), x => D.coqueiro(x, 0, .8), x => D.guardasol(x, 0, .9)];
+    pedrasY.forEach((py, k) => g += `<g transform="translate(0 ${py + 18})">${itens[k](lado(k))}</g>`);
+  } else if (m.id === "montanha") {
+    g += `<rect x="0" y="${y0}" width="${W}" height="${alt}" fill="#E7DDFF"/>`;
+    g += D.montanha(70, y0 + alt * .38, 200, 150, "#C9B8F5") + D.montanha(W - 60, y0 + alt * .42, 220, 180, "#B6A3F0") + D.montanha(W / 2, y0 + alt * .8, 240, 170, "#D5C8FA");
+    const itens = [x => D.nuvem(x, -20, .8), x => D.bandeira(x, 0, 1), x => D.nuvem(x, -24, .9), x => D.arbusto(x, 0, .8, "#9C86E8"), x => D.nuvem(x, -18, .7), x => D.bandeira(x, 0, 1.2)];
+    pedrasY.forEach((py, k) => g += `<g transform="translate(0 ${py + 18})">${itens[k](lado(k))}</g>`);
+  } else {
+    g += `<rect x="0" y="${y0}" width="${W}" height="${alt}" fill="#2A2440"/>`;
+    for (let k = 0; k < 40; k++) g += `<circle cx="${(k * 73 + 11) % W}" cy="${y0 + 10 + (k * 53) % (alt - 20)}" r="${k % 4 ? 1.4 : 2.4}" fill="#FFFDF5" opacity=".85"/>`;
+    for (let k = 0; k < 6; k++) g += D.brilho(30 + (k * 97) % (W - 60), y0 + 60 + k * 80, .9);
+    const itens = [x => D.planeta(x, -20, 18, "#FF6654", "#FFD52A"), x => D.foguete(x, -10, .9), x => D.planeta(x, -20, 14, "#29BCE5"), x => D.planeta(x, -16, 20, "#A5DD37", "#B06CFF"), x => `<path d="M${x - 14} -40 A22 22 0 1 0 ${x + 12} -6 A17 17 0 1 1 ${x - 14} -40Z" fill="#FFD52A" ${T_}/>`, x => D.foguete(x, -20, 1.1)];
+    pedrasY.forEach((py, k) => g += `<g transform="translate(0 ${py + 10})">${itens[k](lado(k))}</g>`);
+  }
+  return g;
+}
 function renderMundos(){
   const el = $("#mundosConteudo"), c = crianca(criancaAtiva);
   if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
   const nC = conquistasDe(c.id), total = MUNDOS.length * PASSOS_MUNDO, volta = Math.floor(nC / total), naVolta = nC % total;
   const passo = passoConquista(), falta = passo - estrelasGanhas(c.id) % passo;
-  const W = 340, ALT = 92;
-  // de baixo (começo) para cima; a trilha zigue-zagueia
-  const pos = k => ({ x: W / 2 + Math.sin(k * 1.15) * 110, y: (total - k) * ALT + 40 });
-  const H = total * ALT + 110;
-  let faixas = "", caminho = "", pedras = "";
+  const W = 340, ALT = 92, TOPO = 70, BASE = 70;
+  const pos = k => ({ x: W / 2 + Math.sin(k * 1.15) * 105, y: TOPO + (total - 1 - k) * ALT + ALT / 2 });
+  const H = TOPO + total * ALT + BASE;
+  let cenas = "", caminho = "", pedras = "", rotulos = "";
   MUNDOS.forEach((m, mi) => {
-    const yTop = (total - (mi + 1) * PASSOS_MUNDO) * ALT + 40 - ALT / 2 + (mi === MUNDOS.length - 1 ? -60 : 0), alt = PASSOS_MUNDO * ALT + (mi === MUNDOS.length - 1 ? 60 : 0) + (mi === 0 ? 70 : 0);
-    faixas += `<rect x="0" y="${yTop}" width="${W}" height="${alt}" fill="${m.fundo}"/>`;
-    if (m.id === "espaco") for (let k = 0; k < 26; k++) faixas += `<circle cx="${(k * 73) % W}" cy="${yTop + 10 + (k * 47) % (alt - 20)}" r="${k % 3 ? 1.6 : 2.6}" fill="#FFFDF5" opacity=".8"/>`;
-    faixas += `<text x="16" y="${yTop + 34}" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="22" fill="${m.texto}">${mi + 1}. ${m.nome}</text>`;
+    const k0 = mi * PASSOS_MUNDO, yBase = pos(k0).y + ALT / 2 + (mi === 0 ? BASE : 0), yTop = pos(k0 + PASSOS_MUNDO - 1).y - ALT / 2 - (mi === MUNDOS.length - 1 ? TOPO : 0);
+    const ks = [...Array(PASSOS_MUNDO).keys()].map(i => k0 + i);
+    cenas += cenarioMundo(m, yTop, yBase - yTop, W, ks.map(k => pos(k).y - yTop + yTop), ks.map(k => pos(k).x));
+    const escuro = m.id === "espaco", larg = m.nome.length * 12 + 58, p0 = pos(k0), ly = p0.y - 18 + (mi === 0 ? 34 : 0);
+    rotulos += `<g transform="translate(${p0.x > W / 2 ? 12 : W - larg - 12} ${ly})"><rect width="${larg}" height="36" rx="18" fill="${escuro ? "#FFD52A" : "#FFFDF5"}" stroke="#242034" stroke-width="2.5"/><text x="16" y="25" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="19" fill="#242034">${mi + 1}. ${m.nome}</text></g>`;
   });
-  for (let k = 0; k < total; k++) { const a = pos(k), b = pos(k + 1); if (k < total - 1) caminho += `M${a.x} ${a.y} Q${(a.x + b.x) / 2 + 30} ${(a.y + b.y) / 2} ${b.x} ${b.y} `; }
+  for (let k = 0; k < total - 1; k++) { const a = pos(k), b = pos(k + 1); caminho += `M${a.x} ${a.y} C${a.x} ${a.y - ALT * .55} ${b.x} ${b.y + ALT * .55} ${b.x} ${b.y} `; }
   for (let k = 0; k < total; k++) {
-    const p = pos(k), feita = k < naVolta, m = MUNDOS[Math.floor(k / PASSOS_MUNDO)], ultima = k % PASSOS_MUNDO === PASSOS_MUNDO - 1;
-    pedras += `<g transform="translate(${p.x} ${p.y})"><ellipse cx="0" cy="6" rx="${ultima ? 30 : 24}" ry="${ultima ? 15 : 12}" fill="#242034" opacity=".12"/>
-      <ellipse cx="0" cy="0" rx="${ultima ? 30 : 24}" ry="${ultima ? 15 : 12}" fill="${feita ? m.pedra : "#FFFDF5"}" stroke="#242034" stroke-width="3"/>
-      ${feita ? `<path d="M-7 0 L-2 5 L8 -5" fill="none" stroke="#242034" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>` : `<text x="0" y="5" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="13" fill="#615C74">${k + 1}</text>`}</g>`;
+    const p = pos(k), feita = k < naVolta, m = MUNDOS[Math.floor(k / PASSOS_MUNDO)], ultima = k % PASSOS_MUNDO === PASSOS_MUNDO - 1, rx = ultima ? 30 : 24, ry = ultima ? 15 : 12;
+    pedras += `<g transform="translate(${p.x} ${p.y})"><ellipse cx="0" cy="6" rx="${rx}" ry="${ry}" fill="#242034" opacity=".18"/>
+      <ellipse rx="${rx}" ry="${ry}" fill="${feita ? m.pedra : "#FFFDF5"}" stroke="#242034" stroke-width="3"/>
+      ${feita ? `<path d="M-7 0 L-2 5 L8 -5" fill="none" stroke="#242034" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>` : ultima ? DESENHO.brilho(0, 0, 1) : `<text x="0" y="5" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="13" fill="#615C74">${k + 1}</text>`}</g>`;
   }
-  const aqui = pos(Math.min(naVolta, total - 1)), aqX = aqui.x, aqY = aqui.y;
+  const aqui = pos(Math.min(naVolta, total - 1)), prox = infoConquista(nC + 1);
   el.innerHTML = `
-    <div class="mundosTopo"><b>${icone("mundo", 30)} Mundos</b><span>${nC} conquista${nC === 1 ? "" : "s"}${volta ? ` · volta ${volta + 1}` : ""}</span></div>
+    <div class="mundosTopo"><b>${icone("mundo", 30)} Mundos</b><span>${nC} passo${nC === 1 ? "" : "s"}${volta ? ` · volta ${volta + 1}` : ""}</span></div>
+    <div class="mundosProx">${medalha(nC + 1, 44, true)}<div><b>Próximo: ${esc(prox.nome)}</b><small>Faltam ${falta} estrelas, ou ganhe uma medalha de responsa.</small></div></div>
     <div class="mapaMundos" id="mapaMundos">
       <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Trilha dos mundos: ${esc(c.nome)} está no passo ${naVolta + 1}">
-        ${faixas}
-        <path d="${caminho}" fill="none" stroke="#FFFDF5" stroke-width="16" stroke-linecap="round" opacity=".9"/>
-        <path d="${caminho}" fill="none" stroke="#242034" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" opacity=".45"/>
-        ${pedras}
+        ${cenas}
+        <path d="${caminho}" fill="none" stroke="#242034" stroke-width="22" stroke-linecap="round" opacity=".9"/>
+        <path d="${caminho}" fill="none" stroke="#F4E3C1" stroke-width="16" stroke-linecap="round"/>
+        <path d="${caminho}" fill="none" stroke="#C9A877" stroke-width="2.5" stroke-dasharray="3 12" stroke-linecap="round"/>
+        ${pedras}${rotulos}
       </svg>
-      <div class="euAqui" style="left:${aqX / W * 100}%;top:${(aqY - 40) / H * 100}%">${avatarHTML(c, 64)}</div>
-    </div>
-    <div class="mundosRodape">${icone("estrela", 22)} Faltam ${falta} estrelas para o próximo passo</div>`;
-  const mapa = $("#mapaMundos"); const alvo = el.querySelector(".euAqui");
+      <div class="euAqui" style="left:${aqui.x / W * 100}%;top:${(aqui.y - 46) / H * 100}%">${avatarHTML(c, 64)}</div>
+    </div>`;
+  const alvo = el.querySelector(".euAqui");
   if (alvo && alvo.scrollIntoView) setTimeout(() => { try { alvo.scrollIntoView({ block: "center" }); } catch(e){} }, 30);
 }
 
