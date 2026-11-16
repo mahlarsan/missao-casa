@@ -809,6 +809,47 @@
   .onbChip .emo{flex:0 0 26px;font-size:22px;text-align:center}
   .onbRodape{position:sticky;bottom:0;background:linear-gradient(transparent,var(--creme) 30%);padding:18px 0 6px;text-align:center}
   .onbRodape .btn{width:100%;margin:0 0 4px}
+  /* ===== Boas-vindas da criança ===== */
+  .tour{position:fixed;inset:0;z-index:55;align-items:center;justify-content:center;padding:24px 20px calc(24px + env(safe-area-inset-bottom));
+    background:radial-gradient(circle at 50% 30%,#FFF3BF 0,#FFD52A 45%,#B06CFF 120%);overflow:auto}
+  .tourCaixa{position:relative;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+  .tour h1{margin:0;font-family:var(--titulo);font-weight:700;font-size:2.3rem;line-height:1.05;color:var(--tinta)}
+  .tourTx{margin:0;font-weight:800;font-size:1.25rem;line-height:1.35;max-width:340px}
+  .tourBtn{min-width:240px;font-size:1.2rem;padding:16px 22px;margin:6px 0 0}
+  .tourPontos{display:flex;gap:8px}
+  .tourPontos i{width:12px;height:12px;border-radius:50%;background:#FFFDF5;border:2px solid var(--tinta)}
+  .tourPontos i.on{background:var(--pri)}
+  .tourCaixa:has(.tourOuvir){padding-top:56px}
+  .tour .link{background:none;border:0;font:900 16px "Nunito",sans-serif;color:var(--tinta);text-decoration:underline;cursor:pointer;padding:8px}
+  .tourP svg{width:100%;height:auto;max-width:96px}
+  .tourOuvir{position:absolute;top:0;right:0;width:52px;height:52px;border-radius:50%;background:#FFFDF5;border:2px solid var(--tinta);display:grid;place-items:center;cursor:pointer;padding:0;margin:0}
+  .tourQuem{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+  .tourQuem.mini{gap:4px}
+  .tourKid{display:flex;flex-direction:column;align-items:center;gap:6px;background:#FFFDF5;border:2px solid var(--tinta);border-radius:28px;padding:14px 18px 12px;cursor:pointer;margin:0}
+  .tourKid b{font-family:var(--titulo);font-size:1.5rem}
+  .tourHeroi{animation:pulinho 1.8s ease-in-out infinite}
+  .tourPers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
+  .tourP{display:flex;flex-direction:column;align-items:center;gap:2px;background:#FFFDF5;border:2px solid transparent;border-radius:20px;padding:8px 2px;cursor:pointer;margin:0}
+  .tourP b{font-size:13px;font-weight:900}
+  .tourP.on{border-color:var(--tinta);background:#fff;box-shadow:0 0 0 4px var(--pri)}
+  .pula{animation:pulaToque .5s cubic-bezier(.3,1.8,.5,1)}
+  @keyframes pulaToque{0%{transform:scale(.8)}100%{transform:scale(1)}}
+  .tourMissao{width:100%;max-width:380px;text-align:left}
+  .tourMissao .ok{position:relative;animation:chama 1.2s ease-in-out infinite}
+  .tourMissao.feita .ok{animation:none}
+  .dedinho{position:absolute;right:-10px;bottom:-22px;font-size:30px;animation:dedo 1.2s ease-in-out infinite}
+  @keyframes chama{0%,100%{box-shadow:0 0 0 0 rgba(119,56,234,.5)}50%{box-shadow:0 0 0 12px rgba(119,56,234,0)}}
+  @keyframes dedo{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-8px)}}
+  .tourEstrelas{display:flex;align-items:center;gap:8px;font-family:var(--titulo);font-size:1.6rem}
+  .tourTrio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+  .tourTrio > div{display:flex;flex-direction:column;align-items:center;gap:4px;background:#FFFDF5;border:2px solid var(--tinta);border-radius:22px;padding:14px 6px}
+  .tourTrio b{font-family:var(--titulo);font-size:1.1rem}
+  .tourTrio small{font-weight:800;color:var(--suave)}
+  .tour.anima .tourCaixa > *{animation:sobe .45s ease-out both}
+  .tour.anima .tourCaixa > *:nth-child(2){animation-delay:.08s}.tour.anima .tourCaixa > *:nth-child(3){animation-delay:.16s}
+  .tour.anima .tourCaixa > *:nth-child(4){animation-delay:.24s}.tour.anima .tourCaixa > *:nth-child(5){animation-delay:.32s}
+  body.calmo .tour *{animation:none!important}
+  #mostrarTour{display:flex;align-items:center;justify-content:center;gap:8px}
 </style>
 </head>
 <body>
@@ -863,6 +904,7 @@
 <div class="conquista" id="conquista" style="display:none" role="dialog" aria-label="Dia completo"></div>
 <div class="revela" id="revela" style="display:none" role="dialog" aria-label="Medalha nova"></div>
 <div class="entrada" id="entrada" style="display:none"></div>
+<div class="tour" id="tour" style="display:none" role="dialog" aria-label="Boas-vindas"></div>
 
 <!-- Configuração do Firebase (opcional). Sem ela, o app funciona só neste aparelho. -->
 <script src="firebase-config.js"></script>
@@ -1902,6 +1944,7 @@ function renderPais(){
       ${formAberto === "pin" ? `<div class="formBox"><input id="novoPin" type="password" inputmode="numeric" placeholder="Nova senha"><div class="botoesForm"><button class="btn" id="pinSalvar">Trocar</button><button class="btn sec" data-fecha="1">Cancelar</button></div></div>`
         : `<div class="listaItens">${linha(`data-novo="pin"`, icone("entrada_codigo_e_senha", 30), "Trocar senha", "")}</div>`}</div>
     <button class="btn sec" id="sair">Sair do painel</button>`}
+    <button class="btn sec" id="mostrarTour" data-aba="familia">${icone("entrada_crianca", 24)} Mostrar o jogo para as crianças</button>
     <button class="btnExcluir" id="recomecar" data-aba="familia">Recomeçar do zero neste aparelho</button>`;
 
   ligarSeletores(el);
@@ -1920,6 +1963,7 @@ function renderPais(){
     if (formAberto === "a") { diasAtv = []; atvRepete = true; } renderPais(); el.querySelector(".formBox input:not([type=hidden])")?.focus?.(); });
   el.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => { fechar(); renderPais(); });
   el.querySelectorAll("[data-ed-r]").forEach(b => b.onclick = () => { fechar(); editando = { tipo: "r", id: b.dataset.edR }; renderPais(); el.querySelector(".formBox")?.scrollIntoView?.({ block: "center" }); });
+  $$("#mostrarTour").onclick = () => abrirTour();
   $$("#recomecar").onclick = () => { if (confirm("Apagar tudo deste aparelho e abrir o app como na primeira vez?" + (NUVEM.ativo ? " (Os dados da família continuam guardados na nuvem.)" : " (Missões, estrelas e personagens deste aparelho serão apagados.)"))) location.href = location.pathname + "?novo"; };
   $$("#voltaRotina").onclick = () => { painelSecao = ""; fechar(); renderPais(); window.scrollTo(0, 0); };
   // dias da missão
@@ -2397,6 +2441,7 @@ async function conectarFamilia(codigo, papel){
   $("#entrada").style.display = "none";
   NUVEM.statusHTML = icone("entrada_nuvem_conectada", 18) + " " + esc(papel === "pais" ? "Família " + codigo : papel === "apoio" ? "Rede de apoio da família" : "Conectado à família");
   montarNav();
+  setTimeout(talvezTour, 600);
   NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
     e => { console.warn(e); toast("Perdi o acesso a esta família"); });
 }
@@ -2434,7 +2479,7 @@ function telaEntrada(qual = "inicio", erro = ""){
     $("#eApoio").onclick = () => telaEntrada("apoio");
     $("#eLocal").onclick = () => {
       if (localStorage.getItem(CHAVE)) { gravarSessao({ papel: "local" }); el.style.display = "none"; modoLocal(); return; }
-      comecarOnb("inicio", d => { dados = d; gravarSessao({ papel: "local" }); salvar(); el.style.display = "none"; modoLocal(); render(); }); };
+      comecarOnb("inicio", d => { dados = d; gravarSessao({ papel: "local" }); salvar(); el.style.display = "none"; modoLocal(); render(); setTimeout(() => telaChamarKids(), 400); }); };
   }
   if (qual === "resp" || qual === "respCriar") {
     const criar = qual === "respCriar";
@@ -2486,7 +2531,7 @@ function telaEntrada(qual = "inicio", erro = ""){
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="link" id="eSair">Sair da conta</button></div>`;
     if ($("#fLocal")) $("#fLocal").onclick = () => criarFamilia(carregar());
-    $("#fNova").onclick = () => comecarOnb("criarFamilia", d => criarFamilia(d));
+    $("#fNova").onclick = () => comecarOnb("criarFamilia", async d => { await criarFamilia(d); setTimeout(() => telaChamarKids(), 600); });
     $("#fConvite").onclick = () => telaEntrada("conviteResp");
     $("#eSair").onclick = sairDaConta;
   }
@@ -2566,6 +2611,102 @@ async function depoisDoLoginResp(){
   if (!q.empty) return conectarFamilia(q.docs[0].id, "pais");
   telaEntrada("criarFamilia");
 }
+
+/* ===== Boas-vindas da criança: quem é você → personagem → treino → mundos ===== */
+const TOUR_KEY = CHAVE + ".tour";
+const tourFeito = id => { try { return (JSON.parse(localStorage.getItem(TOUR_KEY)) || []).includes(id); } catch(e) { return false; } };
+const marcarTour = id => { try { const l = JSON.parse(localStorage.getItem(TOUR_KEY)) || []; if (!l.includes(id)) l.push(id); localStorage.setItem(TOUR_KEY, JSON.stringify(l)); } catch(e){} };
+let TOUR = { passo: "quem", kid: null, p: null, fila: [] };
+function abrirTour(ids){
+  const lista = (ids || dados.criancas.map(c => c.id)).filter(id => crianca(id));
+  if (!lista.length) return;
+  TOUR = { passo: lista.length > 1 ? "quem" : "oi", kid: lista.length > 1 ? null : lista[0], p: null, fila: lista };
+  passoTour();
+}
+function telaChamarKids(){
+  const el = $("#tour"), ks = dados.criancas;
+  if (!ks.length) return;
+  el.innerHTML = `<div class="tourCaixa"><div class="tourQuem mini">${ks.map(k => avatarSVG(dados.avatares[k.id] || { p: "orbita" }, 90)).join("")}</div>
+    <h1>Tudo pronto!</h1><p class="tourTx">Agora chame ${ks.length > 1 ? "as crianças" : esc(ks[0].nome)} para conhecer o jogo. Leva 1 minutinho.</p>
+    <button class="btn tourBtn" id="tChamar">Mostrar para ${ks.length > 1 ? "as crianças" : esc(ks[0].nome)}</button>
+    <button class="link" id="tDepois">Depois</button></div>`;
+  el.style.display = "flex"; el.classList.remove("anima"); void el.offsetWidth; el.classList.add("anima");
+  $("#tChamar").onclick = () => abrirTour();
+  $("#tDepois").onclick = () => { el.style.display = "none"; toast("Dá para mostrar depois em Painel › Família 😉"); };
+}
+function talvezTour(){
+  if (NUVEM.papel === "apoio") return;
+  const faltam = dados.criancas.filter(c => !tourFeito(c.id)).map(c => c.id);
+  if (faltam.length && NUVEM.papel === "crianca") abrirTour(faltam);
+}
+function passoTour(){
+  const el = $("#tour"), c = crianca(TOUR.kid), av = c ? (dados.avatares[c.id] || { p: "orbita" }) : null;
+  const pontos = ["oi", "personagem", "treino", "mundos"], i = pontos.indexOf(TOUR.passo);
+  const bolinhas = i >= 0 ? `<div class="tourPontos">${pontos.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>` : "";
+  const ouvir = `<button class="tourOuvir" id="tOuvir" aria-label="Ouvir de novo">${icone("acao_ouvir_em_voz_alta", 30)}</button>`;
+  let html = "", fala = "";
+  if (TOUR.passo === "quem") {
+    fala = "Oi! Quem está jogando agora? Toque no seu nome.";
+    html = `<h1>Oi! Quem está jogando?</h1>
+      <div class="tourQuem">${TOUR.fila.map(id => { const k = crianca(id); return `<button class="tourKid" data-k="${id}">${avatarSVG(dados.avatares[id] || { p: "orbita" }, 120)}<b>${esc(k.nome)}</b></button>`; }).join("")}</div>`;
+  }
+  if (TOUR.passo === "oi") {
+    fala = `Oi, ${c.nome}! Bem-vindo ao Missão Casa! Aqui as tarefas da casa viram missões de um jogo. Vamos lá?`;
+    html = `<div class="tourHeroi">${avatarSVG(av, 210)}</div>
+      <h1>Oi, ${esc(c.nome)}!</h1><p class="tourTx">Aqui as tarefas da casa viram <b>missões</b> de um jogo.</p>
+      <button class="btn tourBtn" id="tSeguir">Vamos lá! →</button>`;
+  }
+  if (TOUR.passo === "personagem") {
+    const atual = TOUR.p || av.p || "orbita";
+    fala = "Escolha o seu personagem! Ele vai jogar com você.";
+    html = `<h1>Escolha seu personagem!</h1>
+      <div class="tourPers">${Object.entries(PERS).map(([k, v]) => `<button class="tourP ${k === atual ? "on" : ""}" data-p="${k}" aria-label="${v.nome}">${avatarSVG({ p: k }, 120)}<b>${v.nome}</b></button>`).join("")}</div>
+      <button class="btn tourBtn" id="tSeguir">Esse é o meu! →</button>`;
+  }
+  if (TOUR.passo === "treino") {
+    fala = "Vamos treinar! Quando terminar uma missão, toque no círculo.";
+    html = `<h1>Vamos treinar!</h1><p class="tourTx">Quando terminar uma missão, <b>toque no círculo</b>.</p>
+      <div class="missao tourMissao" id="tMissao"><span class="ic">${avatarSVG(av, 48)}</span>
+        <div class="txt"><b>Dar um oi para o seu personagem</b><span class="pts">${icone("estrela", 18)} +5</span></div>
+        <button class="ok" id="tOk" aria-label="Marcar missão"><span class="dedinho" aria-hidden="true">👆</span></button></div>
+      <div class="tourEstrelas" id="tEstr" style="visibility:hidden">${icone("estrela", 46)}<b>+5 estrelas!</b></div>
+      <button class="btn tourBtn" id="tSeguir" style="visibility:hidden">Muito fácil! →</button>`;
+  }
+  if (TOUR.passo === "mundos") {
+    fala = "Com as estrelas você ganha medalhas, presentes e prêmios. E o seu personagem anda pelos Mundos!";
+    html = `<h1>Junte estrelas!</h1>
+      <div class="tourTrio">
+        <div>${icone("estrela", 56)}<b>Estrelas</b><small>viram prêmios</small></div>
+        <div>${selo(FAMILIAS[0], 2, 56)}<b>Medalhas</b><small>e presentes</small></div>
+        <div>${avatarSVG(av, 64)}<b>Mundos</b><small>para explorar</small></div>
+      </div>
+      <button class="btn tourBtn" id="tSeguir">Bora jogar! 🚀</button>`;
+  }
+  el.innerHTML = `<div class="tourCaixa">${bolinhas}${TOUR.passo !== "quem" ? ouvir : ""}${html}</div>`;
+  el.style.display = "flex"; el.classList.remove("anima"); void el.offsetWidth; el.classList.add("anima");
+  if (fala) falar(fala);
+  if ($("#tOuvir")) $("#tOuvir").onclick = () => falar(fala);
+  el.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { TOUR.kid = b.dataset.k; TOUR.passo = "oi"; vinheta("ok"); passoTour(); });
+  el.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { TOUR.p = b.dataset.p; vinheta("ok");
+    falar(`${PERS[TOUR.p].nome}!`); el.querySelectorAll("[data-p]").forEach(x => x.classList.toggle("on", x === b)); b.classList.remove("pula"); void b.offsetWidth; b.classList.add("pula"); });
+  if ($("#tOk")) $("#tOk").onclick = () => { const m = $("#tMissao"); if (m.classList.contains("feita")) return;
+    m.classList.add("feita"); $("#tOk").innerHTML = `<svg viewBox="0 0 24 24" width="30" height="30"><path d="M5 12l5 5 9-10" fill="none" stroke="#242034" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    vinheta("ok"); const r = $("#tOk").getBoundingClientRect(); confete(30, null, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+    $("#tEstr").style.visibility = "visible"; $("#tEstr").classList.add("pula"); $("#tSeguir").style.visibility = "visible";
+    falar("Isso! Você ganhou 5 estrelas!"); };
+  if ($("#tSeguir")) $("#tSeguir").onclick = () => {
+    const ordem = ["oi", "personagem", "treino", "mundos"], prox = ordem[ordem.indexOf(TOUR.passo) + 1];
+    if (TOUR.passo === "personagem") { const a = dados.avatares[c.id] = dados.avatares[c.id] || { v2: 1 }; a.p = TOUR.p || a.p || "orbita"; a.v2 = 1; salvar(); }
+    if (prox) { TOUR.passo = prox; vinheta("ok"); passoTour(); return; }
+    // fim: comemora e vai para a próxima criança, se houver
+    marcarTour(c.id); vinheta("tudo"); confete(120, "canhoes");
+    TOUR.fila = TOUR.fila.filter(id => id !== c.id);
+    const outra = TOUR.fila.find(id => !tourFeito(id));
+    el.style.display = "none"; criancaAtiva = c.id; irPara("missoes"); render();
+    if (outra) setTimeout(() => { toast(`Agora é a vez de ${crianca(outra).nome}!`); TOUR = { passo: "oi", kid: outra, p: null, fila: TOUR.fila }; passoTour(); }, 2600);
+  };
+}
+
 /* ===== Primeiro uso: crianças → missões → prêmios ===== */
 const INICIAIS = ["Escovar os dentes", "Arrumar a cama", "Guardar os brinquedos", "Colocar a roupa suja no cesto", "Pôr a mesa do jantar", "Fazer a lição de casa", "Arrumar a mochila", "Tomar banho"];
 const ONB = { criancas: [], missoes: null, premios: null, volta: "inicio", fim: () => {} };
