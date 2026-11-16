@@ -1137,22 +1137,22 @@ const passoConquista = () => Math.max(5, Number(dados.premio.passo) || 30);
 // Medalhas de responsa: 8 famílias, cada uma com Bronze, Prata e Ouro. Cada nível ganho = +1 passo nos Mundos.
 const NIVEIS = [ { id: "bronze", nome: "Bronze", cor: "#F0A86A", fita: "#FF6654" }, { id: "prata", nome: "Prata", cor: "#D6DEEA", fita: "#29BCE5" }, { id: "ouro", nome: "Ouro", cor: "#FFD52A", fita: "#7738EA" } ];
 const FAMILIAS = [
-  { id: "missao",   nome: "Missão Cumprida",     campo: "dias",     metas: [1, 5, 15],  unid: ["dia completo", "dias completos"], arte: "check",
-    frases: ["Primeiro dia com tudo feito! Que estreia!", "Cinco dias completos. Você está pegando o jeito!", "Quinze dias completos! Isso é coisa de profissional!"] },
-  { id: "imparavel", nome: "Imparável",          campo: "seqMax",   metas: [3, 7, 14],  unid: ["dia seguido", "dias seguidos"], arte: "chama",
-    frases: ["Três dias seguidos! O foguinho acendeu!", "Uma semana inteira sem parar! Pega fogo!", "Duas semanas seguidas! Ninguém te segura!"] },
-  { id: "madrugador", nome: "Madrugador",        campo: "manhas",   metas: [3, 10, 25], unid: ["manhã completa", "manhãs completas"], arte: "sol",
-    frases: ["Acordou e já resolveu tudo! Que manhã!", "Dez manhãs em dia. O sol tem inveja!", "Vinte e cinco manhãs! O dia começa com você!"] },
-  { id: "coruja",   nome: "Coruja Organizada",   campo: "noites",   metas: [3, 10, 25], unid: ["noite completa", "noites completas"], arte: "lua",
-    frases: ["Deitou com tudo em ordem. Boa noite!", "Dez noites tranquilas. A coruja aprova!", "Vinte e cinco noites! Sono de quem fez tudo!"] },
-  { id: "parceria", nome: "Parceria de Ouro",    campo: "vez",      metas: [5, 15, 40], unid: ["vez cumprida", "vezes cumpridas"], arte: "vez",
-    frases: ["Fez a sua vez sem reclamar. Parceria!", "Quinze vezes! Que time!", "Quarenta vezes! O time da casa agradece!"] },
-  { id: "volta",    nome: "Volta por Cima",      campo: "voltas",   metas: [1, 3, 8],   unid: ["recomeço", "recomeços"], arte: "mola",
-    frases: ["Ontem não deu, hoje deu tudo! Isso é coragem!", "Três recomeços! Cair faz parte, levantar é seu forte.", "Oito voltas por cima! Você não desiste nunca!"] },
-  { id: "fimsemana", nome: "Fim de Semana Show", campo: "finais",   metas: [1, 4, 10],  unid: ["fim de semana", "fins de semana"], arte: "festa",
-    frases: ["Sábado e domingo caprichados! Show!", "Quatro fins de semana! Descanso merecido!", "Dez fins de semana! Lenda do sábado!"] },
-  { id: "colecao",  nome: "Caçador de Estrelas", campo: "estrelas", metas: [100, 300, 700], unid: ["estrela", "estrelas"], arte: "estrelas",
-    frases: ["Cem estrelas! O céu está ficando pequeno!", "Trezentas estrelas! Uma galáxia inteira!", "Setecentas estrelas! Você brilha mais que o sol!"] }
+  { id: "missao",   nome: "Missão Cumprida",     campo: "dias",     metas: [1, 4, 10],  unid: ["dia completo", "dias completos"], arte: "check",
+    frases: ["Primeiro dia com tudo feito! Que estreia!", "Quatro dias completos. Você está pegando o jeito!", "Dez dias completos! Isso é coisa de profissional!"] },
+  { id: "imparavel", nome: "Imparável",          campo: "seqMax",   metas: [3, 5, 10],  unid: ["dia seguido", "dias seguidos"], arte: "chama",
+    frases: ["Três dias seguidos! O foguinho acendeu!", "Cinco dias sem parar! Pega fogo!", "Dez dias seguidos! Ninguém te segura!"] },
+  { id: "madrugador", nome: "Madrugador",        campo: "manhas",   metas: [3, 7, 15], unid: ["manhã completa", "manhãs completas"], arte: "sol",
+    frases: ["Acordou e já resolveu tudo! Que manhã!", "Sete manhãs em dia. O sol tem inveja!", "Quinze manhãs! O dia começa com você!"] },
+  { id: "coruja",   nome: "Coruja Organizada",   campo: "noites",   metas: [3, 7, 15], unid: ["noite completa", "noites completas"], arte: "lua",
+    frases: ["Deitou com tudo em ordem. Boa noite!", "Sete noites tranquilas. A coruja aprova!", "Quinze noites! Sono de quem fez tudo!"] },
+  { id: "parceria", nome: "Parceria de Ouro",    campo: "vez",      metas: [5, 12, 25], unid: ["vez cumprida", "vezes cumpridas"], arte: "vez",
+    frases: ["Fez a sua vez sem reclamar. Parceria!", "Doze vezes! Que time!", "Vinte e cinco vezes! O time da casa agradece!"] },
+  { id: "volta",    nome: "Volta por Cima",      campo: "voltas",   metas: [1, 3, 5],   unid: ["recomeço", "recomeços"], arte: "mola",
+    frases: ["Ontem não deu, hoje deu tudo! Isso é coragem!", "Três recomeços! Cair faz parte, levantar é seu forte.", "Cinco voltas por cima! Você não desiste nunca!"] },
+  { id: "fimsemana", nome: "Fim de Semana Show", campo: "finais",   metas: [1, 2, 4],  unid: ["fim de semana", "fins de semana"], arte: "festa",
+    frases: ["Sábado e domingo caprichados! Show!", "Dois fins de semana! Descanso merecido!", "Quatro fins de semana! Lenda do sábado!"] },
+  { id: "colecao",  nome: "Caçador de Estrelas", campo: "estrelas", metas: [100, 250, 500], unid: ["estrela", "estrelas"], arte: "estrelas",
+    frases: ["Cem estrelas! O céu está ficando pequeno!", "Duzentas e cinquenta estrelas! Uma galáxia inteira!", "Quinhentas estrelas! Você brilha mais que o sol!"] }
 ];
 // Arte de cada família (desenhada no círculo de raio ~22, centro 0,0)
 const ARTE = {
