@@ -630,7 +630,8 @@
     background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;border-radius:0;box-shadow:none}
   .listaItens .linhaItem:first-child{border-top:0}
   .linhaItem.fixa{cursor:default}
-  .linhaItem > span:not(.av):not([class*="avatar"]){flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .linhaItem > span:not(.av):not([class*="avatar"]):not(.emo){flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+  .linhaItem > .emo{flex:0 0 30px;width:30px;font-size:24px;line-height:30px;text-align:center}
   .linhaItem b{font-size:16px;font-weight:900;line-height:1.25}
   .linhaItem small{font-size:13px;color:var(--suave);font-weight:700;line-height:1.3}
   .linhaItem > i{font-style:normal;color:var(--suave);font-size:22px;font-weight:900;flex-shrink:0}
@@ -774,6 +775,7 @@
   .opc.trancado > svg{filter:grayscale(1) brightness(1.15);opacity:.55}
   .opc.trancado .cadeado{position:absolute;top:6px;right:6px;background:#FFFDF5;border:1.5px solid var(--tinta);border-radius:50%;width:28px;height:28px;display:grid;place-items:center}
   .opc.trancado small{color:#5A22C2}
+  .catSug{display:block;margin:12px 0 2px}
 </style>
 </head>
 <body>
@@ -901,33 +903,64 @@ const MOTIVOS_PAUSA = [
   { id: "outro", nome: "Outro", icone: "pausa_generica" }
 ];
 // Sugestões de missões por idade
-const SUGESTOES = {
-  "3 a 5 anos": [
-    { nome: "Guardar os brinquedos", icone: "🧸", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Escovar os dentes", icone: "🪥", pontos: 5, periodos: ["manha","noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Colocar a roupa suja no cesto", icone: "🧺", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Ajudar a pôr a mesa", icone: "🍽️", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Regar as plantas", icone: "🪴", pontos: 5, periodos: ["livre"], dias: [3,6] },
-    { nome: "Dar comida ao bichinho", icone: "🐶", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6] }
-  ],
-  "6 a 8 anos": [
-    { nome: "Arrumar a cama", icone: "🛏️", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Arrumar a mochila", icone: "🎒", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4] },
-    { nome: "Fazer a lição de casa", icone: "📚", pontos: 10, periodos: ["tarde"], dias: [1,2,3,4,5] },
-    { nome: "Tirar o prato da mesa", icone: "🍽️", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Separar a roupa do dia seguinte", icone: "👕", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4] },
-    { nome: "Ler 15 minutos", icone: "📖", pontos: 10, periodos: ["noite"], dias: [0,1,2,3,4,5,6] }
-  ],
-  "9 a 12 anos": [
-    { nome: "Lavar a louça", icone: "🧽", pontos: 15, periodos: ["noite"], dias: [0,1,2,3,4,5,6] },
-    { nome: "Tirar o lixo", icone: "🗑️", pontos: 10, periodos: ["noite"], dias: [1,3,5] },
-    { nome: "Arrumar o quarto", icone: "🧹", pontos: 15, periodos: ["livre"], dias: [6] },
-    { nome: "Estender ou dobrar roupa", icone: "👚", pontos: 15, periodos: ["livre"], dias: [3,6] },
-    { nome: "Estudar para a prova", icone: "✏️", pontos: 15, periodos: ["tarde"], dias: [1,2,3,4] },
-    { nome: "Ajudar a preparar o lanche", icone: "🥪", pontos: 10, periodos: ["tarde"], dias: [6,0] }
-  ]
-};
-Object.values(SUGESTOES).forEach(l => l.forEach(sg => { sg.icone = EMOJI_ICONE[sg.icone] || sg.icone; }));
+/* Missões sugeridas pela idade (referência: Academia Americana de Pediatria, AACAP e tabelas inspiradas em Montessori).
+   min/max = idade (anos) para a qual a missão faz sentido. A criança é responsável pela casa junto com a família: nada de "ajudar". */
+const SUGESTOES = [
+  { cat: "Cuidar de mim", nome: "Escovar os dentes", icone: "missao_escova_de_dentes", pontos: 5, periodos: ["manha","noite"], dias: [0,1,2,3,4,5,6], min: 3, max: 12 },
+  { cat: "Cuidar de mim", nome: "Tomar banho", icone: "missao_banheira", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Cuidar de mim", nome: "Pentear o cabelo", icone: "💇", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Cuidar de mim", nome: "Lavar as mãos antes de comer", icone: "🧼", pontos: 5, periodos: ["livre"], dias: [0,1,2,3,4,5,6], min: 3, max: 8 },
+  { cat: "Cuidar de mim", nome: "Tomar o remédio", icone: "missao_remedio", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 3, max: 12 },
+  { cat: "Cuidar de mim", nome: "Passar protetor solar", icone: "🧴", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 6, max: 12 },
+  { cat: "Cuidar de mim", nome: "Vestir a roupa sozinho(a)", icone: "missao_camiseta", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 4, max: 8 },
+  { cat: "Cuidar de mim", nome: "Ir para a cama na hora combinada", icone: "periodo_noite", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 4, max: 12 },
+  { cat: "Escola", nome: "Fazer a lição de casa", icone: "missao_caderno", pontos: 10, periodos: ["tarde"], dias: [1,2,3,4,5], min: 6, max: 12 },
+  { cat: "Escola", nome: "Arrumar a mochila", icone: "missao_mochila", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4], min: 6, max: 12 },
+  { cat: "Escola", nome: "Estudar para a prova", icone: "missao_lapis", pontos: 15, periodos: ["tarde"], dias: [1,2,3,4], min: 9, max: 12 },
+  { cat: "Escola", nome: "Ler 15 minutos", icone: "missao_livro", pontos: 10, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 6, max: 12 },
+  { cat: "Escola", nome: "Treinar o instrumento", icone: "atividade_piano", pontos: 10, periodos: ["tarde"], dias: [1,2,3,4,5], min: 6, max: 12 },
+  { cat: "Escola", nome: "Colocar a lancheira na pia", icone: "missao_lanche", pontos: 5, periodos: ["tarde"], dias: [1,2,3,4,5], min: 5, max: 12 },
+  { cat: "Escola", nome: "Entregar os bilhetes da escola", icone: "📝", pontos: 5, periodos: ["tarde"], dias: [1,2,3,4,5], min: 6, max: 12 },
+  { cat: "Meu quarto", nome: "Arrumar a cama", icone: "missao_cama", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Meu quarto", nome: "Guardar os brinquedos", icone: "missao_brinquedos", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 5, max: 7 },
+  { cat: "Meu quarto", nome: "Separar a roupa do dia seguinte", icone: "missao_camiseta", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4], min: 6, max: 12 },
+  { cat: "Meu quarto", nome: "Guardar os sapatos no lugar", icone: "👟", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 4, max: 12 },
+  { cat: "Meu quarto", nome: "Arrumar o quarto", icone: "missao_vassoura", pontos: 15, periodos: ["livre"], dias: [6], min: 8, max: 12 },
+  { cat: "Meu quarto", nome: "Organizar a escrivaninha", icone: "🗂️", pontos: 10, periodos: ["livre"], dias: [5], min: 8, max: 12 },
+  { cat: "Meu quarto", nome: "Trocar o lençol da cama", icone: "missao_cama", pontos: 15, periodos: ["livre"], dias: [6], min: 11, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Pôr a mesa do jantar", icone: "missao_prato_e_talheres", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Tirar o prato da mesa", icone: "missao_prato_e_talheres", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Limpar a mesa depois da refeição", icone: "missao_esponja", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 6, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Lavar a louça", icone: "missao_esponja", pontos: 15, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 7, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Secar e guardar a louça", icone: "missao_prato_e_talheres", pontos: 10, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 7, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Encher a garrafinha de água", icone: "💧", pontos: 5, periodos: ["manha"], dias: [1,2,3,4,5], min: 5, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Preparar o próprio lanche", icone: "missao_lanche", pontos: 10, periodos: ["tarde"], dias: [0,6], min: 8, max: 12 },
+  { cat: "Cozinha e mesa", nome: "Guardar as compras", icone: "🛒", pontos: 10, periodos: ["livre"], dias: [6], min: 8, max: 12 },
+  { cat: "Roupas", nome: "Colocar a roupa suja no cesto", icone: "missao_cesto_de_roupa", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 3, max: 12 },
+  { cat: "Roupas", nome: "Recolher a roupa do varal", icone: "missao_varal", pontos: 10, periodos: ["livre"], dias: [3,6], min: 6, max: 12 },
+  { cat: "Roupas", nome: "Dobrar e guardar a roupa limpa", icone: "missao_camiseta", pontos: 10, periodos: ["livre"], dias: [3,6], min: 7, max: 12 },
+  { cat: "Roupas", nome: "Separar a roupa para lavar", icone: "missao_cesto_de_roupa", pontos: 5, periodos: ["livre"], dias: [6], min: 6, max: 12 },
+  { cat: "Casa", nome: "Tirar o pó dos móveis", icone: "🪶", pontos: 10, periodos: ["livre"], dias: [6], min: 5, max: 12 },
+  { cat: "Casa", nome: "Pegar as correspondências", icone: "📬", pontos: 5, periodos: ["livre"], dias: [1,2,3,4,5], min: 5, max: 12 },
+  { cat: "Casa", nome: "Separar o lixo reciclável", icone: "♻️", pontos: 5, periodos: ["livre"], dias: [1,4], min: 6, max: 12 },
+  { cat: "Casa", nome: "Varrer o chão", icone: "missao_vassoura", pontos: 10, periodos: ["livre"], dias: [6], min: 6, max: 12 },
+  { cat: "Casa", nome: "Limpar a pia depois de escovar os dentes", icone: "missao_esponja", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 7, max: 12 },
+  { cat: "Casa", nome: "Tirar o lixo", icone: "missao_lixo", pontos: 10, periodos: ["noite"], dias: [1,3,5], min: 8, max: 12 },
+  { cat: "Casa", nome: "Passar o aspirador", icone: "🧹", pontos: 15, periodos: ["livre"], dias: [6], min: 9, max: 12 },
+  { cat: "Casa", nome: "Limpar o banheiro", icone: "🚽", pontos: 15, periodos: ["livre"], dias: [6], min: 11, max: 12 },
+  { cat: "Plantas e bichos", nome: "Regar as plantinhas", icone: "missao_planta", pontos: 5, periodos: ["livre"], dias: [3,6], min: 3, max: 12 },
+  { cat: "Plantas e bichos", nome: "Dar comida ao bichinho", icone: "missao_bichinho", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 4, max: 12 },
+  { cat: "Plantas e bichos", nome: "Trocar a água do bichinho", icone: "missao_bichinho", pontos: 5, periodos: ["manha"], dias: [0,1,2,3,4,5,6], min: 5, max: 12 },
+  { cat: "Plantas e bichos", nome: "Passear com o cachorro", icone: "🐕", pontos: 10, periodos: ["tarde"], dias: [0,1,2,3,4,5,6], min: 8, max: 12 },
+  { cat: "Família e bem-estar", nome: "Brincar ao ar livre", icone: "atividade_arvore", pontos: 5, periodos: ["tarde"], dias: [0,1,2,3,4,5,6], min: 3, max: 12 },
+  { cat: "Família e bem-estar", nome: "Desligar a tela na hora combinada", icone: "📺", pontos: 10, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 6, max: 12 },
+  { cat: "Família e bem-estar", nome: "Contar como foi o dia", icone: "💬", pontos: 5, periodos: ["noite"], dias: [0,1,2,3,4,5,6], min: 3, max: 12 }
+];
+const CATS_SUG = [...new Set(SUGESTOES.map(x => x.cat))];
+function idadeDe(c){ if (!c?.nasc) return null; const n = new Date(c.nasc + "T12:00:00"), h = new Date();
+  let a = h.getFullYear() - n.getFullYear(); if (h.getMonth() < n.getMonth() || (h.getMonth() === n.getMonth() && h.getDate() < n.getDate())) a--; return a; }
+const sugereParaIdade = (sg, idade) => idade == null || (idade >= sg.min && (idade <= sg.max || sg.max >= 12));
+SUGESTOES.forEach(sg => { sg.icone = EMOJI_ICONE[sg.icone] || sg.icone; });
 const NOME_DIA_LONGO = ["domingo","segunda","terça","quarta","quinta","sexta","sábado"];
 
 const PADRAO = {
@@ -974,7 +1007,7 @@ let diasForm = [];           // dias marcados no formulário de missão
 let periodosForm = [];    // períodos marcados no formulário de missão
 let diasAtv = [];           // dias marcados no formulário de agenda
 let atvRepete = true;             // formulário de agenda: repete toda semana ou só num dia
-let idadeSug = "6 a 8 anos";      // faixa escolhida nas sugestões
+let idadeSug = null;               // criança escolhida nas sugestões (null = primeira)
 let confirmaTroca = null;         // recompensa aguardando o segundo toque
 
 function carregar(){
@@ -1122,10 +1155,10 @@ const MUNDOS = [
 const PASSOS_MUNDO = 6;
 // Cada passo da trilha tem nome e frase de incentivo (sem gênero, para servir para qualquer criança)
 const PASSOS_NOMES = {
-  quintal:  [["Primeiro passo!", "Começou! Cada missão feita conta."], ["Mão na massa", "Você não espera ninguém pedir. Que orgulho!"], ["Ajuda de ouro", "A casa fica melhor quando você ajuda."],
+  quintal:  [["Primeiro passo!", "Começou! Cada missão feita conta."], ["Mão na massa", "Você não espera ninguém pedir. Que orgulho!"], ["Casa em ordem", "A casa é de todo mundo, e você cuida dela!"],
              ["Palavra cumprida", "Combinou, fez. Isso é ter responsa!"], ["Turbo nas tarefas", "Rapidinho e bem feito!"], ["Quintal conquistado!", "Primeiro mundo explorado. Rumo à Floresta!"]],
   floresta: [["Trilha aberta", "Bem-vinda(o) à Floresta! Bora explorar."], ["Raiz forte", "Dia após dia, você fica mais firme."], ["Nada esquecido", "Lembrou de tudo sozinha(o)!"],
-             ["Time da casa", "Quem ajuda a família joga junto."], ["Força da floresta", "Nem as tarefas difíceis te param."], ["Floresta explorada!", "Mais um mundo! Agora é a Praia."]],
+             ["Time da casa", "Cada um cuida da sua parte. Que time!"], ["Força da floresta", "Nem as tarefas difíceis te param."], ["Floresta explorada!", "Mais um mundo! Agora é a Praia."]],
   praia:    [["Onda de capricho", "Tarefa bem feita é outra coisa!"], ["Mergulho na rotina", "Você já sabe o que fazer e faz."], ["Sol de responsa", "Brilhou cuidando das suas coisas."],
              ["Castelo caprichado", "Passo a passo, você constrói coisas grandes."], ["Surfando nas tarefas", "Nem parece trabalho, né?"], ["Praia dominada!", "Agora é subir a Montanha!"]],
   montanha: [["Escalada corajosa", "Começar é a parte mais difícil. E você começou!"], ["Passo firme", "Devagar e sempre, sem desistir."], ["Mochila em dia", "Organização de quem sabe o que quer."],
@@ -1735,10 +1768,14 @@ function renderPais(){
     </div>
 
     <div class="bloco">${cab("entrada_comecar_do_zero", "Sugestões")}
-      <div class="chips">${Object.keys(SUGESTOES).map(f => `<button class="chip ${f === idadeSug ? "on" : ""}" data-idade="${f}">${f}</button>`).join("")}</div>
-      <div class="listaItens">${SUGESTOES[idadeSug].map((sg, i) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
-        return ja ? `<div class="linhaItem fixa">${ico(sg.icone, 30)}<span><b>${esc(sg.nome)}</b></span><i class="ok" aria-label="já tem">✓</i></div>`
-          : linha(`data-sug="${i}"`, ico(sg.icone, 30), esc(sg.nome), "", "+"); }).join("")}</div>
+      ${(() => { const kSug = crianca(idadeSug) || dados.criancas[0], idade = idadeDe(kSug);
+        const lista = SUGESTOES.map((sg, i) => ({ sg, i })).filter(x => sugereParaIdade(x.sg, idade));
+        return `<div class="chips">${dados.criancas.map(k => { const a = idadeDe(k); return `<button class="chip ${k === kSug ? "on" : ""}" data-idade="${k.id}">${esc(k.nome)}${a != null ? ` · ${a} anos` : ""}</button>`; }).join("")}</div>
+        ${idade == null ? `<div class="vazioP">Coloque o aniversário de ${esc(kSug?.nome || "cada criança")} em Família › Crianças para ver só as missões da idade.</div>` : `<div class="vazioP">Missões que combinam com ${idade} anos</div>`}
+        ${CATS_SUG.map(cat => { const it = lista.filter(x => x.sg.cat === cat); if (!it.length) return "";
+          return `<span class="rot catSug">${cat}</span><div class="listaItens">${it.map(({ sg, i }) => { const ja = dados.tarefas.some(t => t.nome.toLowerCase() === sg.nome.toLowerCase());
+            return ja ? `<div class="linhaItem fixa">${ico(sg.icone, 30)}<span><b>${esc(sg.nome)}</b></span><i class="ok" aria-label="já tem">✓</i></div>`
+              : linha(`data-sug="${i}"`, ico(sg.icone, 30), esc(sg.nome), `${resumoDias(sg.dias)} · ${sg.pontos}★`, "+"); }).join("")}</div>`; }).join("")}`; })()}
     </div>
 
     <div class="bloco">${cab("pausa_generica", "Pausas", formAberto === "p" ? "" : "p")}
@@ -1779,10 +1816,11 @@ function renderPais(){
       ${abreC ? `<div class="formBox">
         <b class="tituloForm">${cEd ? "Editar criança" : "Nova criança"}</b>
         <input id="cAv" type="hidden" value="${esc(cEd?.avatar || "🙂")}"><input id="cNome" placeholder="Nome" value="${esc(cEd?.nome || "")}">
+        <label><span class="rot">Aniversário (para sugerir missões da idade)</span><input id="cNasc" type="date" value="${esc(cEd?.nasc || "")}"></label>
         <div class="botoesForm"><button class="btn" id="cSalvar">${cEd ? "Salvar" : "Adicionar"}</button><button class="btn sec" id="cCancelar">Cancelar</button></div>
         ${cEd ? `<button class="btnExcluir" data-del-c="${cEd.id}">Excluir ${esc(cEd.nome)}</button>` : ""}
       </div>` : ""}
-      <div class="listaItens">${dados.criancas.map(c => linha(`data-ed-c="${c.id}"`, avatarHTML(c, 34), esc(c.nome), "")).join("")}</div>
+      <div class="listaItens">${dados.criancas.map(c => linha(`data-ed-c="${c.id}"`, avatarHTML(c, 34), esc(c.nome), idadeDe(c) != null ? `${idadeDe(c)} anos` : "Sem aniversário")).join("")}</div>
     </div>
 
     ${pend.length ? `<div class="bloco destaqueP">${cab("premio_escolhidos", "Prêmios escolhidos")}
@@ -1865,8 +1903,11 @@ function renderPais(){
   // sugestões
   el.querySelectorAll("[data-idade]").forEach(b => b.onclick = () => { idadeSug = b.dataset.idade; renderPais(); });
   el.querySelectorAll("[data-sug]").forEach(b => b.onclick = () => {
-    const sg = SUGESTOES[idadeSug][Number(b.dataset.sug)], cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
-    dados.tarefas.push({ id: "t" + Date.now(), para: "todos", cor: cores[dados.tarefas.length % cores.length], ...JSON.parse(JSON.stringify(sg)) });
+    const { cat, min, max, ...sg } = SUGESTOES[Number(b.dataset.sug)], cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
+    // se só uma criança tem idade para a missão, ela já entra só para essa criança
+    const cabe = dados.criancas.filter(k => sugereParaIdade({ min, max }, idadeDe(k)));
+    const para = cabe.length === 1 && dados.criancas.length > 1 ? cabe[0].id : "todos";
+    dados.tarefas.push({ id: "t" + Date.now(), para, cor: cores[dados.tarefas.length % cores.length], ...JSON.parse(JSON.stringify(sg)) });
     salvar(); toast("Missão adicionada ⭐"); render();
   });
 
@@ -1946,8 +1987,9 @@ function renderPais(){
   // crianças
   $$("#cSalvar").onclick = () => {
     const n = $("#cNome").value.trim(); if (!n) return toast("Escreve o nome 🙂");
-    if (cEd) { cEd.nome = n; cEd.avatar = $("#cAv").value || cEd.avatar; toast("Criança atualizada ✨"); }
-    else { const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂" });
+    const nasc = $("#cNasc")?.value || "";
+    if (cEd) { cEd.nome = n; cEd.avatar = $("#cAv").value || cEd.avatar; if (nasc) cEd.nasc = nasc; else delete cEd.nasc; toast("Criança atualizada ✨"); }
+    else { const id = "c"+Date.now(); dados.criancas.push({ id, nome: n, avatar: $("#cAv").value || "🙂", ...(nasc ? { nasc } : {}) });
       if (!criancaAtiva) criancaAtiva = id; toast("Bem-vinda(o)! 🎉"); }
     formAberto = null; editando = null; salvar(); render();
   };
