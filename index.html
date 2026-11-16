@@ -725,6 +725,43 @@
   .mundosProx{display:flex;align-items:center;gap:12px;background:#FFF3BF;border-radius:20px;padding:10px 14px;margin-bottom:12px}
   .mundosProx b{display:block}
   .mundosProx small{color:var(--suave);font-weight:700}
+  /* ===== Coleção de medalhas ===== */
+  .colecao{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+  .medCard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 10px 12px;border-radius:22px;
+    background:#fff;border:1.5px solid var(--tinta);font:inherit;color:inherit;cursor:pointer;margin:0;min-height:0}
+  .medCard.n0{background:#FFF1E4}.medCard.n1{background:#EEF3FA}.medCard.n2{background:#FFF6CF}
+  .medCard.trancada{background:#F7F4EC;border-color:var(--borda)}
+  .medCard.trancada b{color:var(--suave)}
+  .medCard b{font-family:var(--titulo);font-weight:600;font-size:16px;line-height:1.15}
+  .medNivel{font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--suave)}
+  .medCard.n0 .medNivel{color:#B5612A}.medCard.n1 .medNivel{color:#4F6B8F}.medCard.n2 .medNivel{color:#8A6A00}
+  .medTrilho{width:100%;height:8px;border-radius:99px;background:#FFFDF5;border:1.5px solid var(--tinta);overflow:hidden;margin-top:2px}
+  .medTrilho i{display:block;height:100%;background:var(--lima)}
+  .medCard small{font-size:11.5px;font-weight:800;color:var(--suave);line-height:1.25}
+  .medCard:active .medSelo{transform:scale(.94)}
+  .medSelo{transition:transform .15s}
+  .medCard:not(.trancada) .medSelo{animation:balanca 3.5s ease-in-out infinite}
+  @keyframes balanca{0%,100%{rotate:0deg}50%{rotate:-4deg}}
+  .revela{position:fixed;inset:0;z-index:60;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 24px;
+    background:radial-gradient(circle at 50% 38%,#FFE680 0,#FFD52A 30%,#B06CFF 100%);text-align:center;overflow:hidden}
+  .revela .raios{position:absolute;left:50%;top:36%;width:900px;height:900px;margin:-450px 0 0 -450px;border-radius:50%;pointer-events:none;opacity:.4;
+    background:repeating-conic-gradient(from 0deg,#FFFDF5 0deg 9deg,transparent 9deg 24deg);-webkit-mask:radial-gradient(circle,#000 0 30%,transparent 62%);mask:radial-gradient(circle,#000 0 30%,transparent 62%)}
+  .revela > *:not(.raios){position:relative}
+  .revTopo{font-weight:900;letter-spacing:.14em;font-size:14px;background:var(--tinta);color:var(--creme);padding:6px 14px;border-radius:99px}
+  .revela h2{margin:4px 0 0;font-family:var(--titulo);font-weight:700;font-size:2.2rem;line-height:1.05}
+  .revNivel{font-weight:900;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:99px;border:2px solid var(--tinta)}
+  .revNivel.n0{background:#F0A86A}.revNivel.n1{background:#D6DEEA}.revNivel.n2{background:#FFD52A}
+  .revela p{margin:4px 0 0;font-weight:800;font-size:1.1rem;max-width:320px}
+  .revPasso{display:flex;align-items:center;gap:6px;font-weight:900;background:#FFFDF5;border:1.5px solid var(--tinta);border-radius:99px;padding:6px 14px}
+  .revela .btn{min-width:200px;margin-top:8px}
+  .revela.anima .raios{animation:raiosEntra .8s .2s both,gira 18s linear infinite}
+  .revela.anima .revSelo{animation:seloEntra 1s cubic-bezier(.3,1.5,.5,1) .1s both,pulinho 2s ease-in-out 1.3s infinite}
+  .revela.anima h2{animation:titulo .6s cubic-bezier(.3,1.7,.5,1) .6s both}
+  .revela.anima .revNivel,.revela.anima p,.revela.anima .revPasso{animation:sobe .4s ease-out .9s both}
+  .revela.anima .btn{animation:sobe .4s ease-out 1.3s both}
+  @keyframes seloEntra{0%{transform:scale(0) rotate(-200deg)}70%{transform:scale(1.15) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+  body.calmo .revela.anima *{animation:none!important}
+  @media (min-width: 720px){ .colecao{grid-template-columns:repeat(4,minmax(0,1fr))} }
 </style>
 </head>
 <body>
@@ -777,6 +814,7 @@
 <div class="toast" id="toast"></div>
 <div class="folha" id="folhaAvatar" style="display:none"></div>
 <div class="conquista" id="conquista" style="display:none" role="dialog" aria-label="Dia completo"></div>
+<div class="revela" id="revela" style="display:none" role="dialog" aria-label="Medalha nova"></div>
 <div class="entrada" id="entrada" style="display:none"></div>
 
 <!-- Configuração do Firebase (opcional). Sem ela, o app funciona só neste aparelho. -->
@@ -1084,38 +1122,71 @@ const PASSOS_NOMES = {
              ["Responsa espacial", "Cuidar das suas coisas virou superpoder."], ["Missão cumprida", "Você é demais!"], ["Galáxia conquistada!", "Explorou todos os mundos! Bora dar outra volta?"]]
 };
 const passoConquista = () => Math.max(5, Number(dados.premio.passo) || 30);
-// Medalhas de responsabilidade: premiam completar o dia, manter a sequência e cumprir a sua vez. Cada uma vale +1 passo nos Mundos.
-const MEDALHAS = [
-  { id: "dia1",   nome: "Dia completo!",        frase: "Fez todas as missões de um dia.",           icone: "acao_missao_concluida", ok: e => e.dias >= 1 },
-  { id: "seq3",   nome: "Três dias seguidos",   frase: "Três dias completos em sequência.",         icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 3 },
-  { id: "dia5",   nome: "Cinco dias de capricho", frase: "Cinco dias completos.",                   icone: "trofeu", ok: e => e.dias >= 5 },
-  { id: "manha5", nome: "Manhã em dia",         frase: "Fez tudo da manhã em 5 dias.",              icone: "periodo_manha", ok: e => e.manhas >= 5 },
-  { id: "noite5", nome: "Noite tranquila",      frase: "Fez tudo da noite em 5 dias.",              icone: "periodo_noite", ok: e => e.noites >= 5 },
-  { id: "vez10",  nome: "Vez cumprida",         frase: "Fez a sua vez 10 vezes, sem reclamar!",     icone: "jogo_sua_vez", ok: e => e.vez >= 10 },
-  { id: "seq7",   nome: "Semana de responsa",   frase: "Sete dias completos seguidos.",             icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 7 },
-  { id: "dia10",  nome: "Dez dias completos",   frase: "Dez dias com tudo feito.",                  icone: "trofeu", ok: e => e.dias >= 10 },
-  { id: "vez30",  nome: "Parceria de ouro",     frase: "Fez a sua vez 30 vezes.",                   icone: "jogo_sua_vez", ok: e => e.vez >= 30 },
-  { id: "seq14",  nome: "Duas semanas firmes",  frase: "Catorze dias completos seguidos.",          icone: "jogo_sequencia_de_dias", ok: e => e.seqMax >= 14 },
-  { id: "dia25",  nome: "Vinte e cinco dias!",  frase: "Vinte e cinco dias com tudo feito.",        icone: "trofeu", ok: e => e.dias >= 25 }
+// Medalhas de responsa: 8 famílias, cada uma com Bronze, Prata e Ouro. Cada nível ganho = +1 passo nos Mundos.
+const NIVEIS = [ { id: "bronze", nome: "Bronze", cor: "#F0A86A", fita: "#FF6654" }, { id: "prata", nome: "Prata", cor: "#D6DEEA", fita: "#29BCE5" }, { id: "ouro", nome: "Ouro", cor: "#FFD52A", fita: "#7738EA" } ];
+const FAMILIAS = [
+  { id: "missao",   nome: "Missão Cumprida",     campo: "dias",     metas: [1, 5, 15],  unid: ["dia completo", "dias completos"], arte: "check",
+    frases: ["Primeiro dia com tudo feito! Que estreia!", "Cinco dias completos. Você está pegando o jeito!", "Quinze dias completos! Isso é coisa de profissional!"] },
+  { id: "imparavel", nome: "Imparável",          campo: "seqMax",   metas: [3, 7, 14],  unid: ["dia seguido", "dias seguidos"], arte: "chama",
+    frases: ["Três dias seguidos! O foguinho acendeu!", "Uma semana inteira sem parar! Pega fogo!", "Duas semanas seguidas! Ninguém te segura!"] },
+  { id: "madrugador", nome: "Madrugador",        campo: "manhas",   metas: [3, 10, 25], unid: ["manhã completa", "manhãs completas"], arte: "sol",
+    frases: ["Acordou e já resolveu tudo! Que manhã!", "Dez manhãs em dia. O sol tem inveja!", "Vinte e cinco manhãs! O dia começa com você!"] },
+  { id: "coruja",   nome: "Coruja Organizada",   campo: "noites",   metas: [3, 10, 25], unid: ["noite completa", "noites completas"], arte: "lua",
+    frases: ["Deitou com tudo em ordem. Boa noite!", "Dez noites tranquilas. A coruja aprova!", "Vinte e cinco noites! Sono de quem fez tudo!"] },
+  { id: "parceria", nome: "Parceria de Ouro",    campo: "vez",      metas: [5, 15, 40], unid: ["vez cumprida", "vezes cumpridas"], arte: "vez",
+    frases: ["Fez a sua vez sem reclamar. Parceria!", "Quinze vezes! Que time!", "Quarenta vezes! O time da casa agradece!"] },
+  { id: "volta",    nome: "Volta por Cima",      campo: "voltas",   metas: [1, 3, 8],   unid: ["recomeço", "recomeços"], arte: "mola",
+    frases: ["Ontem não deu, hoje deu tudo! Isso é coragem!", "Três recomeços! Cair faz parte, levantar é seu forte.", "Oito voltas por cima! Você não desiste nunca!"] },
+  { id: "fimsemana", nome: "Fim de Semana Show", campo: "finais",   metas: [1, 4, 10],  unid: ["fim de semana", "fins de semana"], arte: "festa",
+    frases: ["Sábado e domingo caprichados! Show!", "Quatro fins de semana! Descanso merecido!", "Dez fins de semana! Lenda do sábado!"] },
+  { id: "colecao",  nome: "Caçador de Estrelas", campo: "estrelas", metas: [100, 300, 700], unid: ["estrela", "estrelas"], arte: "estrelas",
+    frases: ["Cem estrelas! O céu está ficando pequeno!", "Trezentas estrelas! Uma galáxia inteira!", "Setecentas estrelas! Você brilha mais que o sol!"] }
 ];
+// Arte de cada família (desenhada no círculo de raio ~22, centro 0,0)
+const ARTE = {
+  check: `<path d="M-12 1 L-3 10 L13 -8" fill="none" stroke="#242034" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`,
+  chama: `<path d="M0 -17 C9 -7 13 0 11 7 C9 14 3 16 0 16 C-6 16 -12 12 -11 4 C-10 -2 -5 -4 -4 -10 C-1 -6 0 -3 0 -1 C3 -5 2 -11 0 -17Z" fill="#FF6654" stroke="#242034" stroke-width="2.5" stroke-linejoin="round"/><path d="M0 4 C3 6 4 9 3 12 C1 14 -2 14 -3 12 C-4 9 -2 7 0 4Z" fill="#FFD52A"/>`,
+  sol: `<path d="M-16 8 A16 16 0 0 1 16 8Z" fill="#FFD52A" stroke="#242034" stroke-width="2.5"/><g stroke="#242034" stroke-width="2.5" stroke-linecap="round"><path d="M0 -13 V-18 M-11 -7 L-14 -11 M11 -7 L14 -11 M-16 0 H-20 M16 0 H20"/><path d="M-19 10 H19"/></g>`,
+  lua: `<path d="M-2 -16 A15 15 0 1 0 13 6 A12 12 0 1 1 -2 -16Z" fill="#B06CFF" stroke="#242034" stroke-width="2.5" stroke-linejoin="round"/><path d="M10 -14 l1.5 3.5 3.5 1.5 -3.5 1.5 -1.5 3.5 -1.5 -3.5 -3.5 -1.5 3.5 -1.5Z" fill="#FFD52A"/><circle cx="-4" cy="-3" r="1.8" fill="#242034"/><circle cx="3" cy="-3" r="1.8" fill="#242034"/>`,
+  vez: `<path d="M-13 -4 A13 13 0 0 1 9 -10 L7 -15 L15 -9 L8 -4 L9 -8 A10 10 0 0 0 -10 -3Z" fill="#29BCE5" stroke="#242034" stroke-width="2.2" stroke-linejoin="round"/><path d="M13 4 A13 13 0 0 1 -9 10 L-7 15 L-15 9 L-8 4 L-9 8 A10 10 0 0 0 10 3Z" fill="#A5DD37" stroke="#242034" stroke-width="2.2" stroke-linejoin="round"/>`,
+  mola: `<path d="M-12 14 Q-14 -2 0 -2 Q12 -2 10 -12" fill="none" stroke="#242034" stroke-width="3" stroke-linecap="round"/><path d="M4 -16 L12 -16 L12 -8" fill="none" stroke="#242034" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="-12" cy="14" r="4" fill="#FF6654" stroke="#242034" stroke-width="2"/>`,
+  festa: `<path d="M-14 14 L-4 -14 L10 6Z" fill="#FF6654" stroke="#242034" stroke-width="2.5" stroke-linejoin="round"/><path d="M-9 0 L3 4 M-6 -8 L6 -2" stroke="#FFD52A" stroke-width="2.5"/><circle cx="12" cy="-12" r="2.5" fill="#29BCE5"/><circle cx="16" cy="-2" r="2" fill="#A5DD37"/><circle cx="4" cy="-17" r="2" fill="#B06CFF"/>`,
+  estrelas: `<path d="M-4 -14 L0 -5 L9 -4 L2 2 L4 11 L-4 6 L-12 11 L-10 2 L-17 -4 L-8 -5Z" fill="#FFD52A" stroke="#242034" stroke-width="2.3" stroke-linejoin="round"/><path d="M12 2 L14 7 L19 7.5 L15 11 L16 16 L12 13.5 L8 16 L9 11 L5 7.5 L10 7Z" fill="#FFD52A" stroke="#242034" stroke-width="2" stroke-linejoin="round"/>`
+};
+function selo(fam, nivel, tam = 64, trancado = false){
+  const nv = NIVEIS[Math.max(0, nivel)], cor = trancado ? "#ECE6D6" : nv.cor, fita = trancado ? "#D5CDBA" : nv.fita;
+  const arte = trancado ? `<text x="0" y="8" text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="24" fill="#A39C8B">?</text>` : ARTE[fam.arte];
+  const estrelinhas = trancado ? "" : [...Array(nivel + 1)].map((_, k) => `<path transform="translate(${(k - nivel / 2) * 10} 27.5) scale(.36)" d="M0 -10 L3 -3 L10 -3 L4 2 L6 9 L0 5 L-6 9 L-4 2 L-10 -3 L-3 -3Z" fill="#FFD52A" stroke="#242034" stroke-width="3" stroke-linejoin="round"/>`).join("");
+  return `<svg viewBox="-36 -40 72 84" width="${tam}" height="${tam * 84 / 72}" aria-hidden="true">
+    <path d="M-16 14 L-22 40 L-12 34 L-6 42 L-2 18Z M16 14 L22 40 L12 34 L6 42 L2 18Z" fill="${fita}" stroke="#242034" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M0 -34 L8 -30 L17 -31 L21 -23 L29 -18 L28 -9 L32 0 L28 9 L29 18 L21 23 L17 31 L8 30 L0 34 L-8 30 L-17 31 L-21 23 L-29 18 L-28 9 L-32 0 L-28 -9 L-29 -18 L-21 -23 L-17 -31 L-8 -30Z" fill="${cor}" stroke="#242034" stroke-width="2.8" stroke-linejoin="round"/>
+    <circle r="22" fill="#FFFDF5" stroke="#242034" stroke-width="2.5"/>${!trancado ? `<path d="M-14 -12 A20 20 0 0 1 4 -20" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity=".9"/>` : ""}
+    <g>${arte}</g>${estrelinhas}</svg>`;
+}
 // Olha o histórico da criança (com as missões como estão cadastradas hoje)
 function historicoDe(id){
-  const e = { dias: 0, seqMax: 0, manhas: 0, noites: 0, vez: 0 }; let seq = 0;
+  const e = { dias: 0, seqMax: 0, manhas: 0, noites: 0, vez: 0, voltas: 0, finais: 0, estrelas: estrelasGanhas(id) }; let seq = 0, antes = null, sab = null;
   const ini = new Date((dados.inicio || hojeStr()) + "T12:00:00"), hoje = new Date(); hoje.setHours(12, 0, 0, 0);
   for (let d = new Date(ini), n = 0; d <= hoje && n < 800; d.setDate(d.getDate() + 1), n++) {
-    const ts = tarefasDe(id, d); if (!ts.length) continue;
-    const dia = isoDia(d), fe = feitosEm(dia, id), ok = t => fe.includes(t.key);
-    const tudo = ts.every(ok);
-    if (tudo) { e.dias++; seq++; e.seqMax = Math.max(e.seqMax, seq); } else if (dia !== hojeStr()) seq = 0;
+    const ts = tarefasDe(id, d), dia = isoDia(d), fe = feitosEm(dia, id), ok = t => fe.includes(t.key);
+    const tudo = ts.length > 0 && ts.every(ok);
+    if (d.getDay() === 6) sab = ts.length ? tudo : null;
+    if (d.getDay() === 0) { const dom = ts.length ? tudo : null; if ((sab || dom) && sab !== false && dom !== false) e.finais++; sab = null; }
+    if (!ts.length) continue;
+    if (tudo) { e.dias++; seq++; e.seqMax = Math.max(e.seqMax, seq); if (antes === false) e.voltas++; } else if (dia !== hojeStr()) seq = 0;
+    if (dia !== hojeStr() || tudo) antes = tudo;
     const m = ts.filter(t => t.periodo === "manha"), no = ts.filter(t => t.periodo === "noite");
     if (m.length && m.every(ok)) e.manhas++; if (no.length && no.every(ok)) e.noites++;
     e.vez += ts.filter(t => t.revezar && ok(t)).length;
   }
   return e;
 }
-const medalhasDe = id => { const e = historicoDe(id); return MEDALHAS.filter(m => m.ok(e)); };
+// medalhas ganhas: lista de { fam, nivel, id }
+function medalhasDe(id){ const e = historicoDe(id), out = [];
+  FAMILIAS.forEach(f => f.metas.forEach((m, k) => { if ((e[f.campo] || 0) >= m) out.push({ fam: f, nivel: k, id: f.id + k }); })); return out; }
 // passos na trilha = conquistas por estrelas + medalhas de responsabilidade
 const conquistasDe = id => Math.floor(estrelasGanhas(id) / passoConquista()) + medalhasDe(id).length;
+const MEDALHAS = FAMILIAS;
 function infoConquista(n){   // n = número do passo, começando em 1
   const i = n - 1, volta = Math.floor(i / (MUNDOS.length * PASSOS_MUNDO)), m = MUNDOS[Math.floor(i / PASSOS_MUNDO) % MUNDOS.length], passo = i % PASSOS_MUNDO + 1;
   const [nome, frase] = PASSOS_NOMES[m.id][passo - 1];
@@ -1341,11 +1412,11 @@ function alternar(key){
     const t = tarefaDaChave(key);
     const depois = conquistasDe(criancaAtiva);
     if (depois > antes) setTimeout(() => {
-      const nova = medalhasDe(criancaAtiva).find(m => !medAntes.includes(m.id)), inf = infoConquista(depois);
-      vinheta("loja"); confete(60);
-      if (nova) { toast(`Medalha: ${nova.nome} 🏅 +1 passo nos Mundos`); falar("Medalha nova! " + nova.nome + ". " + nova.frase); }
-      else { toast(`${inf.nome} 🏅`); falar(inf.nome + " " + inf.frase); }
-    }, diaCompleto(dia, criancaAtiva, new Date()) ? 3200 : 700);
+      const c = crianca(criancaAtiva), novas = medalhasDe(criancaAtiva).filter(m => !medAntes.includes(m.id)), inf = infoConquista(depois);
+      if (novas.length) { const [m0, ...resto] = novas; filaMedalhas = resto.map(m => [c, m.fam, m.nivel, true]);
+        $("#conquista").style.display = "none"; revelarMedalha(c, m0.fam, m0.nivel, true); }
+      else { vinheta("loja"); confete(60); toast(`${inf.nome} 🏅`); falar(inf.nome + " " + inf.frase); }
+    }, diaCompleto(dia, criancaAtiva, new Date()) ? 3600 : 700);
     if (diaCompleto(dia, criancaAtiva, new Date())) { vinheta("tudo");
       mostrarConquista(crianca(criancaAtiva), tarefasDe(criancaAtiva, new Date()).reduce((s, x) => s + x.pontos, 0)); }
     else { toast(`+${t.pontos} estrelas!`); vinheta("ok");
@@ -1362,12 +1433,27 @@ const nomeMotivo = p => p.texto || (MOTIVOS_PAUSA.find(m => m.id === p.motivo) |
 const dataCurta = iso => new Date(iso + "T12:00:00").toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
 
 /* ===== Loja de recompensas ===== */
+let filaMedalhas = [];
+function revelarMedalha(c, f, nivel, nova = true){
+  const el = $("#revela"), nv = NIVEIS[nivel];
+  el.innerHTML = `<div class="raios" aria-hidden="true"></div>
+    <span class="revTopo">${nova ? "MEDALHA NOVA!" : "SUA MEDALHA"}</span>
+    <div class="revSelo">${selo(f, nivel, 170)}</div>
+    <h2>${esc(f.nome)}</h2>
+    <span class="revNivel n${nivel}">${nv.nome}</span>
+    <p>${esc(f.frases[nivel])}</p>
+    ${nova ? `<span class="revPasso">${icone("mundo", 22)} +1 passo nos Mundos</span>` : ""}
+    <button class="btn" id="revOk">${nova ? "Uhuu!" : "Fechar"}</button>`;
+  el.style.display = "flex"; el.classList.remove("anima"); void el.offsetWidth; el.classList.add("anima");
+  if (nova) { vinheta("tudo"); confete(110, "canhoes"); falar(`Medalha nova! ${f.nome}, ${nv.nome}! ${f.frases[nivel]}`); }
+  $("#revOk").onclick = () => { el.style.display = "none"; const prox = filaMedalhas.shift(); if (prox) setTimeout(() => revelarMedalha(...prox), 250); else render(); };
+}
 function renderLoja(){
   const el = $("#lojaConteudo"), c = crianca(criancaAtiva);
   if (!c) { el.innerHTML = `<div class="vazio">Cadastre as crianças no painel dos pais.</div>`; return; }
   const s = saldo(c.id), ganhas = estrelasGanhas(c.id), passo = passoConquista(), meds = medalhasDe(c.id), nC = conquistasDe(c.id), falta = passo - ganhas % passo;
   const pedidos = Object.values(dados.trocas).filter(t => t.kid === c.id && t.status !== "cancelado").sort((a, b) => b.data.localeCompare(a.data)).slice(0, 6);
-  const atual = nC ? infoConquista(nC) : null, prox = infoConquista(nC + 1), proxMed = MEDALHAS.find(m => !meds.includes(m));
+  const atual = nC ? infoConquista(nC) : null, prox = infoConquista(nC + 1);
   const mostrar = []; for (let n = Math.max(1, nC - 5); n <= nC; n++) mostrar.push(n);
   el.innerHTML = `
     <div class="resumoConq">
@@ -1377,10 +1463,19 @@ function renderLoja(){
       <small class="rcFalta">Faltam ${falta} estrelas para o próximo passo: ${esc(prox.nome)}</small>
       <button class="btn sec" id="irMundos">${icone("mundo", 24)} Ver no mapa dos Mundos</button>
     </div>
-    <h2 class="quem">${icone("trofeu", 32)} Medalhas de responsa</h2>
-    <p class="dicaMed">Cada medalha vale +1 passo nos Mundos.</p>
-    <div class="medalhas">${MEDALHAS.map(m => { const tem = meds.includes(m);
-      return `<div class="med ${tem ? "" : "trancada"}"><span class="medIc">${icone(m.icone, 36)}</span><b>${esc(m.nome)}</b><small>${esc(tem ? m.frase : m === proxMed ? "Próxima: " + m.frase : m.frase)}</small></div>`; }).join("")}</div>
+    <h2 class="quem">${icone("trofeu", 32)} Coleção de medalhas</h2>
+    <p class="dicaMed">${meds.length} de ${FAMILIAS.length * 3} · cada medalha leva você +1 passo nos Mundos</p>
+    <div class="colecao">${(() => { const e = historicoDe(c.id); return FAMILIAS.map(f => {
+      const v = e[f.campo] || 0, nivel = f.metas.filter(m => v >= m).length - 1, prox = f.metas[nivel + 1];
+      const base = nivel >= 0 ? f.metas[nivel] : 0, pct = prox ? Math.round((v - base) / (prox - base) * 100) : 100;
+      const falta = prox ? prox - v : 0, un = falta === 1 ? f.unid[0] : f.unid[1];
+      return `<button class="medCard ${nivel < 0 ? "trancada" : "n" + nivel}" data-fam="${f.id}">
+        <span class="medSelo">${selo(f, Math.max(0, nivel), 58, nivel < 0)}</span>
+        <b>${esc(f.nome)}</b>
+        <span class="medNivel">${nivel < 0 ? "Ainda não" : NIVEIS[nivel].nome}</span>
+        <span class="medTrilho"><i style="width:${Math.max(4, pct)}%"></i></span>
+        <small>${prox ? `Faltam ${falta} ${un} para ${NIVEIS[nivel + 1].nome}` : "Coleção completa! 🏆"}</small>
+      </button>`; }).join(""); })()}</div>
     ${nC ? `<h2 class="quem">${icone("mundo", 30)} Últimos passos</h2>
     <div class="passos">${mostrar.reverse().map(n => { const inf = infoConquista(n); return `<div class="passo">${medalha(n, 48)}<div><b>${esc(inf.nome)}</b><small>${esc(inf.mundo.nome)} · ${esc(inf.frase)}</small></div></div>`; }).join("")}</div>` : ""}
     <div class="cofre"><div class="moeda">${icone("estrela", 58)}</div><div style="flex:1"><small>Estrelas para trocar por prêmios</small><b>${s}</b></div></div>
@@ -1396,6 +1491,10 @@ function renderLoja(){
     ${pedidos.length ? `<h2 class="quem">${icone("premio_escolhidos", 32)} Meus prêmios</h2>${pedidos.map(t => `<div class="pedido"><span>${esc(t.texto)}</span>
       <span class="st ${t.status}">${t.status === "entregue" ? icone("premio_recebido", 20) + " Ganhei!" : icone("premio_esperando_os_pais", 20) + " Esperando os pais"}</span></div>`).join("")}` : ""}`;
   $("#irMundos").onclick = () => irPara("mundos");
+  el.querySelectorAll(".medCard").forEach(b => b.onclick = () => {
+    const f = FAMILIAS.find(x => x.id === b.dataset.fam), v = historicoDe(c.id)[f.campo] || 0, nivel = f.metas.filter(m => v >= m).length - 1;
+    if (nivel < 0) { const un = f.metas[0] === 1 ? f.unid[0] : f.unid[1]; toast(`${f.nome}: consiga ${f.metas[0]} ${un} para ganhar o Bronze!`); falar(`${f.nome}. Consiga ${f.metas[0]} ${un} para ganhar o bronze.`); return; }
+    revelarMedalha(c, f, nivel, false); });
   el.querySelectorAll(".trocar").forEach(b => b.onclick = () => {
     const r = dados.recompensas.find(x => x.id === b.dataset.rec); if (!r) return;
     if (confirmaTroca !== r.id) { confirmaTroca = r.id; falar("Escolher " + semEmoji(r.texto) + "? Usa " + r.custo + " estrelas."); return renderLoja(); }
