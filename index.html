@@ -2401,16 +2401,16 @@ function telaEntrada(qual = "inicio", erro = ""){
   }
   if (qual === "resp") {
     el.innerHTML = `<div class="caixa">${topo}<p>Entre ou crie sua conta de responsável.</p>
-      <input id="eEmail" type="email" autocomplete="email" placeholder="Seu e-mail">
+      <input id="eEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Seu e-mail">
       <input id="eSenha" type="password" autocomplete="current-password" placeholder="Senha (mínimo 6 caracteres)">
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="btn" id="eEntrar">Entrar</button>
       <button class="btn sec" id="eCriar">Criar conta</button>
       <button class="link" id="eEsqueci">Esqueci a senha</button><br>
       <button class="link" id="eVoltar">Voltar</button></div>`;
-    const cred = () => [$("#eEmail").value.trim(), $("#eSenha").value];
+    const cred = () => [$("#eEmail").value.normalize("NFKC").replace(/[\s\u200B-\u200D\uFEFF]/g, "").replace(/[，、]/g, ",").toLowerCase(), $("#eSenha").value];
     const tratar = e => { const m = { "auth/invalid-credential": "E-mail ou senha incorretos.", "auth/wrong-password": "Senha incorreta.", "auth/user-not-found": "Não achei essa conta. Que tal criar?",
-      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Entrar.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo." };
+      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Entrar.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo. Confira se tem @, se termina com .com ou .com.br e se não tem vírgula ou acento." };
       $("#eErro").textContent = m[e.code] || "Não deu certo: " + (e.code || e.message); };
     $("#eEntrar").onclick = async () => { try { await firebase.auth().signInWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
     $("#eCriar").onclick = async () => { try { await firebase.auth().createUserWithEmailAndPassword(...cred()); await depoisDoLoginResp(); } catch(e) { tratar(e); } };
