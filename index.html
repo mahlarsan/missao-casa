@@ -1957,8 +1957,7 @@ function renderPais(){
         : `<div class="listaItens">${linha(`data-novo="pin"`, icone("entrada_codigo_e_senha", 30), "Trocar senha", "")}</div>`}</div>
     <button class="btn sec" id="sair">Sair do painel</button>`}
     <button class="btn sec" id="mostrarTour" data-aba="familia">${icone("entrada_crianca", 24)} Mostrar o jogo para as crianças</button>
-    <button class="btnExcluir" id="recomecar" data-aba="familia">Recomeçar do zero neste aparelho</button>
-    ${NUVEM.ativo && NUVEM.papel === "pais" && NUVEM.dono === firebase.auth().currentUser?.uid ? `<button class="btnExcluir" id="apagarTudo" data-aba="familia">Apagar a família e a minha conta</button>` : ""}`;
+    <button class="btnExcluir" id="recomecar" data-aba="familia">Recomeçar do zero neste aparelho</button>`;
 
   ligarSeletores(el);
   // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
@@ -1977,7 +1976,6 @@ function renderPais(){
   el.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => { fechar(); renderPais(); });
   el.querySelectorAll("[data-ed-r]").forEach(b => b.onclick = () => { fechar(); editando = { tipo: "r", id: b.dataset.edR }; renderPais(); el.querySelector(".formBox")?.scrollIntoView?.({ block: "center" }); });
   $$("#mostrarTour").onclick = () => abrirTour();
-  if ($("#apagarTudo")) $$("#apagarTudo").onclick = apagarTudo;
   $$("#recomecar").onclick = () => { if (confirm("Apagar tudo deste aparelho e abrir o app como na primeira vez?" + (NUVEM.ativo ? " (Os dados da família continuam guardados na nuvem.)" : " (Missões, estrelas e personagens deste aparelho serão apagados.)"))) location.href = location.pathname + "?novo"; };
   $$("#voltaRotina").onclick = () => { painelSecao = ""; fechar(); renderPais(); window.scrollTo(0, 0); };
   // dias da missão
@@ -2544,24 +2542,11 @@ function aplicarRemoto(r){
   dados.avatares = r.avatares || dados.avatares || {};
   NUVEM.aparelhos = (r.aparelhos || []).length; NUVEM.nPais = (r.pais || []).length; NUVEM.nApoio = (r.apoio || []).length;
   if (r.convites) NUVEM.convites = r.convites;
-  if (r.dono) NUVEM.dono = r.dono;
   dados = normalizar(dados);
   marcarSincronizado();
   try { localStorage.setItem(CHAVE + ".fam." + NUVEM.codigo, JSON.stringify(dados)); } catch(e){}
 }
 
-// apaga de verdade: a família na nuvem (crianças, missões, estrelas), a conta do responsável e este aparelho
-async function apagarTudo(){
-  if (!confirm("Apagar a família inteira e a sua conta?\n\nSomem as crianças, missões, estrelas, prêmios e medalhas, em todos os aparelhos. Não dá para desfazer.")) return;
-  if (prompt('Para confirmar, escreva APAGAR') !== "APAGAR") return toast("Nada foi apagado 🙂");
-  try { await NUVEM.ref.delete(); }
-  catch(e) { console.warn(e); return alert("Não consegui apagar a família: " + msgErro(e)); }
-  NUVEM.ativo = false;
-  try { await firebase.auth().currentUser.delete(); }
-  catch(e) { console.warn(e); try { await firebase.auth().signOut(); } catch(_){}
-    if (e.code === "auth/requires-recent-login") alert("A família foi apagada. A conta (e-mail) só pode ser apagada logo depois de entrar: se quiser, entre de novo e use este botão outra vez, ou crie a família de novo com o mesmo e-mail."); }
-  location.href = location.pathname + "?novo";
-}
 async function sairDaConta(){
   gravarSessao(null); NUVEM.ativo = false;
   try { await firebase.auth().signOut(); } catch(e){}
