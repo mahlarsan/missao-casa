@@ -183,6 +183,10 @@
   .codigoFam{font-family:var(--titulo);font-weight:700;font-size:2rem;letter-spacing:6px;color:var(--pri-esc);background:#EFE6FF;border-radius:16px;padding:8px;text-align:center;margin:8px 0}
   .nuvem{font-size:.8rem;font-weight:800;opacity:.9;margin-top:2px}
   .rot{color:var(--suave);font-weight:800;display:block;margin-top:10px}
+  .senhaBox{position:relative;display:block}.senhaBox input{width:100%;padding-right:96px}
+  .verSenha{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:#F1ECDF;color:var(--tinta);font:900 13px "Nunito",sans-serif;padding:8px 12px;border-radius:10px;cursor:pointer;margin:0}
+  #fConta{margin:0}
+  .dicaCod{display:block;color:var(--suave);font-weight:700;font-size:.8rem;line-height:1.35;margin:-2px 2px 10px}
   .codigoFam.conv{font-size:1.25rem;letter-spacing:2px;user-select:all}
 
   /* Resultados */
@@ -779,6 +783,7 @@
   .abasEntrada{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#F1ECDF;border-radius:16px;padding:4px;margin:6px 0 4px}
   .abasEntrada button{border:0;background:none;font:900 15px "Nunito",sans-serif;color:var(--suave);padding:10px;border-radius:12px;cursor:pointer;margin:0}
   .abasEntrada button.on{background:#fff;color:var(--tinta);box-shadow:0 1px 0 rgba(36,32,52,.12)}
+  .onbNomeFam{margin:0 0 14px!important}
   .campoE{display:flex;flex-direction:column;gap:4px;text-align:left;margin:4px 0}
   .campoE span{font-size:13px;font-weight:900;color:var(--suave)}
   .campoE input{margin:0}
@@ -1091,6 +1096,7 @@ function carregar(){
   return normalizar(d || JSON.parse(JSON.stringify(PADRAO)));
 }
 function normalizar(d){
+  d.nomeFamilia = typeof d.nomeFamilia === "string" ? d.nomeFamilia : "";
   d.criancas = d.criancas || []; d.tarefas = d.tarefas || []; d.feitos = d.feitos || {};
   // dia em que a família começou a usar: os resultados não contam nada antes disso
   d.inicio = d.inicio || Object.keys(d.feitos).sort()[0] || isoDia(new Date());
@@ -1373,7 +1379,7 @@ function renderCabecalho(){
         ${compacto ? "" : `<div class="heroChips"><span>${icone("estrela", 20)} ${saldo(c.id)}</span><span>${icone("jogo_sequencia_de_dias", 20)} ${sequencia(c.id)}</span></div>`}
       </div>`}
     </div>
-    ${NUVEM.statusHTML ? `<div class="nuvem">${NUVEM.statusHTML}</div>` : ""}`;
+    ${statusNuvem() ? `<div class="nuvem">${statusNuvem()}</div>` : ""}`;
   hero.querySelectorAll("[data-troca]").forEach(b => b.onclick = () => { criancaAtiva = b.dataset.troca; render(); });
   if ($("#abrirPainel")) $("#abrirPainel").onclick = () => irPara("painel");
   if ($("#heroAv") && NUVEM.papel !== "apoio") $("#heroAv").onclick = () => abrirAvatar(criancaAtiva);
@@ -1928,10 +1934,16 @@ function renderPais(){
         <button class="linhaItem" id="prefCalmo">${icone("painel_menos_movimento", 30)}<span><b>Menos movimento</b></span><i class="interruptor ${PREF.calmo ? "on" : ""}" aria-hidden="true"></i></button>
       </div></div>
 
+    ${NUVEM.papel !== "apoio" ? `<div class="bloco">${cab("painel_familia", "Nossa família")}
+      ${formAberto === "nomeFam" ? `<div class="formBox"><label class="campoE"><span>Nome da família</span><input id="nomeFam" maxlength="30" placeholder="Ex.: Família Larsan" value="${esc(dados.nomeFamilia)}"></label>
+        <div class="botoesForm"><button class="btn" id="nomeFamSalvar">Salvar</button><button class="btn sec" data-fecha="1">Cancelar</button></div></div>`
+        : `<div class="listaItens">${linha(`data-novo="nomeFam"`, icone("painel_familia", 30), esc(nomeDaFamilia() || "Dar um nome para a família"), nomeDaFamilia() ? "Aparece no topo do app" : "Aparece no topo do app, para todos")}</div>`}
+    </div>` : ""}
     ${NUVEM.ativo ? `
-    <div class="bloco">${cab("painel_familia", "Nossa família")}
+    <div class="bloco">${cab("entrada_codigo_e_senha", "Códigos de entrada")}
       <span class="rot">Código das crianças</span>
       <div class="codigoFam">${esc(NUVEM.codigo)}</div>
+      <small class="dicaCod">É a chave para os aparelhos das crianças entrarem na família. Ela é sorteada para ninguém de fora adivinhar.</small>
       ${NUVEM.convites ? `
       <span class="rot">Convite de responsável</span>
       <div class="codigoFam conv">${esc(NUVEM.codigo + "-" + NUVEM.convites.resp)}</div>
@@ -1949,7 +1961,7 @@ function renderPais(){
 
   ligarSeletores(el);
   // cada bloco pertence a uma aba do painel (e, na Rotina, a uma seção)
-  const abaDoBloco = t => /Prêmios|Desafio/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Senha/.test(t) ? "familia" : "rotina";
+  const abaDoBloco = t => /Prêmios|Desafio/.test(t) ? "loja" : /Crianças|Neste aparelho|Nossa família|Códigos de entrada|Senha/.test(t) ? "familia" : "rotina";
   const secaoDoBloco = t => /Sugestões/.test(t) ? "sugestoes" : /Pausas/.test(t) ? "pausas" : /Agenda/.test(t) ? "agenda" : "missoes";
   el.querySelectorAll(".bloco").forEach(b => { const t = b.querySelector("b")?.textContent || ""; b.dataset.aba = abaDoBloco(t); if (b.dataset.aba === "rotina") b.dataset.secao = secaoDoBloco(t); });
   if ($("#sair")) $("#sair").dataset.aba = "familia";
@@ -2102,6 +2114,8 @@ function renderPais(){
   el.querySelectorAll("[data-entregar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.entregar]; if (t) { t.status = "entregue"; salvar(); toast("Entregue! 🎉"); render(); } });
   el.querySelectorAll("[data-cancelar]").forEach(b => b.onclick = () => { const t = dados.trocas[b.dataset.cancelar]; if (t) { t.status = "cancelado"; salvar(); toast("Cancelado, estrelas devolvidas"); render(); } });
   if ($("#sairConta")) $$("#sairConta").onclick = sairDaConta;
+  if ($("#nomeFamSalvar")) { const salvarNome = () => { dados.nomeFamilia = $("#nomeFam").value.trim().slice(0, 30); formAberto = null; salvar(); toast(dados.nomeFamilia ? nomeDaFamilia() + " 💜" : "Nome tirado"); render(); };
+    $$("#nomeFamSalvar").onclick = salvarNome; $("#nomeFam").onkeydown = e => { if (e.key === "Enter") salvarNome(); }; setTimeout(() => $("#nomeFam")?.focus(), 50); }
   $$("#prefSom").onclick = () => { PREF.som = !PREF.som; gravarPref(); atualizarSomBtn(); renderPais(); };
   $$("#prefCalmo").onclick = () => { PREF.calmo = !PREF.calmo; gravarPref(); aplicarMovimento(); renderPais(); };
   if ($("#novosConv")) $$("#novosConv").onclick = async () => {
@@ -2128,6 +2142,32 @@ const gravarPref = () => { try { localStorage.setItem(CHAVE + ".pref", JSON.stri
 // Só o botão "Menos movimento" do painel desliga as animações (o "reduzir movimento" do celular estava apagando a festa)
 const menosMovimento = () => !!PREF.calmo;
 let audioCtx;
+const CtxAudio = window.AudioContext || window.webkitAudioContext;
+// iPhone: o som do app só sai depois de um toque, e a chave de silêncio cala o Web Audio.
+// No primeiro toque em qualquer lugar o som é "destravado" e o app avisa que é som de mídia (toca mesmo no silencioso).
+function wavSilencio(){
+  const n = 2205, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); w(8, "WAVE"); w(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, 22050, true); v.setUint32(28, 44100, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([b], { type: "audio/wav" }));
+}
+let somDestravado = false;
+function destravarSom(){
+  if (!PREF.som || !CtxAudio) return;
+  try { if (navigator.audioSession && navigator.audioSession.type !== "playback") navigator.audioSession.type = "playback"; } catch(e){}
+  try {
+    audioCtx = audioCtx || new CtxAudio();
+    if (audioCtx.state !== "running") audioCtx.resume().catch(() => {});
+    if (!somDestravado) { const b = audioCtx.createBuffer(1, 1, 22050), f = audioCtx.createBufferSource(); f.buffer = b; f.connect(audioCtx.destination); f.start(0); }
+  } catch(e){}
+  if (!somDestravado) {
+    somDestravado = true;
+    if (!navigator.audioSession) { try { const a = new Audio(wavSilencio()); a.setAttribute("playsinline", ""); a.play().catch(() => { somDestravado = false; }); } catch(e){} }
+  }
+}
+["pointerdown", "touchend", "click", "keydown"].forEach(ev => addEventListener(ev, destravarSom, { capture: true, passive: true }));
+// voltou do segundo plano: o iPhone deixa o som "interrompido" até religar
+document.addEventListener("visibilitychange", () => { if (!document.hidden && audioCtx && audioCtx.state !== "running") audioCtx.resume().catch(() => {}); });
 // Sons curtos feitos no próprio aparelho (sem arquivo): "check" ao marcar, "tãdãm" no dia completo
 function tom(f, ini, dur, vol = 0.12, tipo = "triangle", fFim){
   const o = audioCtx.createOscillator(), g = audioCtx.createGain(), t = audioCtx.currentTime + ini;
@@ -2144,10 +2184,16 @@ function estalo(ini, vol = 0.08){
   src.connect(f).connect(g).connect(audioCtx.destination); src.start(audioCtx.currentTime + ini);
 }
 function vinheta(tipo = "ok"){
-  if (!PREF.som) return;
+  if (!PREF.som || !CtxAudio) return;
   try {
-    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    audioCtx = audioCtx || new CtxAudio();
+    // se o som estiver parado (iPhone suspende), religa e só então toca, para não perder o começo
+    if (audioCtx.state !== "running") { destravarSom(); audioCtx.resume().then(() => tocarVinheta(tipo)).catch(() => {}); return; }
+  } catch(e) { return; }
+  tocarVinheta(tipo);
+}
+function tocarVinheta(tipo){
+  try {
     if (tipo === "tudo") {            // tã... dãm!
       // comemoração subindo: tã-rã-rã-TÃN… DÃÃÃM! (tudo vai para o agudo, nada desce)
       const segura = (f, ini, dur, vol, tipo) => {        // nota que fica cheia e só some no finalzinho
@@ -2378,7 +2424,7 @@ function render(deFora){
 
 /* ===== Nuvem (Firebase) — só liga se existir firebase-config.js ===== */
 const NUVEM = { ativo: false, papel: "local", codigo: null, ref: null, ultimo: {}, email: null, aparelhos: 0, nPais: 1, nApoio: 0, convites: null };
-const CAMPOS_CONFIG = ["criancas", "tarefas", "atividades", "recompensas", "premio", "inicio", "pausas"];
+const CAMPOS_CONFIG = ["nomeFamilia", "criancas", "tarefas", "atividades", "recompensas", "premio", "inicio", "pausas"];
 const SESSAO = CHAVE + ".sessao";
 const FB_VERSAO = "10.14.1";
 const lerSessao = () => { try { return JSON.parse(localStorage.getItem(SESSAO)); } catch(e) { return null; } };
@@ -2395,6 +2441,50 @@ async function carregaFirebase(cfg){
   return firebase;
 }
 const db = () => firebase.firestore();
+let FB_PROMESSA = null;
+// garante o Firebase carregado antes de qualquer cadastro/login (na 1ª visita ele ainda pode estar baixando)
+function fbPronto(){
+  if (!window.FIREBASE_CONFIG) return Promise.reject({ code: "sem-config" });
+  if (!FB_PROMESSA) FB_PROMESSA = carregaFirebase(window.FIREBASE_CONFIG).catch(e => { FB_PROMESSA = null; throw { code: "auth/network-request-failed" }; });
+  return FB_PROMESSA;
+}
+const ENTRADA = { tela: null, mexeu: false, nome: "", email: "" };
+const limpaEmail = v => (v || "").normalize("NFKC").replace(/[\s\u200B-\u200D\uFEFF]/g, "").replace(/[。．]/g, ".").toLowerCase();
+// aceita o código colado no meio de uma mensagem ("o código é ABC123", "convite: ABC123-XYZ789")
+function extraiCodigo(v, n){
+  const t = (v || "").toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (n === 12) { const m = t.match(/\b([A-Z0-9]{6})\s*-?\s*([A-Z0-9]{6})\b/); if (m) return m[1] + m[2]; }
+  else { const ws = t.split(/[^A-Z0-9]+/).filter(w => w.length === n), bons = ws.filter(w => /^[A-HJ-NP-Z2-9]+$/.test(w));
+    if (bons.length || ws.length > 1) return (bons.length ? bons : ws).pop(); }
+  return t.replace(/[^A-Z0-9]/g, "").slice(0, n);
+}
+// mensagens de erro em português simples, para conta e banco de dados
+function msgErro(e){
+  const c = e && (e.code || "");
+  const m = {
+    "auth/invalid-credential": "E-mail ou senha não conferem. Confira os dois ou toque em Esqueci a senha.",
+    "auth/invalid-login-credentials": "E-mail ou senha não conferem. Confira os dois ou toque em Esqueci a senha.",
+    "auth/wrong-password": "Senha errada. Confira ou toque em Esqueci a senha.",
+    "auth/user-not-found": "Ainda não existe conta com esse e-mail. Toque em Criar conta.",
+    "auth/email-already-in-use": "Você já tem conta com esse e-mail. É só pôr a senha e entrar 🙂",
+    "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.",
+    "auth/missing-password": "Escreve a senha.",
+    "auth/invalid-email": "Esse e-mail não parece certo. Confira se tem @ e o final (.com, .com.br).",
+    "auth/missing-email": "Escreve seu e-mail.",
+    "auth/too-many-requests": "Muitas tentativas seguidas. Espere uns minutos e tente de novo, ou toque em Esqueci a senha.",
+    "auth/user-disabled": "Essa conta foi desativada.",
+    "auth/operation-not-allowed": "O login por e-mail ainda não está ligado no Firebase (Authentication › Sign-in method).",
+    "auth/admin-restricted-operation": "O acesso sem conta (anônimo) não está ligado no Firebase (Authentication › Sign-in method).",
+    "auth/network-request-failed": "Sem internet agora. Confira a conexão e tente de novo.",
+    "auth/internal-error": "O Firebase não respondeu. Tente de novo em instantes.",
+    "permission-denied": "O banco de dados recusou o acesso. Confira se as regras do Firestore estão publicadas.",
+    "unavailable": "Sem conexão com o banco de dados agora. Tente de novo.",
+    "failed-precondition": "O banco de dados do Firebase ainda não foi criado (Firestore Database).",
+    "not-found": "Não achei essa família.",
+    "sem-config": "O app está sem a configuração do Firebase."
+  };
+  return m[c] || "Não deu certo agora (" + (c || (e && e.message) || "erro") + "). Tente de novo.";
+}
 function novosConvites(){ return { resp: novoCodigo(), apoio: novoCodigo() }; }
 function novoCodigo(){ const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c = ""; const r = crypto.getRandomValues(new Uint32Array(6)); r.forEach(n => c += a[n % a.length]); return c; }
 
@@ -2439,7 +2529,6 @@ async function conectarFamilia(codigo, papel){
   NUVEM.ativo = true; gravarSessao({ papel, familia: codigo });
   if (NUVEM.papel === "crianca") paisLiberado = false;
   $("#entrada").style.display = "none";
-  NUVEM.statusHTML = icone("entrada_nuvem_conectada", 18) + " " + esc(papel === "pais" ? "Família " + codigo : papel === "apoio" ? "Rede de apoio da família" : "Conectado à família");
   montarNav();
   setTimeout(talvezTour, 600);
   NUVEM.ref.onSnapshot(sn => { if (sn.metadata.hasPendingWrites) return; aplicarRemoto(sn.data()); render(true); },
@@ -2467,6 +2556,7 @@ async function sairDaConta(){
 /* ----- Tela de entrada ----- */
 function telaEntrada(qual = "inicio", erro = ""){
   const el = $("#entrada"); el.style.display = "block";
+  ENTRADA.tela = qual; if (qual !== "inicio") ENTRADA.mexeu = true;
   const topo = `<div class="logo">${["orbita", "zigue", "pingo", "faisca"].map(k => avatarSVG({ p: k }, 64)).join("")}</div><h1>Missão Casa</h1>`;
   if (qual === "inicio") {
     el.innerHTML = `<div class="caixa">${topo}<p>As missões da família, do jeito divertido.</p>
@@ -2486,41 +2576,59 @@ function telaEntrada(qual = "inicio", erro = ""){
     el.innerHTML = `<div class="caixa">${topo}
       <div class="abasEntrada"><button id="aEntrar" class="${criar ? "" : "on"}">Já tenho conta</button><button id="aCriar" class="${criar ? "on" : ""}">Criar conta</button></div>
       <p>${criar ? "Crie sua conta de responsável. É rapidinho!" : "Entre com o e-mail e a senha da sua conta."}</p>
-      ${criar ? `<label class="campoE"><span>Seu nome</span><input id="eNome" autocomplete="name" placeholder="Ex.: Maitê"></label>` : ""}
-      <label class="campoE"><span>E-mail</span><input id="eEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voce@email.com"></label>
-      <label class="campoE"><span>Senha${criar ? " (mínimo 6 caracteres)" : ""}</span><input id="eSenha" type="password" autocomplete="${criar ? "new-password" : "current-password"}" placeholder="••••••"></label>
-      ${criar ? `<label class="campoE"><span>Repita a senha</span><input id="eSenha2" type="password" autocomplete="new-password" placeholder="••••••"></label>` : ""}
-      <div class="erro" id="eErro">${esc(erro)}</div>
-      <button class="btn" id="eOk">${criar ? "Criar minha conta" : "Entrar"}</button>
+      <form id="fConta" novalidate>
+      ${criar ? `<label class="campoE"><span>Seu nome</span><input id="eNome" autocomplete="given-name" autocapitalize="words" placeholder="Ex.: Maitê" value="${esc(ENTRADA.nome)}"></label>` : ""}
+      <label class="campoE"><span>E-mail</span><input id="eEmail" type="email" inputmode="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="voce@email.com" value="${esc(ENTRADA.email)}"></label>
+      <label class="campoE"><span>Senha${criar ? " (mínimo 6 caracteres)" : ""}</span>
+        <span class="senhaBox"><input id="eSenha" type="password" autocomplete="${criar ? "new-password" : "current-password"}" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="••••••"><button type="button" class="verSenha" id="eVer" aria-label="Mostrar a senha">mostrar</button></span></label>
+      <div class="erro" id="eErro" role="alert">${esc(erro)}</div>
+      <button class="btn" id="eOk" type="submit">${criar ? "Criar minha conta" : "Entrar"}</button>
+      </form>
       ${criar ? "" : `<button class="link" id="eEsqueci">Esqueci a senha</button><br>`}
       <button class="link" id="eVoltar">Voltar</button></div>`;
-    $("#aEntrar").onclick = () => telaEntrada("resp");
-    $("#aCriar").onclick = () => telaEntrada("respCriar");
-    const cred = () => [$("#eEmail").value.normalize("NFKC").replace(/[\s\u200B-\u200D\uFEFF]/g, "").toLowerCase(), $("#eSenha").value];
+    const guarda = () => { if ($("#eNome")) ENTRADA.nome = $("#eNome").value; ENTRADA.email = $("#eEmail").value; };
+    el.querySelectorAll("input").forEach(i => i.oninput = guarda);
+    const trocar = q => { guarda(); telaEntrada(q); };
+    $("#aEntrar").onclick = () => trocar("resp");
+    $("#aCriar").onclick = () => trocar("respCriar");
+    $("#eVer").onclick = () => { const i = $("#eSenha"), ver = i.type === "password"; i.type = ver ? "text" : "password"; $("#eVer").textContent = ver ? "esconder" : "mostrar"; i.focus(); };
     const erroE = t => { $("#eErro").textContent = t; };
-    const tratar = e => { const m = { "auth/invalid-credential": "E-mail ou senha incorretos.", "auth/wrong-password": "Senha incorreta.", "auth/user-not-found": "Não achei essa conta. Toque em Criar conta.",
-      "auth/email-already-in-use": "Esse e-mail já tem conta. Toque em Já tenho conta.", "auth/weak-password": "A senha precisa de pelo menos 6 caracteres.", "auth/invalid-email": "Esse e-mail não parece certo. Confira se tem @ e se termina com .com ou .com.br.",
-      "auth/operation-not-allowed": "O login por e-mail ainda não está ligado no Firebase.", "auth/unauthorized-domain": "Este endereço ainda não está liberado no Firebase.", "auth/network-request-failed": "Sem internet agora. Tente de novo." };
-      erroE(m[e.code] || "Não deu certo: " + (e.code || e.message)); };
-    const valida = () => { const [em, se] = cred();
+    const valida = (em, se) => {
       if (criar && !$("#eNome").value.trim()) return "Escreve seu nome 🙂";
       if (!em) return "Escreve seu e-mail.";
-      if (!/^[^@]+@[^@]+\.[a-z]{2,}$/.test(em)) return "Esse e-mail não parece certo. Confira se tem @ e se termina com .com ou .com.br.";
+      if (!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(em)) return "Esse e-mail não parece certo. Confira se tem @ e o final (.com, .com.br).";
       if (!se) return "Escreve a senha.";
       if (criar && se.length < 6) return "A senha precisa de pelo menos 6 caracteres.";
-      if (criar && se !== $("#eSenha2").value) return "As duas senhas não estão iguais.";
       return ""; };
-    $("#eOk").onclick = async () => { const v = valida(); if (v) return erroE(v);
-      $("#eOk").disabled = true; erroE("");
+    $("#fConta").onsubmit = async ev => { ev.preventDefault(); guarda();
+      const em = limpaEmail($("#eEmail").value), se = $("#eSenha").value, v = valida(em, se); if (v) return erroE(v);
+      const b = $("#eOk"); b.disabled = true; b.textContent = criar ? "Criando sua conta…" : "Entrando…"; erroE("");
+      let logou = false;
       try {
-        if (criar) { const r = await firebase.auth().createUserWithEmailAndPassword(...cred());
+        await fbPronto();
+        if (criar) { const r = await firebase.auth().createUserWithEmailAndPassword(em, se);
           try { await r.user.updateProfile({ displayName: $("#eNome").value.trim() }); } catch(e) {} }
-        else await firebase.auth().signInWithEmailAndPassword(...cred());
+        else await firebase.auth().signInWithEmailAndPassword(em, se);
+        logou = true; ENTRADA.email = em;
         await depoisDoLoginResp();
-      } catch(e) { tratar(e); } finally { if ($("#eOk")) $("#eOk").disabled = false; } };
-    if ($("#eEsqueci")) $("#eEsqueci").onclick = async () => { const [em] = cred(); if (!em) return erroE("Escreve seu e-mail primeiro.");
-      try { await firebase.auth().sendPasswordResetEmail(em); erroE("Mandei um e-mail pra trocar a senha 📬"); } catch(e) { tratar(e); } };
-    $("#eVoltar").onclick = () => telaEntrada("inicio");
+      } catch(e) { console.warn(e);
+        if (!logou && criar && e.code === "auth/email-already-in-use") return telaEntrada("resp", msgErro(e));
+        if (logou) return telaEntrada("erroNuvem", msgErro(e));
+        if ($("#eOk")) { b.disabled = false; b.textContent = criar ? "Criar minha conta" : "Entrar"; erroE(msgErro(e)); } } };
+    if ($("#eEsqueci")) $("#eEsqueci").onclick = async () => { const em = limpaEmail($("#eEmail").value);
+      if (!em) { erroE("Escreve seu e-mail aqui em cima e toque de novo."); return $("#eEmail").focus(); }
+      try { await fbPronto(); await firebase.auth().sendPasswordResetEmail(em); erroE("Se esse e-mail tem conta, mandei um link para criar senha nova 📬 Olhe também o spam."); } catch(e) { erroE(msgErro(e)); } };
+    $("#eVoltar").onclick = () => { guarda(); telaEntrada("inicio"); };
+    setTimeout(() => { const alvo = criar && !ENTRADA.nome ? $("#eNome") : !ENTRADA.email ? $("#eEmail") : $("#eSenha"); alvo?.focus(); }, 60);
+  }
+  if (qual === "erroNuvem") {
+    el.innerHTML = `<div class="caixa">${topo}<p><b>Sua conta está certinha</b>, mas não consegui abrir a família agora.</p>
+      <div class="erro" role="alert">${esc(erro)}</div>
+      <button class="btn" id="eDeNovo">Tentar de novo</button>
+      <button class="link" id="eSair">Sair da conta</button></div>`;
+    $("#eDeNovo").onclick = async () => { $("#eDeNovo").disabled = true; $("#eDeNovo").textContent = "Abrindo…";
+      try { await depoisDoLoginResp(); } catch(e) { console.warn(e); telaEntrada("erroNuvem", msgErro(e)); } };
+    $("#eSair").onclick = sairDaConta;
   }
   if (qual === "criarFamilia") {
     const temLocal = !!localStorage.getItem(CHAVE);
@@ -2538,6 +2646,7 @@ function telaEntrada(qual = "inicio", erro = ""){
   if (qual === "onbCriancas") {
     const lista = ONB.criancas;
     el.innerHTML = `<div class="caixa onb">${passosOnb(1)}
+      <label class="campoE onbNomeFam"><span>Nome da família</span><input id="oFam" maxlength="30" placeholder="Ex.: Família Larsan" value="${esc(ONB.nome)}" autocomplete="off"></label>
       <h2>Quem vai jogar?</h2><p>Coloque as crianças da casa. O aniversário ajuda o app a sugerir missões da idade.</p>
       <div class="onbLista">${lista.map((k, i) => `<div class="onbKid">${avatarSVG({ p: k.p }, 48)}<div><b>${esc(k.nome)}</b><small>${k.nasc ? idadeDe(k) + " anos" : "sem aniversário"}</small></div><button class="xItem" data-tira="${i}" aria-label="Tirar ${esc(k.nome)}">×</button></div>`).join("")}</div>
       <div class="onbForm">
@@ -2548,6 +2657,7 @@ function telaEntrada(qual = "inicio", erro = ""){
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="btn" id="oSeguir">Continuar</button>
       <button class="link" id="eVoltar">Voltar</button></div>`;
+    $("#oFam").oninput = e => ONB.nome = e.target.value;
     const add = () => { const n = $("#oNome").value.trim(); if (!n) { $("#eErro").textContent = "Escreve o nome 🙂"; return false; }
       const ps = Object.keys(PERS); lista.push({ id: "c" + Date.now() + lista.length, nome: n, avatar: "🙂", p: ps[lista.length % ps.length], ...($("#oNasc").value ? { nasc: $("#oNasc").value } : {}) });
       telaEntrada("onbCriancas"); return true; };
@@ -2591,7 +2701,9 @@ function telaEntrada(qual = "inicio", erro = ""){
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="btn" id="eEntrarConv">Entrar na família</button>
       <button class="link" id="eVoltar">Voltar</button></div>`;
-    $("#eEntrarConv").onclick = () => entrarComConvite($("#eConv").value.trim().toUpperCase().replace(/\s/g, ""), resp ? "pais" : "apoio");
+    $("#eConv").removeAttribute("maxlength");
+    $("#eEntrarConv").onclick = () => { $("#eEntrarConv").disabled = true; $("#eEntrarConv").textContent = "Entrando…"; entrarComConvite(extraiCodigo($("#eConv").value, 12), resp ? "pais" : "apoio"); };
+    $("#eConv").onkeydown = e => { if (e.key === "Enter") $("#eEntrarConv").click(); };
     $("#eVoltar").onclick = () => telaEntrada(resp ? "criarFamilia" : "inicio");
   }
   if (qual === "kid") {
@@ -2600,7 +2712,10 @@ function telaEntrada(qual = "inicio", erro = ""){
       <div class="erro" id="eErro">${esc(erro)}</div>
       <button class="btn" id="eEntrarKid">Entrar</button>
       <button class="link" id="eVoltar">Voltar</button></div>`;
-    $("#eEntrarKid").onclick = () => entrarComoCrianca($("#eCod").value.trim().toUpperCase());
+    $("#eCod").removeAttribute("maxlength");
+    $("#eCod").oninput = e => { const c = extraiCodigo(e.target.value, 6); if (e.target.value !== c) e.target.value = c; };
+    $("#eEntrarKid").onclick = () => { $("#eEntrarKid").disabled = true; $("#eEntrarKid").textContent = "Entrando…"; entrarComoCrianca(extraiCodigo($("#eCod").value, 6)); };
+    $("#eCod").onkeydown = e => { if (e.key === "Enter") $("#eEntrarKid").click(); };
     $("#eVoltar").onclick = () => telaEntrada("inicio");
   }
 }
@@ -2709,11 +2824,12 @@ function passoTour(){
 
 /* ===== Primeiro uso: crianças → missões → prêmios ===== */
 const INICIAIS = ["Escovar os dentes", "Arrumar a cama", "Guardar os brinquedos", "Colocar a roupa suja no cesto", "Pôr a mesa do jantar", "Fazer a lição de casa", "Arrumar a mochila", "Tomar banho"];
-const ONB = { criancas: [], missoes: null, premios: null, volta: "inicio", fim: () => {} };
+const ONB = { nome: "", criancas: [], missoes: null, premios: null, volta: "inicio", fim: () => {} };
 const passosOnb = n => `<div class="onbPassos" aria-label="Passo ${n} de 3">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}"></i>`).join("")}</div>`;
-function comecarOnb(volta, fim){ Object.assign(ONB, { criancas: [], missoes: null, premios: null, volta, fim }); telaEntrada("onbCriancas"); }
+function comecarOnb(volta, fim){ Object.assign(ONB, { nome: "", criancas: [], missoes: null, premios: null, volta, fim }); telaEntrada("onbCriancas"); }
 function familiaDoOnb(){
   const d = normalizar(JSON.parse(JSON.stringify(PADRAO))), cores = ["#29BCE5","#B06CFF","#A5DD37","#FF6654","#7738EA","#FFD52A"];
+  d.nomeFamilia = (ONB.nome || "").trim().slice(0, 30);
   d.criancas = ONB.criancas.map(({ p, ...k }) => k);
   d.avatares = {}; ONB.criancas.forEach(k => d.avatares[k.id] = { p: k.p, v2: 1 });
   d.tarefas = [...ONB.missoes].map((i, n) => { const { cat, min, max, ...sg } = SUGESTOES[i];
@@ -2727,42 +2843,52 @@ function familiaDoOnb(){
   return d;
 }
 async function criarFamilia(base){
-  const uid = firebase.auth().currentUser.uid;
+  const uid = firebase.auth().currentUser.uid; let ultimoErro = null;
   for (let tentativa = 0; tentativa < 5; tentativa++) {
     const codigo = novoCodigo();
     const doc = { dono: uid, pais: [uid], aparelhos: [], apoio: [], convites: novosConvites(), criadoEm: firebase.firestore.FieldValue.serverTimestamp(), feitos: base.feitos || {}, trocas: base.trocas || {}, avatares: base.avatares || {} };
     CAMPOS_CONFIG.forEach(k => doc[k] = JSON.parse(JSON.stringify(base[k])));
-    try { await db().collection("familias").doc(codigo).set(doc); dados = base; return conectarFamilia(codigo, "pais"); }
-    catch(e) { console.warn(e); }
+    try { await db().collection("familias").doc(codigo).set(doc); }
+    catch(e) { console.warn(e); ultimoErro = e; if (e.code !== "permission-denied" || tentativa >= 1) break; continue; }
+    dados = base; return conectarFamilia(codigo, "pais");
   }
-  telaEntrada("criarFamilia", "Não consegui criar a família. Confere a internet e tenta de novo.");
+  telaEntrada("criarFamilia", "Não consegui criar a família. " + msgErro(ultimoErro));
 }
 async function entrarComConvite(convite, papel){
-  const m = convite.match(/^([A-Z0-9]{6})-?([A-Z0-9]{6})$/);
+  const m = convite.match(/^([A-Z0-9]{6})([A-Z0-9]{6})$/);
   const tela = papel === "pais" ? "conviteResp" : "apoio";
-  if (!m) return telaEntrada(tela, "O convite tem o formato ABC123-XYZ789.");
+  if (!m) return telaEntrada(tela, "O convite tem 12 letras e números, assim: ABC123-XYZ789.");
   const [, fam, segredo] = m;
   try {
+    await fbPronto();
     if (!firebase.auth().currentUser) await firebase.auth().signInAnonymously();
     const uid = firebase.auth().currentUser.uid, ref = db().collection("familias").doc(fam);
     try { await ref.get(); }
     catch(e) { await ref.update({ [papel === "pais" ? "pais" : "apoio"]: firebase.firestore.FieldValue.arrayUnion(uid), entrouCom: segredo }); }
     await conectarFamilia(fam, papel);
     toast(papel === "pais" ? "Agora vocês dividem o painel 💛" : "Bem-vinda(o) à rede de apoio 💛");
-  } catch(e) { console.warn(e); telaEntrada(tela, "Esse convite não funcionou. Confere com quem te mandou, pode ter sido trocado."); }
+  } catch(e) { console.warn(e); telaEntrada(tela, /network|unavailable|admin-restricted|operation-not-allowed/.test(e.code || "") ? msgErro(e) : "Esse convite não funcionou. Confira com quem mandou: ele pode ter sido trocado por um novo."); }
 }
 async function entrarComoCrianca(codigo){
   if (codigo.length !== 6) return telaEntrada("kid", "O código tem 6 letras e números.");
   try {
+    await fbPronto();
     if (!firebase.auth().currentUser) await firebase.auth().signInAnonymously();
     const uid = firebase.auth().currentUser.uid, ref = db().collection("familias").doc(codigo);
     try { await ref.get(); } // já faz parte da família?
     catch(e) { await ref.update({ aparelhos: firebase.firestore.FieldValue.arrayUnion(uid) }); }
     await conectarFamilia(codigo, "crianca");
     toast("Bem-vinda(o) à família! 🎉"); confete(30);
-  } catch(e) { console.warn(e); telaEntrada("kid", "Não achei essa família. Confere o código com seu responsável."); }
+  } catch(e) { console.warn(e); telaEntrada("kid", /network|unavailable|admin-restricted|operation-not-allowed/.test(e.code || "") ? msgErro(e) : "Não achei essa família. Confira o código com seu responsável."); }
 }
 
+function nomeDaFamilia(){ const n = (dados.nomeFamilia || "").trim(); return n ? (/^fam[ií]lia\b/i.test(n) ? n : "Família " + n) : ""; }
+function statusNuvem(){
+  const nome = nomeDaFamilia();
+  if (!NUVEM.ativo) return nome ? icone("painel_familia", 18) + " " + esc(nome) : "";
+  const tx = NUVEM.papel === "apoio" ? (nome ? "Rede de apoio · " + nome : "Rede de apoio da família") : (nome || (NUVEM.papel === "pais" ? "Nossa família" : "Conectado à família"));
+  return icone("entrada_nuvem_conectada", 18) + " " + esc(tx);
+}
 function modoLocal(){ NUVEM.ativo = false; NUVEM.papel = "local"; NUVEM.statusHTML = ""; montarNav(); }
 
 async function iniciar(){
@@ -2777,10 +2903,11 @@ async function iniciar(){
   if (cfg && !sessao) telaEntrada("inicio");     // primeira vez: abre direto na entrada, sem mostrar dados de exemplo
   if (!cfg || sessao?.papel === "local") return modoLocal();
   modoLocal(); // mostra o app enquanto a nuvem carrega
-  try { await carregaFirebase(cfg); }
-  catch(e) { if (!sessao) telaEntrada("inicio", ""); toast("Sem internet agora"); return; }
+  try { await fbPronto(); }
+  catch(e) { if (!sessao && !ENTRADA.mexeu) telaEntrada("inicio", ""); toast("Sem internet agora"); return; }
   const parar = firebase.auth().onAuthStateChanged(async user => {
     parar();
+    if (ENTRADA.mexeu) return; // a pessoa já está cadastrando ou entrando: deixa ela seguir
     try {
       if (user && sessao?.familia) return await conectarFamilia(sessao.familia, sessao.papel);
       if (user && !user.isAnonymous) return await depoisDoLoginResp();
