@@ -1,5 +1,5 @@
 // Missão Casa: funciona offline depois da primeira visita.
-const VERSAO = "missao-casa-v1";
+const VERSAO = "missao-casa-v2";
 const ARQUIVOS = ["./", "./index.html", "./manifest.json", "./firebase-config.js",
   "./icones-app/icone-192.png", "./icones-app/icone-512.png", "./icones-app/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSAO).then(c => c.addAll(ARQUIVOS)).then(() => self.skipWaiting())); });
